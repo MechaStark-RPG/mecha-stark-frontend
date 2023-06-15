@@ -19,12 +19,13 @@ export default function PlayerScript() {
     const pointer = usePointer();
 
     usePointerClick(async event => {
-        //Click derecho
+        // Click derecho
         if (event.button === 0) {
             // Si se cliquea a si mismo
             if (pointer.x === transform.x && pointer.y === transform.y) {
                 // Chequear si este async no rompe nada...
-                await getComponent<MenuTraitRef>('Menu')?.displayMenu(getRef());
+                // Muestro el menu
+                await getComponent<MenuTraitRef>('MenuTrait')?.displayMenu(getRef());
             } else {
                 try {
                     const nextPath = findPath({ to: pointer });
