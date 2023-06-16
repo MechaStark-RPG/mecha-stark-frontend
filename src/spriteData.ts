@@ -1,6 +1,11 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    mecha: {
+        src: './assets/yellow_idle.png',
+        frameWidth: 220,
+        frameHeight: 237,
+    },
     ui: {
         src: './assets/ui.png',
         sheet: {

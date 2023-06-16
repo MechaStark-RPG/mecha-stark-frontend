@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/core';
-import React from 'react';
+import React, { Suspense } from 'react';
 import AssetLoader from './@core/AssetLoader';
 import Game from './@core/Game';
 import Scene from './@core/Scene';
@@ -7,6 +7,7 @@ import SceneManager from './@core/SceneManager';
 import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
+import AttackScene from './scenes/AttackScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
@@ -34,7 +35,7 @@ export default function App() {
         <>
             <Global styles={globalStyles} />
             <div css={styles.root(width, height)}>
-                <Game cameraZoom={70}>
+                <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
                         <SceneManager defaultScene="office">
                             <Scene id="office">
@@ -42,6 +43,11 @@ export default function App() {
                             </Scene>
                             <Scene id="other">
                                 <OtherScene />
+                            </Scene>
+                            <Scene id="attack">
+                                <Suspense fallback={<div>Loading...</div>}>
+                                    <AttackScene />
+                                </Suspense>
                             </Scene>
                         </SceneManager>
                     </AssetLoader>

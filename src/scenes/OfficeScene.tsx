@@ -99,6 +99,11 @@ export default function OfficeScene() {
                 <Interactable />
                 <ScenePortal name="exit" enterDirection={[-1, 0]} target="other/start" />
             </GameObject>
+            <GameObject x={6} y={6}>
+                <Collider />
+                <Interactable />
+                <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
+            </GameObject>
             <Player x={6} y={3} />
             <Menu x={7} y={3} />
         </>

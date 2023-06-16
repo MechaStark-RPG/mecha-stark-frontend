@@ -114,6 +114,7 @@ export default function CameraFollowScript() {
         },
     });
 
+    console.log(usePointer());
     useEffect(() => {
         const handleMouseMove = event => {
             const { clientX, clientY } = event;
@@ -162,13 +163,13 @@ export default function CameraFollowScript() {
         if (isMouseAtEdge) {
             if (
                 (cameraOffsetX < 0 && pointer.x > -6) ||
-                (cameraOffsetX > 0 && pointer.x < 27)
+                (cameraOffsetX > 0 && pointer.x < mapWidth + 5)
             ) {
                 camera.position.setX(camera.position.x + cameraOffsetX);
             }
             if (
                 (cameraOffsetY < 0 && pointer.y > -6) ||
-                (cameraOffsetY > 0 && pointer.y < 21)
+                (cameraOffsetY > 0 && pointer.y < mapHeight + 5)
             ) {
                 camera.position.setY(camera.position.y + cameraOffsetY);
             }
@@ -182,16 +183,16 @@ export default function CameraFollowScript() {
             camera.position.setY(y);
         } else {
             // follow x, y
-            if (
-                Math.round(camera.position.x * 100) !== Math.round(x * 100) ||
-                Math.round(camera.position.y * 100) !== Math.round(y * 100)
-            ) {
-                // camera.position.setX(camera.position.x - (camera.position.x - x) / 8);
-                // camera.position.setY(camera.position.y - (camera.position.y - y) / 8);
-            } else {
-                // camera.position.setX(x);
-                // camera.position.setY(y);
-            }
+            // if (
+            //     Math.round(camera.position.x * 100) !== Math.round(x * 100) ||
+            //     Math.round(camera.position.y * 100) !== Math.round(y * 100)
+            // ) {
+            //     // camera.position.setX(camera.position.x - (camera.position.x - x) / 8);
+            //     // camera.position.setY(camera.position.y - (camera.position.y - y) / 8);
+            // } else {
+            //     // camera.position.setX(x);
+            //     // camera.position.setY(y);
+            // }
             // apply zoom
             const prevZoom = camera.zoom;
             camera.zoom = cameraZoomLevels[zoomLevel.current];
