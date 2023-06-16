@@ -22,15 +22,16 @@ export default function MenuOption({
 
     return (
         <>
-            <mesh ref={meshRef} position={position} onClick={onSelect}>
-                <boxBufferGeometry args={[2, 0.5, 0.5]} />
-                <meshStandardMaterial color={color} />
+            <mesh position={position} onClick={onSelect}>
+                <boxBufferGeometry args={[2, 0.5, 10]} />
+                <meshStandardMaterial color="blue" />
                 <Text
                     anchorX="center"
                     anchorY="middle"
-                    position={[0, 0, 0.1]}
+                    position={[0, 0, 10]}
                     fontSize={0.3}
-                    applyMatrix4="asd"
+                    color="white"
+                    applyMatrix4={null}
                 >
                     {text}
                 </Text>

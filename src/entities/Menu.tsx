@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import GameObject, { GameObjectProps } from '../@core/GameObject';
 import { useSound } from '../@core/Sound';
 import Sprite from '../@core/Sprite';
-import useGameObject from '../@core/useGameObject';
+// import useGameObject from '../@core/useGameObject';
 import useGameObjectEvent from '../@core/useGameObjectEvent';
 import soundData from '../soundData';
 import spriteData from '../spriteData';
@@ -15,7 +15,7 @@ interface MenuScriptProps {
 }
 
 function MenuScript({ setDisplayMenu, setOptions }: MenuScriptProps) {
-    const { getRef } = useGameObject();
+    // const { getRef } = useGameObject();
     const playSfx = useSound(soundData.eating);
 
     useGameObjectEvent<InteractionEvent>('interaction', other => {
@@ -45,10 +45,8 @@ export default function Menu(props: GameObjectProps) {
         setOptionSelected(option);
     };
 
-    console.log(displayMenu);
-
     return (
-        <GameObject name={name} persisted {...props}>
+        <GameObject name={name} persisted {...props} layer="ui">
             <Sprite {...spriteData.objects} state="pizza" />
             <Interactable />
             <MenuScript setDisplayMenu={setDisplayMenu} setOptions={setOptions} />
@@ -56,9 +54,13 @@ export default function Menu(props: GameObjectProps) {
                 <>
                     {options.map((option, idx) => (
                         <group key={idx}>
+                            <mesh>
+                                <boxBufferGeometry args={[5, 3, 10]} />
+                                <meshStandardMaterial color="gray" />
+                            </mesh>
                             <MenuOption
                                 text={option}
-                                position={[0, -1 * idx, 0]}
+                                position={[0, 1.5 - idx * 1.5, 10]} // Ajusta las posiciones según el diseño deseado
                                 isSelected={optionSelected === option}
                                 onSelect={() => handleOptionSelect(option)}
                             />
