@@ -9,7 +9,7 @@ import usePointerClick from '../@core/usePointerClick';
 import PlayerPathOverlay from './PlayerPathOverlay';
 
 export default function PlayerScript() {
-    const { getComponent, getRef, transform } = useGameObject();
+    const { getComponent, transform } = useGameObject();
     const findPath = usePathfinding();
     const [path, setPath] = useState<Position[]>([]);
     const [pathOverlayEnabled, setPathOverlayEnabled] = useState(true);

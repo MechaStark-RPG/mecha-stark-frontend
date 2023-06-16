@@ -13,7 +13,6 @@ function DisableOnTriggerScript() {
     const playSfx = useSound(soundData.eating);
 
     useGameObjectEvent<TriggerEvent>('trigger', other => {
-        console.log('PIZZA');
         if (other.name === 'player') {
             getRef().setDisabled(true);
             playSfx();
