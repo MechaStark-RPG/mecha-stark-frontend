@@ -7,7 +7,6 @@ import usePathfinding from '../@core/usePathfinding';
 import usePointer from '../@core/usePointer';
 import usePointerClick from '../@core/usePointerClick';
 import PlayerPathOverlay from './PlayerPathOverlay';
-import { MenuTraitRef } from '../@core/MenuTrait';
 
 export default function PlayerScript() {
     const { getComponent, getRef, transform } = useGameObject();
@@ -25,7 +24,10 @@ export default function PlayerScript() {
             if (pointer.x === transform.x && pointer.y === transform.y) {
                 // Chequear si este async no rompe nada...
                 // Muestro el menu
-                await getComponent<MenuTraitRef>('MenuTrait')?.displayMenu(getRef());
+                await getComponent<InteractableRef>('Interactable').interact({
+                    x: 7,
+                    y: 3,
+                });
             } else {
                 try {
                     const nextPath = findPath({ to: pointer });

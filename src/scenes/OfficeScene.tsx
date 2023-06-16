@@ -91,7 +91,7 @@ export default function OfficeScene() {
                 <ScenePortal name="exit" enterDirection={[-1, 0]} target="other/start" />
             </GameObject>
             <Player x={6} y={3} />
-            <Menu />
+            <Menu x={7} y={3} />
         </>
     );
 }

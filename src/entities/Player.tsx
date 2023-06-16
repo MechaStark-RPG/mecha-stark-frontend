@@ -8,12 +8,10 @@ import CameraFollowScript from '../components/CameraFollowScript';
 import CharacterScript from '../components/CharacterScript';
 import PlayerScript from '../components/PlayerScript';
 import spriteData from '../spriteData';
-import MenuTrait from '../@core/MenuTrait';
 
 export default function Player(props: GameObjectProps) {
     return (
         <GameObject name="player" displayName="Player" layer="character" {...props}>
-            <MenuTrait />
             <Moveable />
             <Interactable />
             <Collider />
