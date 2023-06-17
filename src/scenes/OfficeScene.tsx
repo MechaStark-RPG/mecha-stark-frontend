@@ -15,14 +15,23 @@ import spriteData from '../spriteData';
 import Menu from '../entities/Menu';
 
 const mapData = mapDataString(`
-# # # # # # # # # # # # # # # # #
-# · W T # T · · W T · W · · · T #
-# · · · · · · · · · · · · · · o ·
-# o · · # · · · # # # # · · # # #
-# # # # # · · · # W o W · · T W #
-# C C C # · · · T · · · · · · · #
-# o · · · · · · · · · · · · · o #
-# # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # 
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# · · · · · · · · · · · · · · · · · · · · · · #
+# # # # # # # # # # # # # # # # # # # # # # # # 
 `);
 
 const resolveMapTile: TileMapResolver = (type, x, y) => {
@@ -89,6 +98,11 @@ export default function OfficeScene() {
                 <Collider />
                 <Interactable />
                 <ScenePortal name="exit" enterDirection={[-1, 0]} target="other/start" />
+            </GameObject>
+            <GameObject x={6} y={6}>
+                <Collider />
+                <Interactable />
+                <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
             </GameObject>
             <Player x={6} y={3} />
             <Menu x={7} y={3} />

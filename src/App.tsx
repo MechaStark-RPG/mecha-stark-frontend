@@ -7,6 +7,7 @@ import SceneManager from './@core/SceneManager';
 import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
+import AttackScene from './scenes/AttackScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
@@ -42,6 +43,9 @@ export default function App() {
                             </Scene>
                             <Scene id="other">
                                 <OtherScene />
+                            </Scene>
+                            <Scene id="attack">
+                                <AttackScene />
                             </Scene>
                         </SceneManager>
                     </AssetLoader>
