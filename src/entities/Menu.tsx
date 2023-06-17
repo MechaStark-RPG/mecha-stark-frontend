@@ -7,7 +7,6 @@ import useGameObjectEvent from '../@core/useGameObjectEvent';
 import soundData from '../soundData';
 import spriteData from '../spriteData';
 import Interactable, { InteractionEvent } from '../@core/Interactable';
-import MenuOption from './MenuOption';
 
 interface MenuScriptProps {
     setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,29 +44,29 @@ export default function Menu(props: GameObjectProps) {
         setOptionSelected(option);
     };
 
+    // useFrame con las teclas
+
+    // (x,y) -> idx
+
     return (
         <GameObject name={name} persisted {...props} layer="ui">
-            <Sprite {...spriteData.objects} state="pizza" />
+            <Sprite {...spriteData.menu} />
             <Interactable />
             <MenuScript setDisplayMenu={setDisplayMenu} setOptions={setOptions} />
-            {displayMenu && (
-                <>
-                    {options.map((option, idx) => (
-                        <group key={idx}>
-                            <mesh>
-                                <boxBufferGeometry args={[5, 3, 10]} />
-                                <meshStandardMaterial color="gray" />
-                            </mesh>
-                            <MenuOption
-                                text={option}
-                                position={[0, 1.5 - idx * 1.5, 10]} // Ajusta las posiciones según el diseño deseado
-                                isSelected={optionSelected === option}
-                                onSelect={() => handleOptionSelect(option)}
-                            />
-                        </group>
-                    ))}
-                </>
-            )}
+            {/* {displayMenu && ( */}
+            {/*     <> */}
+            {/*         {options.map((option, idx) => ( */}
+            {/*             <group key={idx}> */}
+            {/*                 <MenuOption */}
+            {/*                     text={option} */}
+            {/*                     position={[0.5, idx * 0.5, 10]} // Ajusta las posiciones según el diseño deseado */}
+            {/*                     isSelected={optionSelected === option} */}
+            {/*                     onSelect={() => handleOptionSelect(option)} */}
+            {/*                 /> */}
+            {/*             </group> */}
+            {/*         ))} */}
+            {/*     </> */}
+            {/* )} */}
         </GameObject>
     );
 }

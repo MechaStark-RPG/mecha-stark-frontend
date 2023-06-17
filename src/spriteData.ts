@@ -1,6 +1,11 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    menu: {
+        src: './assets/menu.png',
+        frameWidth: 600,
+        frameHeight: 306,
+    },
     ui: {
         src: './assets/ui.png',
         sheet: {

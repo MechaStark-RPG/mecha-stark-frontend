@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { useFrame } from 'react-three-fiber';
 import { Text } from 'drei';
+import Sprite from '../@core/Sprite';
+import spriteData from '../spriteData';
 
 interface MenuOptionProps {
     text: string;
@@ -30,7 +32,7 @@ export default function MenuOption({
                     anchorY="middle"
                     position={[0, 0, 10]}
                     fontSize={0.3}
-                    color="white"
+                    color="black"
                     applyMatrix4={null}
                 >
                     {text}
