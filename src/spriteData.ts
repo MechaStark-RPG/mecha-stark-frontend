@@ -1,10 +1,23 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    attackSceneBackground: {
+        src: './assets/attack_background.png',
+        frameWidth: 7000,
+        frameHeight: 2333,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
     mecha: {
         src: './assets/yellow_idle.png',
         frameWidth: 220,
         frameHeight: 237,
+    },
+    mechaEnemy: {
+        src: './assets/enemy_idle.png',
+        frameWidth: 254,
+        frameHeight: 257,
     },
     ui: {
         src: './assets/ui.png',

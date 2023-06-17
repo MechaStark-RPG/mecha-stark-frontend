@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/core';
-import React, { Suspense } from 'react';
+import React from 'react';
 import AssetLoader from './@core/AssetLoader';
 import Game from './@core/Game';
 import Scene from './@core/Scene';
@@ -45,9 +45,7 @@ export default function App() {
                                 <OtherScene />
                             </Scene>
                             <Scene id="attack">
-                                <Suspense fallback={<div>Loading...</div>}>
-                                    <AttackScene />
-                                </Suspense>
+                                <AttackScene />
                             </Scene>
                         </SceneManager>
                     </AssetLoader>

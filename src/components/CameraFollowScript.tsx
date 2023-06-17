@@ -106,6 +106,7 @@ export default function CameraFollowScript() {
             e.preventDefault();
             zoomLevel.current = Math.max(0, zoomLevel.current - 1);
         },
+        // centrar la camara al pj que me llamo
         1: e => {
             e.preventDefault();
             const { x, y } = clampPositionToViewport(nodeRef.current.position);
@@ -114,7 +115,6 @@ export default function CameraFollowScript() {
         },
     });
 
-    console.log(usePointer());
     useEffect(() => {
         const handleMouseMove = event => {
             const { clientX, clientY } = event;
