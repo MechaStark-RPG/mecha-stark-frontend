@@ -4,7 +4,7 @@ const spriteData: { [index: string]: SpriteProps } = {
     menu: {
         src: './assets/menu.png',
         frameWidth: 600,
-        frameHeight: 306,
+        frameHeight: 300,
     },
     attackSceneBackground: {
         src: './assets/attack_background.png',

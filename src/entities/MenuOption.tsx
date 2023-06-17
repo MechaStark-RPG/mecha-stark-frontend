@@ -25,8 +25,6 @@ export default function MenuOption({
     return (
         <>
             <mesh position={position} onClick={onSelect}>
-                <boxBufferGeometry args={[2, 0.5, 10]} />
-                <meshStandardMaterial color="blue" />
                 <Text
                     anchorX="center"
                     anchorY="middle"
