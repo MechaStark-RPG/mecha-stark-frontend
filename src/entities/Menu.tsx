@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import GameObject, { GameObjectProps } from '../@core/GameObject';
+import GameObject, { GameObjectProps, Position } from '../@core/GameObject';
 import { useSound } from '../@core/Sound';
-import Sprite from '../@core/Sprite';
+// import Sprite from '../@core/Sprite';
 // import useGameObject from '../@core/useGameObject';
 import useGameObjectEvent from '../@core/useGameObjectEvent';
 import soundData from '../soundData';
@@ -14,24 +14,48 @@ import MenuOption from './MenuOption';
 
 interface MenuScriptProps {
     setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
-    setOptions: React.Dispatch<React.SetStateAction<string[]>>;
+    setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
     setOptionSelected: React.Dispatch<React.SetStateAction<string>>;
+    options: Option[];
 }
 
-function MenuScript({ setDisplayMenu, setOptions, setOptionSelected }: MenuScriptProps) {
+type Option = {
+    name: string;
+    position: Position;
+};
+
+function MenuScript({
+    setDisplayMenu,
+    setOptions,
+    setOptionSelected,
+    options,
+}: MenuScriptProps) {
     const { getRef, transform } = useGameObject();
     const playSfx = useSound(soundData.eating);
 
-    useGameObjectEvent<InteractionEvent>('interaction', other => {
-        console.log('DISPLAYING MENU');
-        const menuXPosition = other.transform.x + 2;
-        const menuYPosition = other.transform.y + 1;
+    useGameObjectEvent<InteractionEvent>('interaction', player => {
+        const menuXPosition = player.transform.x + 2;
+        const menuYPosition = player.transform.y + 1;
         getRef().transform.setX(menuXPosition);
         getRef().transform.setY(menuYPosition);
         // Dado el ref... creo sus posibles opciones
 
+        const optionsWithType = ['Cancelar', 'Moverse', 'Atacar', 'Defenderse'].map(
+            (name, idx) => {
+                return {
+                    name,
+                    position: {
+                        x: menuXPosition,
+                        y: menuYPosition + idx - 1,
+                    },
+                };
+            }
+        );
+
+        console.log(optionsWithType);
+
         setDisplayMenu(true);
-        setOptions(['Cancelar', 'Moverse', 'Atacar']);
+        setOptions(optionsWithType);
 
         playSfx(); // -0.6 + idx * 0.7
     });
@@ -41,17 +65,17 @@ function MenuScript({ setDisplayMenu, setOptions, setOptionSelected }: MenuScrip
     usePointerClick(async event => {
         if (event.button === 0) {
             // Si clickea otro lugar
-            if (pointer.x === transform.x && pointer.y === transform.y - 1) {
-                setOptionSelected('Atacar');
-            }
-            if (pointer.x === transform.x && pointer.y === transform.y) {
-                setOptionSelected('Moverse');
-            }
-            if (pointer.x === transform.x && pointer.y + 1 === transform.y) {
-                setOptionSelected('Cancelar');
-            }
+            // console.log(`Menu: ${transform.x}, ${transform.y}`);
+            // console.log(`Pointer: ${pointer.x}, ${pointer.y}`);
 
-            if (pointer.x !== transform.x && pointer.y !== transform.y) {
+            const maybeOption = options.filter(
+                o => o.position.x === pointer.x && o.position.y === pointer.y
+            );
+
+            if (maybeOption.length > 0) {
+                console.log(maybeOption[0].name);
+                setOptionSelected(maybeOption[0].name);
+            } else {
                 // Chequear si este async no rompe nada...
                 // Muestro el menu
                 // Vuelvo a las posiciones harcodeadas
@@ -69,31 +93,32 @@ function MenuScript({ setDisplayMenu, setOptions, setOptionSelected }: MenuScrip
 export default function Menu(props: GameObjectProps) {
     const name = `menu`; // fallback name required for persisted flag
     const [optionSelected, setOptionSelected] = useState('');
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState<Option[]>([]);
     const [displayMenu, setDisplayMenu] = useState(false);
 
     const handleOptionSelect = (option: string) => {
         setOptionSelected(option);
     };
+    // {displayMenu && <Sprite {...spriteData.menu} scale={5} opacity={1} basic />}
 
     return (
         <GameObject name={name} persisted {...props} layer="ui">
-            {displayMenu && <Sprite {...spriteData.menu} scale={3.7} opacity={1} basic />}
             <Interactable />
             <MenuScript
                 setDisplayMenu={setDisplayMenu}
                 setOptions={setOptions}
                 setOptionSelected={setOptionSelected}
+                options={options}
             />
             {displayMenu && (
                 <>
                     {options.map((option, idx) => (
                         <group key={idx}>
                             <MenuOption
-                                text={option}
-                                position={[0, -0.7 + idx * 0.9, 10]} // Ajusta las posiciones según el diseño deseado
-                                isSelected={optionSelected === option}
-                                onSelect={() => handleOptionSelect(option)}
+                                text={option.name}
+                                position={[0, idx - 1, 10]}
+                                isSelected={optionSelected === option.name}
+                                onSelect={() => handleOptionSelect(option.name)}
                             />
                         </group>
                     ))}
