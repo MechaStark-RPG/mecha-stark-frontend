@@ -8,7 +8,7 @@ export default function CreateRoom(changeAuth) {
 
     const handleSubmit = event => {
         event.preventDefault();
-        //El juego original tiene opciones de creacion de sala
+        // El juego original tiene opciones de creacion de sala
         const options = {};
         changeAuth({ roomId, password, options });
     };

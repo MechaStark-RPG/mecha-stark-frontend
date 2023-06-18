@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Socket from './useSocket';
 import { initListeners } from '../initListiners';
-import { Row, Col } from 'react-bootstrap';
-import HyperLink from 'react-uwp/HyperLink';
+import { Row, Col, Button } from 'react-bootstrap';
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
 
@@ -30,6 +29,10 @@ export default function Room() {
         setSocket(socketInit(username, roomId, password, action, options));
         initListeners(this, socket);
     };
+
+    useEffect(() => {
+        console.log('Arrancando Room');
+    });
 
     useEffect(() => {
         if (socket != null) {
@@ -83,14 +86,25 @@ export default function Room() {
                     </Col>
                 </Row>
                 <br />
-                <HyperLink
+
+                <Button
+                    variant="light"
+                    type="submit"
                     onClick={() =>
                         setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
                     }
                 >
                     {`${action === 'join' ? 'Create New' : 'Join'} Room`}
-                </HyperLink>
+                </Button>
             </div>
         </>
     );
 }
+
+// <HyperLink
+//   onClick={() =>
+//     setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
+//   }
+// >
+//     {`${action === 'join' ? 'Create New' : 'Join'} Room`}
+// </HyperLink>
