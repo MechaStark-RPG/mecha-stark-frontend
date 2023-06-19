@@ -4,11 +4,12 @@ import { Route, Switch } from 'react-router-dom';
 
 import GameApp from './GameApp';
 import Room from './@core/Room';
+import Lobby from './@core/Lobby';
 
 const ROUTES = [
     {
         path: '/',
-        key: 'APP_GAME',
+        key: 'APP_ROOT',
         exact: true,
         component: GameApp,
     },
@@ -17,6 +18,12 @@ const ROUTES = [
         key: 'APP_ROOM',
         exact: true,
         component: Room,
+    },
+    {
+        path: '/lobby',
+        key: 'APP_LOBBY',
+        exact: true,
+        component: Lobby,
     },
 ];
 

@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 
 import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
+import { RoomValues } from './Room';
 
-export default function JoinRoom(changeAuth) {
+interface JoinRoomProps {
+    handleAuth: (data: RoomValues) => void;
+}
+
+export default function JoinRoom({ handleAuth }: JoinRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
 
+    console.log(handleAuth);
     const handleSubmit = event => {
         event.preventDefault();
-        changeAuth({ roomId, password });
+        handleAuth({ roomId, password } as RoomValues);
     };
 
     return (

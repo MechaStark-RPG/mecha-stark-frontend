@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 
 import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
+import { RoomValues } from './Room';
 
-export default function CreateRoom(changeAuth) {
+interface CreateMenuRoomProps {
+    handleAuth: (data: RoomValues) => void;
+}
+
+export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
 
+    console.log(handleAuth);
     const handleSubmit = event => {
         event.preventDefault();
         // El juego original tiene opciones de creacion de sala
         const options = {};
-        changeAuth({ roomId, password, options });
+        handleAuth({ roomId, password, options });
     };
     return (
         <div>
