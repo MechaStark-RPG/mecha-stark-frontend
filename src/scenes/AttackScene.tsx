@@ -148,7 +148,7 @@ const AttackScene = (
             setTransitionAlpha(transicionAlpha + 0.03);
         }
         if (elapsedTime > 5.3) {
-            setScene('office');
+            setScene('vixenMap');
         }
     });
 

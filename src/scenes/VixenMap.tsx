@@ -6,15 +6,10 @@ import ScenePortal from '../@core/ScenePortal';
 import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
-import CoffeeMachine from '../entities/CoffeeMachine';
-import PizzaPickup from '../entities/PizzaPickup';
-import Plant from '../entities/Plant';
 import Player from '../entities/Player';
-import Workstation from '../entities/Workstation';
+import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
-import Menu from '../entities/Menu';
 import GraphicOriginal from '../@core/GraphicOriginal';
-import CameraFollowScript from '../components/CameraFollowScript';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -66,19 +61,25 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
 export default function VixenMapScene() {
     return (
         <>
+            <GameObject>
+                <GraphicOriginal
+                    {...spriteData.vixenMap}
+                    offset={{ x: 15.47, y: 7.3 }}
+                    customScale={{ width: 31.37, height: 15.7, z: 0 }}
+                    opacity={1}
+                    basic
+                />
+            </GameObject>
             <GameObject name="map">
                 <ambientLight />
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
             </GameObject>
             <Player x={3} y={12} />
-            <GameObject>
-                <GraphicOriginal
-                    {...spriteData.vixenMap}
-                    offset={{ x: 15.5, y: 7.5 }}
-                    customScale={{ width: 31, height: 15, z: 0 }}
-                    opacity={1}
-                    basic
-                />
+            <GameObject x={3} y={8} layer="character">
+                <Sprite {...spriteData.enemyMap} />
+                <Collider />
+                <Interactable />
+                <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
             </GameObject>
         </>
     );

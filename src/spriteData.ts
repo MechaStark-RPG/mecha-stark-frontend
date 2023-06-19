@@ -61,6 +61,14 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
+    enemyMap: {
+        src: './assets/enemy_map.png',
+        frameWidth: 68,
+        frameHeight: 80,
+        sheet: {
+            default: [[1, 0]],
+        },
+    },
     mechaShadow: {
         src: './assets/shadow.png',
         frameWidth: 295,
