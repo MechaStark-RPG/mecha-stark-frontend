@@ -1,6 +1,14 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    vixenMap: {
+        src: './assets/mapa-vixen.png',
+        frameWidth: 2520,
+        frameHeight: 1259,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
     blackScreen: {
         src: './assets/blackscreen.png',
         frameWidth: 1024,
@@ -43,6 +51,14 @@ const spriteData: { [index: string]: SpriteProps } = {
                 [3, 0],
                 [2, 0],
             ],
+        },
+    },
+    mechaMap: {
+        src: './assets/yellow_map.png',
+        frameWidth: 70,
+        frameHeight: 80,
+        sheet: {
+            default: [[0, 0]],
         },
     },
     mechaShadow: {

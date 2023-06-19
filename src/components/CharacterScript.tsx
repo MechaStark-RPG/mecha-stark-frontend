@@ -65,8 +65,8 @@ export default function CharacterScript({ children }: Props) {
         }
 
         if (movementWobble.current > 0) {
-            const wobbleTime = 2;
-            const wobblePower = 0.17;
+            const wobbleTime = 0;
+            const wobblePower = 0;
             const angle =
                 Math.sin(movementCount.current * wobbleTime) *
                 movementWobble.current *
@@ -84,7 +84,7 @@ export default function CharacterScript({ children }: Props) {
     useGameObjectEvent<WillMoveEvent>(
         'will-move',
         () => {
-            movementWobble.current = 1;
+            movementWobble.current = 0;
             movementActive.current = true;
 
             const removeInstance = instantiate(
@@ -94,7 +94,7 @@ export default function CharacterScript({ children }: Props) {
                         offset={{ x: 0, y: characterOffsetY }}
                         onIteration={() => removeInstance()}
                     />
-                    <Sound {...soundData.footstep} />
+                    {/* <Sound {...soundData.footstep} /> */}
                 </GameObject>
             );
         },
@@ -139,8 +139,8 @@ export default function CharacterScript({ children }: Props) {
         // apply breathe animation
         if (!movementActive.current) {
             // breathe animation while standing still
-            const breathIntensity = 20;
-            scaleRef.current.scale.setY(1 + Math.sin(time / 240) / breathIntensity);
+            const breathIntensity = 150;
+            // scaleRef.current.scale.setY(1 + Math.sin(time / 240) / breathIntensity);
         } else {
             // no breathe animation while moving
             scaleRef.current.scale.setY(1);
