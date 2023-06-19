@@ -23,7 +23,7 @@ export interface GraphicProps {
     blending?: THREE.Blending;
     magFilter?: THREE.TextureFilter;
     onIteration?: () => void;
-    customScale?: { width: number; height: number };
+    customScale?: { width: number; height: number; z: number };
 }
 
 // create geometry once and reuse
@@ -50,7 +50,7 @@ export default memo(
             blending = THREE.NormalBlending,
             magFilter = THREE.NearestFilter,
             onIteration,
-            customScale = { width: 1, height: 1 },
+            customScale = { width: 1, height: 1, z: 1 },
         }: GraphicProps,
         ref
     ) {

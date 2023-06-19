@@ -25,21 +25,20 @@ function EnableOnTriggerScript() {
 }
 
 export default function AttackSceneMenu(props: GameObjectProps) {
-    const name = `menu`; // fallback name required for persisted flag
     return (
         <group>
             <GameObject>
                 <GraphicOriginal
                     {...spriteData.menuBackground}
                     offset={{ x: props.x, y: props.y - 4 }}
-                    customScale={{ width: 25, height: 4 }}
+                    customScale={{ width: 25, height: 4, z: 1 }}
                     opacity={1}
                     basic
                 />
                 <GraphicOriginal
                     {...spriteData.menuAttack}
                     offset={{ x: props.x, y: props.y - 4 }}
-                    customScale={{ width: 24, height: 4 }}
+                    customScale={{ width: 24, height: 4, z: 1 }}
                     opacity={1}
                     basic
                 />

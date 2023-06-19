@@ -8,13 +8,14 @@ import GameObject from '../@core/GameObject';
 import CameraAttackScript from '../components/CameraAttackScript';
 import useSceneManager from '../@core/useSceneManager';
 import AttackSceneMenu from '../entities/AttackSceneMenu';
+import GraphicOriginal from '../@core/GraphicOriginal';
 
 const FLOOR_LEVEL = 1;
 const ATTACKER_RECEIVER_DISTANCE = 1.5;
 
 const AttackScene = () => {
     const [attackerPosition, setAttackerPosition] = useState({ x: 0, y: FLOOR_LEVEL });
-    const [receiverPosition, setReceiverPosition] = useState({ x: 10, y: FLOOR_LEVEL });
+    const [receiverPosition, setReceiverPosition] = useState({ x: 12, y: FLOOR_LEVEL });
     const [transicionAlpha, setTransitionAlpha] = useState(1);
 
     const [receiverOnHitPosition, setReceiverOnHitPosition] = useState({ x: 0, y: 0 });
@@ -29,7 +30,7 @@ const AttackScene = () => {
     useEffect(() => {
         clockRef.current.start();
         setAttackerPosition({ x: 0, y: FLOOR_LEVEL });
-        setReceiverPosition({ x: 10, y: FLOOR_LEVEL });
+        setReceiverPosition({ x: 12, y: FLOOR_LEVEL });
     }, []);
 
     useFrame(() => {
@@ -55,7 +56,7 @@ const AttackScene = () => {
                 if (hitAnimationInProgress) {
                     if (hitClock + 0.4 < elapsedTime) {
                         setReceiverPosition({
-                            x: receiverPosition.x + 0.4,
+                            x: receiverPosition.x + 0.3,
                             y: FLOOR_LEVEL,
                         });
                         if (receiverOnHitPosition.x + 1 > receiverPosition.x) {
@@ -90,24 +91,17 @@ const AttackScene = () => {
                 />
             </GameObject>
             <GameObject name="background" displayName="Attack Scene Background">
-                <Graphic
-                    {...spriteData.attackSceneBackground1}
-                    offset={{ x: -4, y: 6 }}
-                    scale={15}
+                <GraphicOriginal
+                    {...spriteData.attackSceneBackground}
+                    offset={{ x: 8, y: 6 }}
+                    customScale={{ width: 33, height: 15, z: 1 }}
                     opacity={1}
                     basic
                 />
-                <Graphic
-                    {...spriteData.attackSceneBackground2}
-                    offset={{ x: 11, y: 6 }}
-                    scale={15}
-                    opacity={1}
-                    basic
-                />
-                <Graphic
-                    {...spriteData.attackSceneBackground1}
-                    offset={{ x: 26, y: 6 }}
-                    scale={15}
+                <GraphicOriginal
+                    {...spriteData.attackSceneBackground}
+                    offset={{ x: -25, y: 6 }}
+                    customScale={{ width: 33, height: 15, z: 1 }}
                     opacity={1}
                     basic
                 />
@@ -120,9 +114,23 @@ const AttackScene = () => {
                     opacity={1}
                     basic
                 />
+                <GraphicOriginal
+                    {...spriteData.mechaShadow}
+                    offset={{ x: receiverPosition.x + 0.6, y: receiverPosition.y - 1.3 }}
+                    customScale={{ width: -2.8, height: 1, z: -10 }}
+                    opacity={0.3}
+                    basic
+                />
             </GameObject>
             <GameObject name="attacker" displayName="Attacker">
                 <CameraAttackScript attackerPosition={attackerPosition} />
+                <GraphicOriginal
+                    {...spriteData.mechaShadow}
+                    offset={{ x: attackerPosition.x - 0.6, y: attackerPosition.y - 1.3 }}
+                    customScale={{ width: 2.8, height: 1, z: -10 }}
+                    opacity={0.3}
+                    basic
+                />
                 {!hitAnimationInProgress && (
                     <Graphic
                         {...spriteData.mecha}

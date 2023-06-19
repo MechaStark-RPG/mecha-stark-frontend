@@ -9,9 +9,9 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
-    attackSceneBackground1: {
+    attackSceneBackground: {
         src: './assets/attack_background.png',
-        frameWidth: 3500,
+        frameWidth: 7000,
         frameHeight: 2333,
         sheet: {
             default: [[0, 0]],
@@ -29,15 +29,23 @@ const spriteData: { [index: string]: SpriteProps } = {
         src: './assets/yellow.png',
         frameWidth: 220,
         frameHeight: 237,
-        frameTime: 250,
+        frameTime: 140,
         sheet: {
             default: [[0, 0]],
             moving: [[0, 0]],
             hitMeele: [
                 [1, 0],
-                [2, 0],
                 [3, 0],
+                [2, 0],
             ],
+        },
+    },
+    mechaShadow: {
+        src: './assets/shadow.png',
+        frameWidth: 295,
+        frameHeight: 77,
+        sheet: {
+            default: [[0, 0]],
         },
     },
     mechaEnemy: {
