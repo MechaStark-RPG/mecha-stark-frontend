@@ -17,12 +17,17 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
-    attackSceneBackground2: {
-        src: './assets/attack_background.png',
-        frameWidth: 3500,
-        frameHeight: 2333,
+    explotion: {
+        src: './assets/explotion.png',
+        frameWidth: 190,
+        frameHeight: 190,
         sheet: {
-            default: [[1, 0]],
+            default: [
+                [3, 1],
+                [4, 1],
+                [0, 0],
+                [1, 0],
+            ],
         },
     },
     mecha: {

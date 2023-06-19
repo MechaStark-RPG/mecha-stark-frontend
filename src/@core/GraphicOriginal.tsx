@@ -147,7 +147,7 @@ export default memo(
             <mesh
                 ref={ref}
                 position={[offset.x, offset.y, -offset.y / 100]}
-                scale={[customScale.width, customScale.height, 1]}
+                scale={[customScale.width, customScale.height, customScale.z]}
                 geometry={geometry}
             >
                 {basic ? (
