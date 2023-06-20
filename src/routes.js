@@ -5,25 +5,40 @@ import { Route, Switch } from 'react-router-dom';
 import GameApp from './GameApp';
 import Room from './@core/Room';
 import Lobby from './@core/Lobby';
+import Auth from './@core/auth/Auth';
+import AppRouter from './AppRouter';
 
 const ROUTES = [
     {
+        path: '/auth',
+        key: 'AUTH',
+        exact: true,
+        component: Auth,
+    },
+    {
         path: '/',
-        key: 'APP_ROOT',
-        exact: true,
-        component: GameApp,
-    },
-    {
-        path: '/room',
-        key: 'APP_ROOM',
-        exact: true,
-        component: Room,
-    },
-    {
-        path: '/lobby',
-        key: 'APP_LOBBY',
-        exact: true,
-        component: Lobby,
+        key: 'APP',
+        component: AppRouter,
+        routes: [
+            {
+                path: '/',
+                key: 'APP_ROOT',
+                exact: true,
+                component: Room,
+            },
+            {
+                path: '/game',
+                key: 'APP_GAME',
+                exact: true,
+                component: GameApp,
+            },
+            {
+                path: '/room',
+                key: 'APP_ROOM',
+                exact: true,
+                component: Lobby,
+            },
+        ],
     },
 ];
 

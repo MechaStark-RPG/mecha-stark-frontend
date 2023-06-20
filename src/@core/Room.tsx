@@ -3,6 +3,8 @@ import { Row, Col, Button } from 'react-bootstrap';
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
 import useSocket from './socket/useSocket';
+import { Redirect } from 'react-router-dom';
+import useAuth from './auth/useAuth';
 
 export interface RoomValues {
     roomId: string;
@@ -11,14 +13,14 @@ export interface RoomValues {
 }
 
 export default function Room() {
+    const [action, setAction] = useState('join');
+    const [error, setError] = useState(null);
+
     const { createSocket, initListeners } = useSocket();
-    const [username, setUsername] = useState();
-    const [socket, setSocket] = useState(null);
+    const { username } = useAuth();
     const [password, setPassword] = useState(null);
     const [roomId, setRoomId] = useState(null);
-    const [error, setError] = useState(null);
     const [available, setAvailable] = useState(false);
-    const [action, setAction] = useState('join');
 
     const handleAuth = (data: RoomValues) => {
         setRoomId(data.roomId);
@@ -33,26 +35,44 @@ export default function Room() {
 
     return (
         <>
-            <div className="p-3">
-                <hr />
-                <Row>
-                    <Col>{action === 'join' && <JoinRoom handleAuth={handleAuth} />}</Col>
-                    <Col>
-                        {action === 'create' && <CreateRoom handleAuth={handleAuth} />}
-                    </Col>
-                </Row>
-                <br />
+            {!available && (
+                <div className="p-3">
+                    <hr />
+                    <Row>
+                        <Col>
+                            {action === 'join' && <JoinRoom handleAuth={handleAuth} />}
+                        </Col>
+                        <Col>
+                            {action === 'create' && (
+                                <CreateRoom handleAuth={handleAuth} />
+                            )}
+                        </Col>
+                    </Row>
+                    <br />
 
-                <Button
-                    variant="light"
-                    type="submit"
-                    onClick={() =>
-                        setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
-                    }
-                >
-                    {`${action === 'join' ? 'Create New' : 'Join'} Room`}
-                </Button>
-            </div>
+                    <Button
+                        variant="light"
+                        type="submit"
+                        onClick={() =>
+                            setAction(prevState =>
+                                prevState === 'join' ? 'create' : 'join'
+                            )
+                        }
+                    >
+                        {`${action === 'join' ? 'Create New' : 'Join'} Room`}
+                    </Button>
+                </div>
+            )}
+            {available && (
+                <Redirect
+                    push
+                    to={{
+                        pathname: '/room',
+                        search: `?roomId=${roomId}`,
+                        state: { roomId, referrer: '/' },
+                    }}
+                />
+            )}
         </>
     );
 }

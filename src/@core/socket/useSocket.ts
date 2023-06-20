@@ -1,12 +1,12 @@
 import { useContext } from 'react';
-import { Socket, SocketContext, SocketContextValue } from './Socket';
+import { SocketContext, SocketContextValue } from './Socket';
 
 export default function useSocket() {
-    const { socket, setSocket } = useContext(SocketContext) as SocketContextValue;
+    const { socket } = useContext(SocketContext) as SocketContextValue;
 
     const createSocket = (username, roomId, password, action) => {
-        if (socket != null) {
-            setSocket(Socket.socketInit(username, roomId, password, action));
+        if (socket.connection === null || socket.connection === undefined) {
+            socket.socketInit(username, roomId, password, action);
         }
     };
 

@@ -11,7 +11,6 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
 
-    console.log(handleAuth);
     const handleSubmit = event => {
         event.preventDefault();
         // El juego original tiene opciones de creacion de sala
@@ -24,7 +23,7 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
             <Form onSubmit={handleSubmit}>
                 <InputGroup>
                     <FormControl
-                        readOnly
+                        placeholder="Enter the RoomID here"
                         name="roomId"
                         value={roomId}
                         aria-label="roomId"

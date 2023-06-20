@@ -17,7 +17,7 @@ export type PlayerJoined = {
 };
 
 export default function Lobby({ roomId, password }: LobbyProps) {
-    const { socket, emit } = useSocket();
+    const { emit } = useSocket();
     const [isReady, setIsReady] = useState(false);
     const [isTurn, setIsTurn] = useState(false);
     const [playersJoined, setPlayerJoined] = useState<PlayerJoined[]>([]);
