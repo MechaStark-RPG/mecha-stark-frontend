@@ -47,6 +47,7 @@ export default function PlayerPathOverlay({
                       <Graphic
                           {...spriteData.ui}
                           state="dot"
+                          color="yellow"
                           opacity={Math.min(0.75, index / 5)}
                           basic
                       />
@@ -55,7 +56,13 @@ export default function PlayerPathOverlay({
             : pointerPath.map(({ x, y }) => (
                   // eslint-disable-next-line react/jsx-indent
                   <group key={`${x}-${y}`} position={[x, y, offsetZ]}>
-                      <Graphic {...spriteData.ui} state="dot" opacity={0.25} basic />
+                      <Graphic
+                          {...spriteData.ui}
+                          state="solid"
+                          color="white"
+                          opacity={0.2}
+                          basic
+                      />
                   </group>
               ));
     }
