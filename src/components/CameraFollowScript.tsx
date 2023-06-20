@@ -39,9 +39,6 @@ export default function CameraFollowScript() {
     const [cameraOffsetY, setCameraOffsetY] = useState(0);
     const pointer = usePointer();
     const [cameraZoomLevels] = useState(() => [
-        cameraZoom * 0.7,
-        cameraZoom * 0.8,
-        cameraZoom * 0.9,
         cameraZoom,
         cameraZoom * 1.1,
         cameraZoom * 1.2,
@@ -162,14 +159,14 @@ export default function CameraFollowScript() {
     useFrame(() => {
         if (isMouseAtEdge) {
             if (
-                (cameraOffsetX < 0 && pointer.x > -6) ||
-                (cameraOffsetX > 0 && pointer.x < mapWidth + 5)
+                (cameraOffsetX < 0 && pointer.x > -2) ||
+                (cameraOffsetX > 0 && pointer.x < mapWidth + 1)
             ) {
                 camera.position.setX(camera.position.x + cameraOffsetX);
             }
             if (
-                (cameraOffsetY < 0 && pointer.y > -6) ||
-                (cameraOffsetY > 0 && pointer.y < mapHeight + 5)
+                (cameraOffsetY < 0 && pointer.y > -2) ||
+                (cameraOffsetY > 0 && pointer.y < mapHeight + 1)
             ) {
                 camera.position.setY(camera.position.y + cameraOffsetY);
             }
