@@ -46,7 +46,8 @@ export type GameObjectLayer =
     | 'obstacle'
     | 'character'
     | 'item'
-    | 'fx';
+    | 'fx'
+    | 'ui';
 
 export interface GameObjectProps extends Partial<Position> {
     name?: string;
@@ -179,6 +180,8 @@ export default function GameObject({
     if (layer === 'item') offsetZ = 0.3;
     if (layer === 'character') offsetZ = 10;
     if (layer === 'fx') offsetZ = 4;
+    // No se porque elegi 5 pero es para UI
+    if (layer === 'ui') offsetZ = 5;
 
     return (
         <GameObjectContext.Provider value={contextValue}>

@@ -13,6 +13,7 @@ export default function PlayerScript() {
     const findPath = usePathfinding();
     const [path, setPath] = useState<Position[]>([]);
     const [pathOverlayEnabled, setPathOverlayEnabled] = useState(true);
+    const [canMove, setCanMove] = useState(false);
 
     // mouse controls
     const pointer = usePointer();
@@ -28,7 +29,7 @@ export default function PlayerScript() {
                     x: 7,
                     y: 3,
                 });
-            } else {
+            } else if (canMove) {
                 try {
                     const nextPath = findPath({ to: pointer });
                     if (path.length > 0) {

@@ -16,6 +16,10 @@ const spriteData: { [index: string]: SpriteProps } = {
         sheet: {
             default: [[0, 0]],
         },
+    menu: {
+        src: './assets/menu.png',
+        frameWidth: 600,
+        frameHeight: 300,
     },
     attackSceneBackground: {
         src: './assets/attack_background.png',

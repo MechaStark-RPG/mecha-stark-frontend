@@ -19,6 +19,7 @@ export type SpriteRef = ComponentRef<
 
 export type SpriteProps = GraphicProps;
 
+// Recibo el objeto spriteData
 export default function Sprite({
     sheet,
     state: initialState = 'default',
