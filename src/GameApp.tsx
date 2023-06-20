@@ -11,6 +11,7 @@ import AttackScene from './scenes/AttackScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
+import VixenMapScene from './scenes/VixenMap';
 
 const styles = {
     root: (width: number, height: number) => css`
@@ -37,7 +38,7 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="office">
+                        <SceneManager defaultScene="vixenMap">
                             <Scene id="office">
                                 <OfficeScene />
                             </Scene>
@@ -46,6 +47,9 @@ export default function GameApp() {
                             </Scene>
                             <Scene id="attack">
                                 <AttackScene />
+                            </Scene>
+                            <Scene id="vixenMap">
+                                <VixenMapScene />
                             </Scene>
                         </SceneManager>
                     </AssetLoader>
