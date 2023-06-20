@@ -2,18 +2,16 @@ import React from 'react';
 
 import useSocket from './socket/useSocket';
 import { PlayerJoined } from './Lobby';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 interface JoinedPlayersProps {
     playersJoined: PlayerJoined[];
     onPlayerJoin: (players: string[]) => void;
-    changeCollectionTo: (string: string) => void;
 }
 
 export default function JoinedPlayers({
     playersJoined,
     onPlayerJoin,
-    changeCollectionTo,
 }: JoinedPlayersProps) {
     const { subscribeTo } = useSocket();
 
@@ -27,14 +25,14 @@ export default function JoinedPlayers({
         <ListGroup>
             {playersJoined.map((playerInfo, index) => {
                 return (
-                    <ListGroupItem
-                        key={playerInfo.id}
-                        onClick={() => {
-                            changeCollectionTo(playerInfo.id);
-                        }}
-                    >
-                        {playerInfo.username}
-                        {playerInfo.isReady ? 'READY' : 'NOT READY'}
+                    <ListGroupItem key={playerInfo.id}>
+                        <Badge bg="secondary">{playerInfo.username}</Badge>
+
+                        {playerInfo.isReady ? (
+                            <Badge bg="success">Ready</Badge>
+                        ) : (
+                            <Badge bg="danger">Not ready</Badge>
+                        )}
                     </ListGroupItem>
                 );
             })}

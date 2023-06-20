@@ -10,21 +10,19 @@ interface JoinRoomProps {
 export default function JoinRoom({ handleAuth }: JoinRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
-
-    console.log(handleAuth);
     const handleSubmit = event => {
         event.preventDefault();
         handleAuth({ roomId, password } as RoomValues);
     };
 
     return (
-        <div>
+        <div className="text-center">
             <h2>Enter Room ID</h2>
-            <div>
+            <div className="mx-auto" style={{ maxWidth: '300px' }}>
                 <Form onSubmit={handleSubmit}>
                     <InputGroup>
                         <FormControl
-                            placeholder="Enter the RoomID here"
+                            placeholder="Enter the Room ID here"
                             aria-label="roomId"
                             name="roomId"
                             aria-describedby="text"
@@ -32,7 +30,7 @@ export default function JoinRoom({ handleAuth }: JoinRoomProps) {
                         />
                     </InputGroup>
                     <br />
-                    Leave blank if no password
+                    <p className="text-muted">Leave blank if no password</p>
                     <InputGroup>
                         <FormControl
                             placeholder="Enter room password"

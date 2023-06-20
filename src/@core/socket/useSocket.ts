@@ -63,7 +63,7 @@ export default function useSocket() {
             socket.connection.on('show-players-teams', data => cb(null, data.teams));
         },
 
-        myTurnStart: cb => {
+        personalTurnStart: cb => {
             socket.connection.on('personal-turn-start', message => {
                 console.log(message);
                 cb(null, message);

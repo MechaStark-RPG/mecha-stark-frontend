@@ -86,8 +86,9 @@ export default function Auth({ location }: AuthProps) {
 
     // eslint-disable-next-line consistent-return
     const handleLogin = async event => {
-        // Send login request here. Passed when success status true from server
         event.preventDefault();
+        console.log('Handle Login');
+        // Send login request here. Passed when success status true from server
 
         try {
             const response = await axios.post(`${restUrl}/auth/login`, {
@@ -149,7 +150,9 @@ export default function Auth({ location }: AuthProps) {
                                     aria-describedby="text"
                                     onChange={e => setActualUsername(e.target.value)}
                                 />
-                                <Button>Submit</Button>
+                            </InputGroup>
+                            <InputGroup>
+                                <Button type="submit">Submit</Button>
                             </InputGroup>
                         </Form>
                     </div>

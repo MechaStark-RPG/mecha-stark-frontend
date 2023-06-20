@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Col, Row, Button } from 'react-bootstrap';
+import { Col, Row, Button, Container } from 'react-bootstrap';
 
 import JoinedPlayers from './JoinedPlayers';
 import useSocket from './socket/useSocket';
+import GameApp from '../GameApp';
 
 interface LobbyProps {
     roomId: string;
@@ -17,11 +18,18 @@ export type PlayerJoined = {
 };
 
 export default function Lobby({ roomId, password }: LobbyProps) {
-    const { emit } = useSocket();
+    const { emit, subscribeTo } = useSocket();
     const [isReady, setIsReady] = useState(false);
     const [isTurn, setIsTurn] = useState(false);
     const [playersJoined, setPlayerJoined] = useState<PlayerJoined[]>([]);
-    const [currentCollectionId, setCurrentCollectionId] = useState('current-user');
+
+    subscribeTo.personalTurnStart(() => {
+        setIsTurn(true);
+    });
+
+    subscribeTo.personalTurnEnd(() => {
+        setIsTurn(false);
+    });
 
     const PreDraft = () => {
         const message = isReady ? 'WAITING FOR OTHERS...' : 'YOU READY?';
@@ -63,31 +71,34 @@ export default function Lobby({ roomId, password }: LobbyProps) {
         setPlayerJoined(psJoined);
     };
 
-    const switchCollection = playerId => {
-        setCurrentCollectionId(playerId);
-    };
-
+    //           {!roomId && <Redirect to="/" />}
     return (
         <>
-            {!roomId && <Redirect to="/" />}
-            <JoinedPlayers
-                playersJoined={playersJoined}
-                changeCollectionTo={switchCollection}
-                onPlayerJoin={updatePlayers}
-            />
-            <Row className="mh-100 no-gutters">
-                {!isReady && <PreDraft />}
-                {isReady && <OnDraft />}
-
-                <Col lg={3} md={6}>
-                    <br />
-                    <h4>
-                        PASSWORD - <b>{password || 'none'}</b>{' '}
-                    </h4>
-                    <br />
-                </Col>
-            </Row>
-            );
+            <Container fluid>
+                <Row>
+                    <Col
+                        xs={12}
+                        md={3}
+                        className="d-flex flex-column"
+                        style={{ height: '100vh' }}
+                    >
+                        <JoinedPlayers
+                            playersJoined={playersJoined}
+                            onPlayerJoin={updatePlayers}
+                        />
+                        {!isReady && <PreDraft />}
+                        {isReady && <OnDraft />}
+                    </Col>
+                    <Col
+                        xs={12}
+                        md={9}
+                        className="d-flex flex-column"
+                        style={{ height: '100vh' }}
+                    >
+                        <GameApp />
+                    </Col>
+                </Row>
+            </Container>
         </>
     );
 }

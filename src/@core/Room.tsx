@@ -29,15 +29,10 @@ export default function Room() {
         initListeners(setAvailable, setError);
     };
 
-    useEffect(() => {
-        console.log('Arrancando Room');
-    });
-
     return (
         <>
             {!available && (
                 <div className="p-3">
-                    <hr />
                     <Row>
                         <Col>
                             {action === 'join' && <JoinRoom handleAuth={handleAuth} />}
