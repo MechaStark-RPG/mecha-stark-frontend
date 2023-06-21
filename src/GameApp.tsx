@@ -8,6 +8,7 @@ import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
 import AttackScene from './scenes/AttackScene';
+import AttackRangeScene from './scenes/AttackRangeScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
@@ -38,7 +39,7 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="vixenMap">
+                        <SceneManager defaultScene="attack">
                             <Scene id="office">
                                 <OfficeScene />
                             </Scene>
@@ -47,6 +48,9 @@ export default function GameApp() {
                             </Scene>
                             <Scene id="attack">
                                 <AttackScene />
+                            </Scene>
+                            <Scene id="range">
+                                <AttackRangeScene />
                             </Scene>
                             <Scene id="vixenMap">
                                 <VixenMapScene />

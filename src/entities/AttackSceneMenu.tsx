@@ -26,7 +26,7 @@ function EnableOnTriggerScript() {
 }
 
 interface GameObjectProps {
-    panelPosition: { x: number; y: number; z: number };
+    panelPosition: { x: number; y: number };
     attackerStats: {
         hp?: number;
         hpTotal?: number;
@@ -48,7 +48,7 @@ export default function AttackSceneMenu(props: GameObjectProps) {
                 <GraphicOriginal
                     {...spriteData.menuBackground}
                     offset={{ x: props.panelPosition.x, y: props.panelPosition.y - 4 }}
-                    customScale={{ width: 25, height: 4, z: 0 }}
+                    customScale={{ width: 40, height: 4, z: 0 }}
                     opacity={1}
                     basic
                 />
@@ -77,7 +77,6 @@ export default function AttackSceneMenu(props: GameObjectProps) {
                     Attack: {props.attackerStats.attack} pts {'\n'}
                     Defense: {props.attackerStats.defense} pts
                 </Text>
-
                 <Text
                     anchorX="center"
                     anchorY="middle"

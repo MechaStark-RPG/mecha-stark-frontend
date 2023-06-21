@@ -1,38 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Clock } from 'three';
 import { useFrame } from 'react-three-fiber';
-import Sprite from '../@core/Sprite';
 import spriteData from '../spriteData';
 import Graphic from '../@core/Graphic';
 import GameObject from '../@core/GameObject';
 import CameraAttackScript from '../components/CameraAttackScript';
 import useSceneManager from '../@core/useSceneManager';
 import AttackSceneMenu from '../entities/AttackSceneMenu';
+import AttackSceneBackground from '../entities/AttackSceneBackground';
 import GraphicOriginal from '../@core/GraphicOriginal';
 
 const FLOOR_LEVEL = 1;
-const FLOOR_LEVEL1 = 2;
-const ATTACKER_RECEIVER_DISTANCE = 1.5;
+const HIT_DISTANCE = 1.5;
+const RECEIVER_INITIAL_POSITION = 12;
+const ATTACKER_INITIAL_POSITION = -10;
 
-const initialState = {
-    panelPosition: {
-        x: 0,
-        y: 0,
-        z: 0,
-    },
-    attackerStats: {
-        hp: 0,
-        hpTotal: 0,
-        attack: 0,
-        defense: 0,
-    },
-    receiverStats: {
-        hp: 0,
-        hpTotal: 0,
-        attack: 0,
-        defense: 0,
-    },
-};
+enum MechaState {
+    IDLE = 'idle',
+    MOVING = 'moving',
+    RANGE = 'range',
+    MEELE = 'meele',
+    DEFENSE = 'defense',
+}
 
 const AttackScene = (
     attackerStats: {
@@ -48,8 +37,39 @@ const AttackScene = (
         defense?: number;
     } = {}
 ) => {
-    const [attackerPosition, setAttackerPosition] = useState({ x: 0, y: FLOOR_LEVEL });
-    const [receiverPosition, setReceiverPosition] = useState({ x: 12, y: FLOOR_LEVEL });
+    const SPRITE_ATTACKER = spriteData.yellow;
+    const SPRITE_RECEIVER = spriteData.yellow;
+
+    const [attacker, setAttacker] = useState({
+        sprite: SPRITE_ATTACKER,
+        position: { x: ATTACKER_INITIAL_POSITION, y: FLOOR_LEVEL },
+        state: MechaState.IDLE,
+        attributes: {
+            hp: attackerStats.hp,
+            hpTotal: attackerStats.hpTotal,
+            attack: attackerStats.attack,
+            defense: attackerStats.defense,
+        },
+    });
+
+    const [receiver, setReceiver] = useState({
+        sprite: SPRITE_RECEIVER,
+        position: { x: RECEIVER_INITIAL_POSITION, y: FLOOR_LEVEL },
+        state: MechaState.IDLE,
+        attributes: {
+            hp: receiverStats.hp,
+            hpTotal: receiverStats.hpTotal,
+            attack: receiverStats.attack,
+            defense: receiverStats.defense,
+        },
+    });
+
+    const initialState = {
+        panelPosition: attacker.position,
+        attackerStats: attacker.attributes,
+        receiverStats: receiver.attributes,
+    };
+
     const [transicionAlpha, setTransitionAlpha] = useState(1);
     const [attackInfoProps, setAttackInfoProps] = useState(initialState);
 
@@ -57,40 +77,13 @@ const AttackScene = (
     const [hitClock, setHitClock] = useState(0.0);
     const [hitAnimationCount, setHitAnimationCount] = useState(3);
     const [hitAnimationInProgress, setHitAnimationInProgress] = useState(false);
-    const [mechaState, setMechaState] = useState('moving');
 
     const { setScene } = useSceneManager();
     const clockRef = useRef(new Clock());
 
     useEffect(() => {
         clockRef.current.start();
-        setAttackerPosition({ x: 0, y: FLOOR_LEVEL });
-        setReceiverPosition({ x: 12, y: FLOOR_LEVEL });
-        setAttackInfoProps({
-            panelPosition: { x: 0, y: FLOOR_LEVEL, z: 1 },
-            attackerStats: {
-                hp: attackerStats.hp,
-                hpTotal: attackerStats.hpTotal,
-                attack: attackerStats.attack,
-                defense: attackerStats.defense,
-            },
-            receiverStats: {
-                hp: receiverStats.hp,
-                hpTotal: receiverStats.hpTotal,
-                attack: receiverStats.attack,
-                defense: receiverStats.defense,
-            },
-        });
-    }, [
-        attackerStats.attack,
-        attackerStats.defense,
-        attackerStats.hp,
-        attackerStats.hpTotal,
-        receiverStats.attack,
-        receiverStats.defense,
-        receiverStats.hp,
-        receiverStats.hpTotal,
-    ]);
+    }, []);
 
     useFrame(() => {
         const elapsedTime = clockRef.current.getElapsedTime();
@@ -98,56 +91,65 @@ const AttackScene = (
             setTransitionAlpha(transicionAlpha - 0.03);
         }
         if (elapsedTime > 0.3) {
-            if (attackerPosition.x < receiverPosition.x - ATTACKER_RECEIVER_DISTANCE) {
-                setAttackerPosition({
-                    x: attackerPosition.x + 0.15,
-                    y: attackerPosition.y,
-                });
-                setAttackInfoProps({
-                    panelPosition: { x: attackerPosition.x, y: attackerPosition.y, z: 1 },
-                    attackerStats: {
-                        hp: attackerStats.hp,
-                        hpTotal: attackerStats.hpTotal,
-                        attack: attackerStats.attack,
-                        defense: attackerStats.defense,
-                    },
-                    receiverStats: {
-                        hp: receiverStats.hp,
-                        hpTotal: receiverStats.hpTotal,
-                        attack: receiverStats.attack,
-                        defense: receiverStats.defense,
-                    },
-                });
+            if (attacker.position.x < receiver.position.x - HIT_DISTANCE) {
+                setAttacker(prevState => ({
+                    ...prevState,
+                    position: { ...prevState.position, x: prevState.position.x + 0.15 },
+                }));
+
+                setAttackInfoProps(prevState => ({
+                    ...prevState,
+                    panelPosition: attacker.position,
+                    hp: { ...prevState.receiverStats, hp: attackerStats.hp },
+                }));
             } else {
                 // gancho del bicho
                 if (hitAnimationCount !== 0 && !hitAnimationInProgress) {
-                    setReceiverOnHitPosition({ x: receiverPosition.x, y: FLOOR_LEVEL });
+                    setReceiverOnHitPosition(receiver.position);
                     setHitAnimationInProgress(true);
-                    setMechaState('hitMeele');
+                    setAttacker(prevState => ({
+                        ...prevState,
+                        state: MechaState.MEELE,
+                    }));
+                    setReceiver(prevState => ({
+                        ...prevState,
+                        state: MechaState.DEFENSE,
+                    }));
+
                     setHitClock(elapsedTime);
                 }
                 // efecto de retroceso
                 if (hitAnimationInProgress) {
                     if (hitClock + 0.4 < elapsedTime) {
-                        setReceiverPosition({
-                            x: receiverPosition.x + 0.3,
-                            y: FLOOR_LEVEL,
-                        });
-                        if (receiverOnHitPosition.x + 1 > receiverPosition.x) {
+                        setReceiver(prevState => ({
+                            ...prevState,
+                            position: {
+                                ...prevState.position,
+                                x: prevState.position.x + 0.3,
+                            },
+                        }));
+                        if (receiverOnHitPosition.x + 1 > receiver.position.x) {
                             setHitAnimationInProgress(false);
                             hitAnimationCount !== 0
                                 ? setHitAnimationCount(hitAnimationCount - 1)
                                 : hitAnimationCount;
-                            setMechaState('moving');
+                            setAttacker(prevState => ({
+                                ...prevState,
+                                state: MechaState.IDLE,
+                            }));
+                            setReceiver(prevState => ({
+                                ...prevState,
+                                state: MechaState.IDLE,
+                            }));
                         }
                     }
                 }
             }
         }
-        if (elapsedTime > 4.3) {
+        if (elapsedTime > 5.3) {
             setTransitionAlpha(transicionAlpha + 0.03);
         }
-        if (elapsedTime > 5.3) {
+        if (elapsedTime > 6.3) {
             setScene('vixenMap');
         }
     });
@@ -155,32 +157,25 @@ const AttackScene = (
     return (
         <group>
             <GameObject name="background" displayName="Attack Scene Background">
-                <GraphicOriginal
-                    {...spriteData.attackSceneBackground}
-                    offset={{ x: 8, y: 6 }}
-                    customScale={{ width: 33, height: 15, z: 1 }}
-                    opacity={1}
-                    basic
-                />
-                <GraphicOriginal
-                    {...spriteData.attackSceneBackground}
-                    offset={{ x: -25, y: 6 }}
-                    customScale={{ width: 33, height: 15, z: 1 }}
-                    opacity={1}
-                    basic
-                />
+                <AttackSceneBackground />
             </GameObject>
             <GameObject name="shadows" displayName="Attack Scene Background">
                 <GraphicOriginal
                     {...spriteData.mechaShadow}
-                    offset={{ x: attackerPosition.x - 0.6, y: attackerPosition.y - 1.3 }}
+                    offset={{
+                        x: attacker.position.x - 0.6,
+                        y: attacker.position.y - 1.3,
+                    }}
                     customScale={{ width: 2.8, height: 1, z: 1 }}
                     opacity={0.3}
                     basic
                 />
                 <GraphicOriginal
                     {...spriteData.mechaShadow}
-                    offset={{ x: receiverPosition.x + 0.6, y: receiverPosition.y - 1.3 }}
+                    offset={{
+                        x: receiver.position.x + 0.6,
+                        y: receiver.position.y - 1.3,
+                    }}
                     customScale={{ width: -2.8, height: 1, z: 1 }}
                     opacity={0.3}
                     basic
@@ -188,20 +183,22 @@ const AttackScene = (
             </GameObject>
             <GameObject name="attacker" displayName="Attacker">
                 <AttackSceneMenu {...attackInfoProps} />
-                <CameraAttackScript attackerPosition={attackerPosition} />
+                <CameraAttackScript attackerPosition={attacker.position} />
                 {!hitAnimationInProgress && (
                     <group>
                         <GraphicOriginal
-                            {...spriteData.mechaEnemy}
-                            offset={{ x: receiverPosition.x, y: receiverPosition.y }}
-                            customScale={{ width: 3, height: 3, z: 0 }}
+                            {...receiver.sprite}
+                            offset={{ x: receiver.position.x, y: receiver.position.y }}
+                            customScale={{ width: 3, height: 3, z: 1 }}
+                            state={receiver.state}
+                            flipX={-1}
                             opacity={1}
                             basic
                         />
                         <Graphic
-                            {...spriteData.mecha}
-                            state={mechaState}
-                            offset={attackerPosition}
+                            {...attacker.sprite}
+                            state={attacker.state}
+                            offset={attacker.position}
                             scale={3}
                             opacity={1}
                             basic
@@ -211,16 +208,18 @@ const AttackScene = (
                 {hitAnimationInProgress && (
                     <group>
                         <GraphicOriginal
-                            {...spriteData.mechaEnemy}
-                            offset={{ x: receiverPosition.x, y: receiverPosition.y }}
-                            customScale={{ width: 3, height: 3, z: 0 }}
+                            {...receiver.sprite}
+                            offset={{ x: receiver.position.x, y: receiver.position.y }}
+                            customScale={{ width: 3, height: 3, z: 1 }}
+                            flipX={-1}
+                            state={receiver.state}
                             opacity={1}
                             basic
                         />
                         <GraphicOriginal
-                            {...spriteData.mecha}
-                            state={mechaState}
-                            offset={attackerPosition}
+                            {...attacker.sprite}
+                            state={attacker.state}
+                            offset={attacker.position}
                             customScale={{ width: 3, height: 3, z: 0 }}
                             opacity={1}
                             basic
@@ -242,11 +241,11 @@ const AttackScene = (
                     <GraphicOriginal
                         {...spriteData.explotion}
                         offset={{
-                            x: attackerPosition.x + 1.2,
-                            y: attackerPosition.y,
+                            x: attacker.position.x + 1.2,
+                            y: attacker.position.y,
                         }}
-                        customScale={{ width: 1.3, height: 1.3, z: 10 }}
-                        opacity={1}
+                        customScale={{ width: 1.5, height: 1.5, z: 1 }}
+                        opacity={0.85}
                         basic
                     />
                 )}

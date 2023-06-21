@@ -16,15 +16,24 @@ const spriteData: { [index: string]: SpriteProps } = {
         sheet: {
             default: [[0, 0]],
         },
+    },
     menu: {
         src: './assets/menu.png',
         frameWidth: 600,
         frameHeight: 300,
     },
-    attackSceneBackground: {
-        src: './assets/attack_background.png',
-        frameWidth: 7000,
-        frameHeight: 2333,
+    attackSceneSky: {
+        src: './assets/sky.png',
+        frameWidth: 8000,
+        frameHeight: 1000,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    attackSceneGround: {
+        src: './assets/battlefield_with_pines.png',
+        frameWidth: 8000,
+        frameHeight: 700,
         sheet: {
             default: [[0, 0]],
         },
@@ -33,31 +42,66 @@ const spriteData: { [index: string]: SpriteProps } = {
         src: './assets/explotion.png',
         frameWidth: 190,
         frameHeight: 190,
+        frameTime: 150,
         sheet: {
             default: [
                 [3, 1],
                 [4, 1],
-                [0, 0],
                 [1, 0],
+                [0, 0],
             ],
         },
     },
-    mecha: {
+    yellow: {
         src: './assets/yellow.png',
-        frameWidth: 220,
-        frameHeight: 237,
+        frameWidth: 225,
+        frameHeight: 240,
+        frameTime: 120,
+        sheet: {
+            default: [[0, 2]],
+            idle: [[0, 2]],
+            meele: [
+                [1, 2],
+                [3, 2],
+                [2, 2],
+            ],
+            range: [
+                [0, 0],
+                [1, 0],
+                [2, 0],
+            ],
+            defense: [
+                [1, 1],
+                [2, 1],
+                [3, 1],
+            ],
+        },
+    },
+    blue: {
+        src: './assets/blue_shield300x240.png',
+        frameWidth: 300,
+        frameHeight: 240,
         frameTime: 140,
         sheet: {
             default: [[0, 0]],
-            moving: [[0, 0]],
-            hitMeele: [
+            idle: [[0, 0]],
+            meele: [
+                [3, 2],
+                [1, 2],
+                [2, 2],
+            ],
+            range: [
+                [0, 0],
                 [1, 0],
-                [3, 0],
+                [2, 0],
+            ],
+            defense: [
+                [1, 0],
                 [2, 0],
             ],
         },
     },
-    mechaMap: {
+    yellowMap: {
         src: './assets/yellow_map.png',
         frameWidth: 70,
         frameHeight: 80,

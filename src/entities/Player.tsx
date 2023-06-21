@@ -16,7 +16,7 @@ export default function Player(props: GameObjectProps) {
             <Interactable />
             <Collider />
             <CharacterScript>
-                <Sprite {...spriteData.mechaMap} />
+                <Sprite {...spriteData.yellowMap} />
             </CharacterScript>
             <CameraFollowScript />
             <PlayerScript />

@@ -7,7 +7,6 @@ import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
 import Player from '../entities/Player';
-import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
 
