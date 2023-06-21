@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AssetLoader from './@core/AssetLoader';
 import Game from './@core/Game';
 import Scene from './@core/Scene';
@@ -12,6 +12,7 @@ import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
 import VixenMapScene from './scenes/VixenMap';
+import { Turn, InitState, MechaState, MechaNFT } from './@core/logic/GameState';
 
 const styles = {
     root: (width: number, height: number) => css`
@@ -29,8 +30,27 @@ const urls = [
     // flatten
 ].reduce<string[]>((acc, val) => acc.concat(val), []);
 
-export default function GameApp() {
+interface GameLogicProps {
+    initState: InitState;
+}
+
+export default function MechaRPGLogic({ initState }: GameLogicProps) {
     const [width, height] = useWindowSize();
+    const [turns, setTurns] = useState<Turn[]>([]);
+    const [mechas, setMechas] = useState<MechaState[]>();
+    const [mechasAttr, setMechaAttr] = useState<MechaNFT[]>();
+
+    useEffect(() => {
+        setMechas(initState.mechas);
+        const mechaAttrMtx = initState.players.map(player => player.nfts);
+
+        setMechaAttr(
+            mechaAttrMtx.reduce(
+                (mechasAttr1, mechaAttr2) => mechasAttr1.concat(mechaAttr2),
+                []
+            )
+        );
+    }, []);
 
     return (
         <>
@@ -39,17 +59,11 @@ export default function GameApp() {
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
                         <SceneManager defaultScene="vixenMap">
-                            <Scene id="office">
-                                <OfficeScene />
-                            </Scene>
-                            <Scene id="other">
-                                <OtherScene />
-                            </Scene>
                             <Scene id="attack">
                                 <AttackScene />
                             </Scene>
                             <Scene id="vixenMap">
-                                <VixenMapScene />
+                                <VixenMapScene mechas={mechas} />
                             </Scene>
                         </SceneManager>
                     </AssetLoader>

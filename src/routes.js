@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Route, Switch } from 'react-router-dom';
 
-import GameApp from './GameApp';
+import MechaRPGLogic from './MechaRPGLogic';
 import Room from './@core/Room';
 import Lobby from './@core/Lobby';
 import Auth from './@core/auth/Auth';
@@ -30,7 +30,7 @@ const ROUTES = [
                 path: '/game',
                 key: 'APP_GAME',
                 exact: true,
-                component: GameApp,
+                component: MechaRPGLogic,
             },
             {
                 path: '/room',

@@ -10,6 +10,7 @@ import Player from '../entities/Player';
 import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
+import { MechaState } from '../@core/logic/GameState';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -58,7 +59,11 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
     }
 };
 
-export default function VixenMapScene() {
+interface VixenMapProps {
+    mechas: MechaState[];
+}
+
+export default function VixenMapScene({ mechas }: VixenMapProps) {
     return (
         <>
             <GameObject>
@@ -74,6 +79,11 @@ export default function VixenMapScene() {
                 <ambientLight />
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
             </GameObject>
+
+            {mechas.map(mecha => {
+                return <Player x={mecha.position.x} y={mecha.position.y} />;
+            })}
+
             <Player x={3} y={12} />
             <GameObject x={3} y={8} layer="character">
                 <Sprite {...spriteData.enemyMap} />
