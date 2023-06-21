@@ -6,72 +6,54 @@ import Graphic from '../@core/Graphic';
 import GameObject from '../@core/GameObject';
 import CameraAttackScript from '../components/CameraAttackScript';
 import useSceneManager from '../@core/useSceneManager';
-import AttackSceneMenu from '../entities/AttackSceneMenu';
+import AttackScenePanel from '../entities/AttackScenePanel';
 import AttackSceneBackground from '../entities/AttackSceneBackground';
 import GraphicOriginal from '../@core/GraphicOriginal';
+import { MechaState, MechaData } from '../entities/MechaData';
 
 const FLOOR_LEVEL = 1;
 const HIT_DISTANCE = 1.5;
 const RECEIVER_INITIAL_POSITION = 12;
 const ATTACKER_INITIAL_POSITION = -10;
 
-enum MechaState {
-    IDLE = 'idle',
-    MOVING = 'moving',
-    RANGE = 'range',
-    MEELE = 'meele',
-    DEFENSE = 'defense',
-}
-
-const AttackMeeleScene = (
-    attackerStats: {
-        hp?: number;
-        hpTotal?: number;
-        attack?: number;
-        defense?: number;
-    } = {},
-    receiverStats: {
-        hp?: number;
-        hpTotal?: number;
-        attack?: number;
-        defense?: number;
-    } = {}
-) => {
-    const SPRITE_ATTACKER = spriteData.blue;
-    const SPRITE_RECEIVER = spriteData.yellow;
-
+const AttackMeeleScene = ({
+    attackerStats,
+    receiverStats,
+}: {
+    attackerStats: MechaData;
+    receiverStats: MechaData;
+}) => {
     const [attacker, setAttacker] = useState({
-        sprite: SPRITE_ATTACKER,
+        sprite: attackerStats.sprite,
         position: { x: ATTACKER_INITIAL_POSITION, y: FLOOR_LEVEL },
         state: MechaState.IDLE,
         attributes: {
-            hp: attackerStats.hp,
-            hpTotal: attackerStats.hpTotal,
-            attack: attackerStats.attack,
-            defense: attackerStats.defense,
+            hp: attackerStats.attributes.hp,
+            hpTotal: attackerStats.attributes.hpTotal,
+            attack: attackerStats.attributes.attack,
+            defense: attackerStats.attributes.defense,
         },
     });
 
     const [receiver, setReceiver] = useState({
-        sprite: SPRITE_RECEIVER,
+        sprite: receiverStats.sprite,
         position: { x: RECEIVER_INITIAL_POSITION, y: FLOOR_LEVEL },
         state: MechaState.IDLE,
         attributes: {
-            hp: receiverStats.hp,
-            hpTotal: receiverStats.hpTotal,
-            attack: receiverStats.attack,
-            defense: receiverStats.defense,
+            hp: receiverStats.attributes.hp,
+            hpTotal: receiverStats.attributes.hpTotal,
+            attack: receiverStats.attributes.attack,
+            defense: receiverStats.attributes.defense,
         },
     });
 
-    const initialState = {
-        panelPosition: attacker.position,
+    const [attackInfoProps, setAttackInfoProps] = useState({
+        position: attacker.position,
         attackerStats: attacker.attributes,
         receiverStats: receiver.attributes,
-    };
-
+    });
     const [transicionAlpha, setTransitionAlpha] = useState(1);
-    const [attackInfoProps, setAttackInfoProps] = useState(initialState);
+
     const [activateDust, setActivateDust] = useState(true);
 
     const [receiverOnHitPosition, setReceiverOnHitPosition] = useState({ x: 0, y: 0 });
@@ -100,11 +82,10 @@ const AttackMeeleScene = (
 
                 setAttackInfoProps(prevState => ({
                     ...prevState,
-                    panelPosition: attacker.position,
-                    hp: { ...prevState.receiverStats, hp: attackerStats.hp },
+                    position: attacker.position,
+                    hp: { ...prevState.receiverStats, hp: attackerStats.attributes.hp },
                 }));
             } else {
-                // gancho del bicho
                 if (hitAnimationCount !== 0 && !hitAnimationInProgress) {
                     setReceiverOnHitPosition(receiver.position);
                     setHitAnimationInProgress(true);
@@ -114,7 +95,6 @@ const AttackMeeleScene = (
                     }));
                     setHitClock(elapsedTime);
                 }
-                // efecto de retroceso
                 if (hitAnimationInProgress) {
                     if (hitClock + 0.2 < elapsedTime) {
                         setReceiver(prevState => ({
@@ -190,7 +170,11 @@ const AttackMeeleScene = (
                 />
             </GameObject>
             <GameObject name="attacker" displayName="Attacker">
-                <AttackSceneMenu {...attackInfoProps} />
+                <AttackScenePanel
+                    position={attackInfoProps.position}
+                    attackerStats={attackInfoProps.attackerStats}
+                    receiverStats={attackInfoProps.receiverStats}
+                />
                 <CameraAttackScript attackerPosition={attacker.position} />
                 {!hitAnimationInProgress && (
                     <group>

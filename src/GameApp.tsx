@@ -7,8 +7,7 @@ import SceneManager from './@core/SceneManager';
 import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
-import AttackMeeleScene from './scenes/AttackMeeleScene';
-import AttackRangeScene from './scenes/AttackRangeScene';
+import AttackScene, { AttackSceneType } from './scenes/AttackScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
@@ -39,18 +38,35 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="range">
+                        <SceneManager defaultScene="attackScene">
                             <Scene id="office">
                                 <OfficeScene />
                             </Scene>
                             <Scene id="other">
                                 <OtherScene />
                             </Scene>
-                            <Scene id="meele">
-                                <AttackMeeleScene />
-                            </Scene>
-                            <Scene id="range">
-                                <AttackRangeScene />
+                            <Scene id="attackScene">
+                                <AttackScene
+                                    attackerStats={{
+                                        attributes: {
+                                            hp: 0,
+                                            hpTotal: 0,
+                                            attack: 0,
+                                            defense: 0,
+                                        },
+                                        sprite: spriteData.blue,
+                                    }}
+                                    receiverStats={{
+                                        attributes: {
+                                            hp: 0,
+                                            hpTotal: 0,
+                                            attack: 0,
+                                            defense: 0,
+                                        },
+                                        sprite: spriteData.yellow,
+                                    }}
+                                    type={AttackSceneType.MEELE}
+                                />
                             </Scene>
                             <Scene id="vixenMap">
                                 <VixenMapScene />

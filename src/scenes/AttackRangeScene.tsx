@@ -2,66 +2,47 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Clock } from 'three';
 import { useFrame } from 'react-three-fiber';
 import spriteData from '../spriteData';
-import Graphic from '../@core/Graphic';
 import GameObject from '../@core/GameObject';
 import CameraAttackScript from '../components/CameraAttackScript';
 import useSceneManager from '../@core/useSceneManager';
-import AttackSceneMenu from '../entities/AttackSceneMenu';
+import AttackScenePanel from '../entities/AttackScenePanel';
 import GraphicOriginal from '../@core/GraphicOriginal';
 import AttackSceneBackground from '../entities/AttackSceneBackground';
+import { MechaState, MechaData } from '../entities/MechaData';
 
 const FLOOR_LEVEL = 1;
 const HIT_DISTANCE = 0.5;
 const RECEIVER_INITIAL_POSITION = 12;
 const ATTACKER_INITIAL_POSITION = -12;
 
-enum MechaState {
-    IDLE = 'idle',
-    MOVING = 'moving',
-    RANGE = 'range',
-    MEELE = 'meele',
-    DEFENSE = 'defense',
-    PERMA_DEF = 'defense1',
-}
-
-const AttackRangeScene = (
-    attackerStats: {
-        hp?: number;
-        hpTotal?: number;
-        attack?: number;
-        defense?: number;
-    } = {},
-    receiverStats: {
-        hp?: number;
-        hpTotal?: number;
-        attack?: number;
-        defense?: number;
-    } = {}
-) => {
-    const SPRITE_ATTACKER = spriteData.yellow;
-    const SPRITE_RECEIVER = spriteData.blue;
-
-    const [attacker, setAttacker] = useState({
-        sprite: SPRITE_ATTACKER,
+const AttackRangeScene = ({
+    attackerStats,
+    receiverStats,
+}: {
+    attackerStats: MechaData;
+    receiverStats: MechaData;
+}) => {
+    const [attacker] = useState({
+        sprite: attackerStats.sprite,
         position: { x: ATTACKER_INITIAL_POSITION, y: FLOOR_LEVEL },
         state: MechaState.IDLE,
         attributes: {
-            hp: attackerStats.hp,
-            hpTotal: attackerStats.hpTotal,
-            attack: attackerStats.attack,
-            defense: attackerStats.defense,
+            hp: attackerStats.attributes.hp,
+            hpTotal: attackerStats.attributes.hpTotal,
+            attack: attackerStats.attributes.attack,
+            defense: attackerStats.attributes.defense,
         },
     });
 
     const [receiver, setReceiver] = useState({
-        sprite: SPRITE_RECEIVER,
+        sprite: receiverStats.sprite,
         position: { x: RECEIVER_INITIAL_POSITION, y: FLOOR_LEVEL },
         state: MechaState.IDLE,
         attributes: {
-            hp: receiverStats.hp,
-            hpTotal: receiverStats.hpTotal,
-            attack: receiverStats.attack,
-            defense: receiverStats.defense,
+            hp: receiverStats.attributes.hp,
+            hpTotal: receiverStats.attributes.hpTotal,
+            attack: receiverStats.attributes.attack,
+            defense: receiverStats.attributes.defense,
         },
     });
 
@@ -72,17 +53,16 @@ const AttackRangeScene = (
         x: attacker.position.x + 0.5,
         y: attacker.position.y + 1,
     });
-    const [hitClock, setHitClock] = useState(0.0);
+    const [hitClock] = useState(0.0);
     const [shotAnimationCount, setShotAnimationCount] = useState(3);
     const [shotMakeContact, setShotMakeContact] = useState(false);
     const [activateExplotion, setActivateExplotion] = useState(false);
 
-    const initialState = {
-        panelPosition: { x: shotPosition.x, y: FLOOR_LEVEL },
+    const [attackPanelInfo, setAttackPanelInfo] = useState({
+        position: attacker.position,
         attackerStats: attacker.attributes,
         receiverStats: receiver.attributes,
-    };
-    const [attackInfoProps, setAttackInfoProps] = useState(initialState);
+    });
 
     const { setScene } = useSceneManager();
     const clockRef = useRef(new Clock());
@@ -92,13 +72,15 @@ const AttackRangeScene = (
     }, []);
 
     useFrame(() => {
-        console.log('shotAnimationInProgress', shotAnimationInProgress);
         const elapsedTime = clockRef.current.getElapsedTime();
         if (transicionAlpha > 0) {
             setTransitionAlpha(transicionAlpha - 0.03);
         }
-        if (elapsedTime > 1.8 && elapsedTime < 2) {
+        if (elapsedTime > 1.3 && elapsedTime < 1.4) {
             setShotAnimationInProgress(1);
+        }
+        if (elapsedTime > 1.4 && elapsedTime < 2) {
+            setShotAnimationInProgress(2);
         }
         if (elapsedTime > 2) {
             if (shotPosition.x < receiver.position.x - HIT_DISTANCE) {
@@ -107,15 +89,12 @@ const AttackRangeScene = (
                 setShotMakeContact(true);
             }
 
-            setAttackInfoProps(prevState => ({
+            setAttackPanelInfo(prevState => ({
                 ...prevState,
-                panelPosition: { x: shotPosition.x, y: FLOOR_LEVEL },
-                hp: { ...prevState.receiverStats, hp: attackerStats.hp },
+                position: { x: shotPosition.x, y: FLOOR_LEVEL },
+                hp: { ...prevState.receiverStats, hp: receiver.attributes.hp },
             }));
 
-            if (shotAnimationCount === 3) {
-                setShotAnimationInProgress(2);
-            }
             if (shotAnimationInProgress === 1) {
                 if (hitClock + 0.2 < elapsedTime) {
                     shotAnimationCount !== 0
@@ -183,7 +162,11 @@ const AttackRangeScene = (
                 />
             </GameObject>
             <GameObject name="attacker" displayName="Attacker">
-                <AttackSceneMenu {...attackInfoProps} />
+                <AttackScenePanel
+                    position={attackPanelInfo.position}
+                    attackerStats={attackPanelInfo.attackerStats}
+                    receiverStats={attackPanelInfo.receiverStats}
+                />
                 {shotAnimationInProgress === 0 && (
                     <group>
                         <CameraAttackScript
