@@ -23,7 +23,7 @@ enum MechaState {
     DEFENSE = 'defense',
 }
 
-const AttackScene = (
+const AttackMeeleScene = (
     attackerStats: {
         hp?: number;
         hpTotal?: number;
@@ -37,7 +37,7 @@ const AttackScene = (
         defense?: number;
     } = {}
 ) => {
-    const SPRITE_ATTACKER = spriteData.yellow;
+    const SPRITE_ATTACKER = spriteData.blue;
     const SPRITE_RECEIVER = spriteData.yellow;
 
     const [attacker, setAttacker] = useState({
@@ -72,6 +72,7 @@ const AttackScene = (
 
     const [transicionAlpha, setTransitionAlpha] = useState(1);
     const [attackInfoProps, setAttackInfoProps] = useState(initialState);
+    const [activateDust, setActivateDust] = useState(true);
 
     const [receiverOnHitPosition, setReceiverOnHitPosition] = useState({ x: 0, y: 0 });
     const [hitClock, setHitClock] = useState(0.0);
@@ -111,16 +112,17 @@ const AttackScene = (
                         ...prevState,
                         state: MechaState.MEELE,
                     }));
-                    setReceiver(prevState => ({
-                        ...prevState,
-                        state: MechaState.DEFENSE,
-                    }));
-
                     setHitClock(elapsedTime);
                 }
                 // efecto de retroceso
                 if (hitAnimationInProgress) {
-                    if (hitClock + 0.4 < elapsedTime) {
+                    if (hitClock + 0.2 < elapsedTime) {
+                        setReceiver(prevState => ({
+                            ...prevState,
+                            state: MechaState.DEFENSE,
+                        }));
+                    }
+                    if (hitClock + 0.5 < elapsedTime) {
                         setReceiver(prevState => ({
                             ...prevState,
                             position: {
@@ -146,10 +148,13 @@ const AttackScene = (
                 }
             }
         }
-        if (elapsedTime > 5.3) {
+        if (hitAnimationCount === 0) {
+            setActivateDust(false);
+        }
+        if (elapsedTime > 5.5) {
             setTransitionAlpha(transicionAlpha + 0.03);
         }
-        if (elapsedTime > 6.3) {
+        if (elapsedTime > 6.5) {
             setScene('vixenMap');
         }
     });
@@ -159,7 +164,11 @@ const AttackScene = (
             <GameObject name="background" displayName="Attack Scene Background">
                 <AttackSceneBackground />
             </GameObject>
-            <GameObject name="shadows" displayName="Attack Scene Background">
+            <GameObject
+                name="shadows"
+                layer="ground"
+                displayName="Attack Scene Background"
+            >
                 <GraphicOriginal
                     {...spriteData.mechaShadow}
                     offset={{
@@ -167,7 +176,6 @@ const AttackScene = (
                         y: attacker.position.y - 1.3,
                     }}
                     customScale={{ width: 2.8, height: 1, z: 1 }}
-                    opacity={0.3}
                     basic
                 />
                 <GraphicOriginal
@@ -195,6 +203,18 @@ const AttackScene = (
                             opacity={1}
                             basic
                         />
+                        {activateDust && (
+                            <GraphicOriginal
+                                {...spriteData.dustTrail}
+                                offset={{
+                                    x: attacker.position.x - 2.3,
+                                    y: attacker.position.y - 0.9,
+                                }}
+                                customScale={{ width: 2, height: 1, z: 10 }}
+                                flipX={-1}
+                                basic
+                            />
+                        )}
                         <Graphic
                             {...attacker.sprite}
                             state={attacker.state}
@@ -236,7 +256,7 @@ const AttackScene = (
                     basic
                 />
             </GameObject>
-            <GameObject name="explosion" displayName="Explosion Effect">
+            <GameObject name="explosion" layer="fx" displayName="Explosion Effect">
                 {hitAnimationInProgress && (
                     <GraphicOriginal
                         {...spriteData.explotion}
@@ -254,4 +274,4 @@ const AttackScene = (
     );
 };
 
-export default AttackScene;
+export default AttackMeeleScene;

@@ -1,6 +1,29 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    dustTrail: {
+        src: './assets/dust_trail.png',
+        frameWidth: 855,
+        frameHeight: 500,
+        frameTime: 100,
+        opacity: 0.8,
+        sheet: {
+            default: [
+                [0, 0],
+                [2, 0],
+                [1, 0],
+            ],
+        },
+    },
+    shot: {
+        src: './assets/shot.png',
+        frameWidth: 100,
+        frameHeight: 50,
+        sheet: {
+            fire: [[0, 0]],
+            ammo: [[1, 0]],
+        },
+    },
     vixenMap: {
         src: './assets/mapa-vixen.png',
         frameWidth: 2520,
@@ -60,45 +83,43 @@ const spriteData: { [index: string]: SpriteProps } = {
         sheet: {
             default: [[0, 2]],
             idle: [[0, 2]],
+            idleWeapon: [[0, 0]],
             meele: [
                 [1, 2],
                 [3, 2],
                 [2, 2],
             ],
-            range: [
-                [0, 0],
-                [1, 0],
-                [2, 0],
-            ],
+            range: [[1, 0]],
+            range1: [[2, 0]],
             defense: [
                 [1, 1],
                 [2, 1],
                 [3, 1],
             ],
+            defense1: [[2, 1]],
         },
     },
     blue: {
-        src: './assets/blue_shield300x240.png',
-        frameWidth: 300,
+        src: './assets/blue.png',
+        frameWidth: 225,
         frameHeight: 240,
         frameTime: 140,
         sheet: {
-            default: [[0, 0]],
-            idle: [[0, 0]],
+            default: [[0, 2]],
+            idle: [[0, 2]],
+            idleWeapon: [[0, 1]],
             meele: [
-                [3, 2],
+                [0, 0],
+                [2, 0],
+                [1, 0],
+            ],
+            range: [[1, 1]],
+            range1: [[2, 1]],
+            defense: [
                 [1, 2],
                 [2, 2],
             ],
-            range: [
-                [0, 0],
-                [1, 0],
-                [2, 0],
-            ],
-            defense: [
-                [1, 0],
-                [2, 0],
-            ],
+            defense1: [[2, 2]],
         },
     },
     yellowMap: {
@@ -121,6 +142,7 @@ const spriteData: { [index: string]: SpriteProps } = {
         src: './assets/shadow.png',
         frameWidth: 295,
         frameHeight: 77,
+        opacity: 0.3,
         sheet: {
             default: [[0, 0]],
         },

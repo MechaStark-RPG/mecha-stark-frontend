@@ -7,7 +7,7 @@ import SceneManager from './@core/SceneManager';
 import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
-import AttackScene from './scenes/AttackScene';
+import AttackMeeleScene from './scenes/AttackMeeleScene';
 import AttackRangeScene from './scenes/AttackRangeScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
@@ -39,15 +39,15 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="attack">
+                        <SceneManager defaultScene="range">
                             <Scene id="office">
                                 <OfficeScene />
                             </Scene>
                             <Scene id="other">
                                 <OtherScene />
                             </Scene>
-                            <Scene id="attack">
-                                <AttackScene />
+                            <Scene id="meele">
+                                <AttackMeeleScene />
                             </Scene>
                             <Scene id="range">
                                 <AttackRangeScene />
