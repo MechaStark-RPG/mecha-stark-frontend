@@ -1,32 +1,28 @@
 import { Position } from '../GameObject';
 
-export type MechaState = {
-    id: number;
-    idMecha: number;
+export type Mecha = {
+    idOwner: string;
     position: Position;
-    hp: number;
-};
-
-export type MechaNFT = {
     id: number;
     hp: number;
+    hpTotal: number;
     attack: number;
     armor: number;
     mov: number;
     attackShootDistance: number;
     attackMeeleDistance: number;
+    isReady: boolean;
 };
 
 export type Player = {
     id: number;
     address: string;
     username: string;
-    nfts: MechaNFT[]; // Only the attributes
+    mechas: Mecha[]; // Only the attributes
 };
 
 export type InitState = {
     players: Player[];
-    mechas: MechaState[]; // Only the initial states
 };
 
 export type GameState = {

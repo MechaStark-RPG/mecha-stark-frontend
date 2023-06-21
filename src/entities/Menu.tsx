@@ -34,6 +34,7 @@ function MenuScript({
     const playSfx = useSound(soundData.eating);
 
     useGameObjectEvent<InteractionEvent>('interaction', player => {
+        console.log('Displaying Menu');
         const menuXPosition = player.transform.x + 2;
         const menuYPosition = player.transform.y + 1;
         getRef().transform.setX(menuXPosition);
@@ -51,8 +52,6 @@ function MenuScript({
                 };
             }
         );
-
-        console.log(optionsWithType);
 
         setDisplayMenu(true);
         setOptions(optionsWithType);
@@ -86,7 +85,7 @@ function MenuScript({
         }
     });
 
-    return null;
+    return <></>;
 }
 
 // Deshabilitarlo es matarlo

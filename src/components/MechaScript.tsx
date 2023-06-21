@@ -8,7 +8,7 @@ import usePointer from '../@core/usePointer';
 import usePointerClick from '../@core/usePointerClick';
 import PlayerPathOverlay from './PlayerPathOverlay';
 
-export default function PlayerScript() {
+export default function MechaScript() {
     const { getComponent, transform } = useGameObject();
     const findPath = usePathfinding();
     const [path, setPath] = useState<Position[]>([]);
@@ -22,9 +22,13 @@ export default function PlayerScript() {
         // Click derecho
         if (event.button === 0) {
             // Si se cliquea a si mismo
+            console.log(`Pointer, x: ${pointer.x}, y: ${pointer.y}`);
+            console.log(`Transform, x: ${transform.x}, y: ${transform.y}`);
+
             if (pointer.x === transform.x && pointer.y === transform.y) {
                 // Chequear si este async no rompe nada...
                 // Muestro el menu
+                console.log('Tengo que mostrar el menu');
                 await getComponent<InteractableRef>('Interactable').interact({
                     x: 7,
                     y: 3,

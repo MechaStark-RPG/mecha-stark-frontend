@@ -9,7 +9,7 @@ import { mapDataString } from '../@core/utils/mapUtils';
 import CoffeeMachine from '../entities/CoffeeMachine';
 import PizzaPickup from '../entities/PizzaPickup';
 import Plant from '../entities/Plant';
-import Player from '../entities/Player';
+import Mecha from '../entities/Mecha';
 import Workstation from '../entities/Workstation';
 import spriteData from '../spriteData';
 import Menu from '../entities/Menu';
@@ -104,8 +104,6 @@ export default function OfficeScene() {
                 <Interactable />
                 <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
             </GameObject>
-            <Player x={6} y={3} />
-            <Menu x={7} y={3} />
         </>
     );
 }

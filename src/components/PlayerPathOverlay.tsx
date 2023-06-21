@@ -37,35 +37,35 @@ export default function PlayerPathOverlay({
 
     if (!nodeRef.current) return null;
 
-    let renderedPath = null;
+    // let renderedPath = null;
 
-    if (pathVisible) {
-        renderedPath = path.length
-            ? path.map(({ x, y }, index) => (
-                  // eslint-disable-next-line react/jsx-indent
-                  <group key={`${x}-${y}`} position={[x, y, offsetZ]}>
-                      <Graphic
-                          {...spriteData.ui}
-                          state="dot"
-                          color="yellow"
-                          opacity={Math.min(0.75, index / 5)}
-                          basic
-                      />
-                  </group>
-              ))
-            : pointerPath.map(({ x, y }) => (
-                  // eslint-disable-next-line react/jsx-indent
-                  <group key={`${x}-${y}`} position={[x, y, offsetZ]}>
-                      <Graphic
-                          {...spriteData.ui}
-                          state="solid"
-                          color="white"
-                          opacity={0.2}
-                          basic
-                      />
-                  </group>
-              ));
-    }
+    // if (pathVisible) {
+    //     renderedPath = path.length
+    //         ? path.map(({ x, y }, index) => (
+    //               // eslint-disable-next-line react/jsx-indent
+    //               <group key={`${x}-${y}`} position={[x, y, offsetZ]}>
+    //                   <Graphic
+    //                       {...spriteData.ui}
+    //                       state="dot"
+    //                       color="yellow"
+    //                       opacity={Math.min(0.75, index / 5)}
+    //                       basic
+    //                   />
+    //               </group>
+    //           ))
+    //         : pointerPath.map(({ x, y }) => (
+    //               // eslint-disable-next-line react/jsx-indent
+    //               <group key={`${x}-${y}`} position={[x, y, offsetZ]}>
+    //                   <Graphic
+    //                       {...spriteData.ui}
+    //                       state="solid"
+    //                       color="white"
+    //                       opacity={0.2}
+    //                       basic
+    //                   />
+    //               </group>
+    //           ));
+    // }
 
     const selectColor = hasTarget ? 'red' : undefined;
 
@@ -73,7 +73,6 @@ export default function PlayerPathOverlay({
         <>
             {createPortal(
                 <>
-                    {renderedPath}
                     <group position={[pointer.x, pointer.y, offsetZ]}>
                         <Graphic
                             {...spriteData.ui}

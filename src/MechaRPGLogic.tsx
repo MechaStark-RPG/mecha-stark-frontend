@@ -12,7 +12,9 @@ import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
 import VixenMapScene from './scenes/VixenMap';
-import { Turn, InitState, MechaState, MechaNFT } from './@core/logic/GameState';
+import { Turn, InitState, Mecha } from './@core/logic/GameState';
+import useSocket from './@core/socket/useSocket';
+import useAuth from './@core/auth/useAuth';
 
 const styles = {
     root: (width: number, height: number) => css`
@@ -32,25 +34,37 @@ const urls = [
 
 interface GameLogicProps {
     initState: InitState;
+    isTurn: boolean;
 }
 
-export default function MechaRPGLogic({ initState }: GameLogicProps) {
+export default function MechaRPGLogic({ initState, isTurn }: GameLogicProps) {
+    const { username } = useAuth();
+    const { subscribeTo } = useSocket();
     const [width, height] = useWindowSize();
     const [turns, setTurns] = useState<Turn[]>([]);
-    const [mechas, setMechas] = useState<MechaState[]>();
-    const [mechasAttr, setMechaAttr] = useState<MechaNFT[]>();
+    // Logica para saber que ocurre con el mecha actualmente
+    const [mechas, setMechas] = useState<Mecha[]>();
 
     useEffect(() => {
-        setMechas(initState.mechas);
-        const mechaAttrMtx = initState.players.map(player => player.nfts);
-
-        setMechaAttr(
-            mechaAttrMtx.reduce(
-                (mechasAttr1, mechaAttr2) => mechasAttr1.concat(mechaAttr2),
-                []
-            )
-        );
+        // setMechasState(initState.mechas);
+        const mechasFromAllPlayers = initState.players
+            .map(player => player.mechas)
+            .reduce((m1, m2) => m1.concat(m2), []);
+        setMechas(mechasFromAllPlayers);
     }, []);
+
+    useEffect(() => {
+        if (mechas !== undefined) {
+            const enabledMechas = mechas.map(mecha => {
+                if (mecha.idOwner === username) {
+                    return { ...mecha, isReady: true };
+                }
+                return mecha;
+            });
+
+            setMechas(enabledMechas);
+        }
+    }, [isTurn]);
 
     return (
         <>

@@ -6,10 +6,14 @@ import Moveable from '../@core/Moveable';
 import Sprite from '../@core/Sprite';
 import CameraFollowScript from '../components/CameraFollowScript';
 import CharacterScript from '../components/CharacterScript';
-import PlayerScript from '../components/PlayerScript';
+import MechaScript from '../components/MechaScript';
 import spriteData from '../spriteData';
 
-export default function Player(props: GameObjectProps) {
+interface MechaProps extends GameObjectProps {
+    isTurn: boolean;
+}
+
+export default function Mecha({ isTurn, ...props }: MechaProps) {
     return (
         <GameObject name="player" displayName="Player" layer="character" {...props}>
             <Moveable />
@@ -18,8 +22,7 @@ export default function Player(props: GameObjectProps) {
             <CharacterScript>
                 <Sprite {...spriteData.mechaMap} />
             </CharacterScript>
-            <CameraFollowScript />
-            <PlayerScript />
+            {isTurn && <MechaScript />}
         </GameObject>
     );
 }

@@ -6,11 +6,13 @@ import ScenePortal from '../@core/ScenePortal';
 import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
-import Player from '../entities/Player';
+import Mecha from '../entities/Mecha';
 import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
-import { MechaState } from '../@core/logic/GameState';
+import CameraFollowScript from '../components/CameraFollowScript';
+import { Mecha as MechaType } from '../@core/logic/GameState';
+import Menu from '../entities/Menu';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -60,7 +62,7 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
 };
 
 interface VixenMapProps {
-    mechas: MechaState[];
+    mechas: MechaType[];
 }
 
 export default function VixenMapScene({ mechas }: VixenMapProps) {
@@ -78,13 +80,21 @@ export default function VixenMapScene({ mechas }: VixenMapProps) {
             <GameObject name="map">
                 <ambientLight />
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
+                <CameraFollowScript />
             </GameObject>
 
             {mechas.map(mecha => {
-                return <Player x={mecha.position.x} y={mecha.position.y} />;
+                return (
+                    <Mecha
+                        x={mecha.position.x}
+                        y={mecha.position.y}
+                        isTurn={mecha.isReady}
+                    />
+                );
             })}
 
-            <Player x={3} y={12} />
+            <Menu />
+
             <GameObject x={3} y={8} layer="character">
                 <Sprite {...spriteData.enemyMap} />
                 <Collider />
