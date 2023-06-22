@@ -16,6 +16,12 @@ const ROUTES = [
         component: Auth,
     },
     {
+        path: '/gg',
+        key: 'GG',
+        exact: true,
+        component: GameApp,
+    },
+    {
         path: '/',
         key: 'APP',
         component: AppRouter,

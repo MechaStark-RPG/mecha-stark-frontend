@@ -7,7 +7,6 @@ import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
 import Player from '../entities/Player';
-import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
 
@@ -65,7 +64,7 @@ export default function VixenMapScene() {
                 <GraphicOriginal
                     {...spriteData.vixenMap}
                     offset={{ x: 15.47, y: 7.3 }}
-                    customScale={{ width: 31.37, height: 15.7, z: 0 }}
+                    customScale={{ width: 31.37, height: 15.7, z: 1 }}
                     opacity={1}
                     basic
                 />

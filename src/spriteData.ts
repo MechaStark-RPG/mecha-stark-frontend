@@ -1,6 +1,45 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    bluePhoto: {
+        src: './assets/blue_photo.png',
+        frameWidth: 323,
+        frameHeight: 326,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    yellowPhoto: {
+        src: './assets/yellow_photo.png',
+        frameWidth: 110,
+        frameHeight: 107,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    dustTrail: {
+        src: './assets/dust_trail.png',
+        frameWidth: 855,
+        frameHeight: 500,
+        frameTime: 100,
+        opacity: 0.8,
+        sheet: {
+            default: [
+                [0, 0],
+                [2, 0],
+                [1, 0],
+            ],
+        },
+    },
+    shot: {
+        src: './assets/shot.png',
+        frameWidth: 100,
+        frameHeight: 50,
+        sheet: {
+            fire: [[0, 0]],
+            ammo: [[1, 0]],
+        },
+    },
     vixenMap: {
         src: './assets/mapa-vixen.png',
         frameWidth: 2520,
@@ -16,15 +55,24 @@ const spriteData: { [index: string]: SpriteProps } = {
         sheet: {
             default: [[0, 0]],
         },
+    },
     menu: {
         src: './assets/menu.png',
         frameWidth: 600,
         frameHeight: 300,
     },
-    attackSceneBackground: {
-        src: './assets/attack_background.png',
-        frameWidth: 7000,
-        frameHeight: 2333,
+    attackSceneSky: {
+        src: './assets/sky.png',
+        frameWidth: 8000,
+        frameHeight: 1000,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    attackSceneGround: {
+        src: './assets/battlefield_with_pines.png',
+        frameWidth: 8000,
+        frameHeight: 700,
         sheet: {
             default: [[0, 0]],
         },
@@ -33,31 +81,64 @@ const spriteData: { [index: string]: SpriteProps } = {
         src: './assets/explotion.png',
         frameWidth: 190,
         frameHeight: 190,
+        frameTime: 150,
         sheet: {
             default: [
                 [3, 1],
                 [4, 1],
-                [0, 0],
                 [1, 0],
+                [0, 0],
             ],
         },
     },
-    mecha: {
+    yellow: {
         src: './assets/yellow.png',
-        frameWidth: 220,
-        frameHeight: 237,
+        frameWidth: 225,
+        frameHeight: 240,
+        frameTime: 120,
+        sheet: {
+            default: [[0, 2]],
+            idle: [[0, 2]],
+            idleWeapon: [[0, 0]],
+            meele: [
+                [1, 2],
+                [3, 2],
+                [2, 2],
+            ],
+            range: [[1, 0]],
+            range1: [[2, 0]],
+            defense: [
+                [1, 1],
+                [2, 1],
+                [3, 1],
+            ],
+            defense1: [[2, 1]],
+        },
+    },
+    blue: {
+        src: './assets/blue.png',
+        frameWidth: 225,
+        frameHeight: 240,
         frameTime: 140,
         sheet: {
-            default: [[0, 0]],
-            moving: [[0, 0]],
-            hitMeele: [
-                [1, 0],
-                [3, 0],
+            default: [[0, 2]],
+            idle: [[0, 2]],
+            idleWeapon: [[0, 1]],
+            meele: [
+                [0, 0],
                 [2, 0],
+                [1, 0],
             ],
+            range: [[1, 1]],
+            range1: [[2, 1]],
+            defense: [
+                [1, 2],
+                [2, 2],
+            ],
+            defense1: [[2, 2]],
         },
     },
-    mechaMap: {
+    yellowMap: {
         src: './assets/yellow_map.png',
         frameWidth: 70,
         frameHeight: 80,
@@ -77,6 +158,7 @@ const spriteData: { [index: string]: SpriteProps } = {
         src: './assets/shadow.png',
         frameWidth: 295,
         frameHeight: 77,
+        opacity: 0.3,
         sheet: {
             default: [[0, 0]],
         },
@@ -86,21 +168,8 @@ const spriteData: { [index: string]: SpriteProps } = {
         frameWidth: 254,
         frameHeight: 257,
     },
-    menuBorder: {
-        src: './assets/menu_border.png',
-        frameWidth: 100,
-        frameHeight: 104,
-        sheet: {
-            topRightCorner: [[0, 0]],
-            topLeftCorner: [[0, 1]],
-            downLeftCorner: [[2, 1]],
-            downRightCorner: [[0, 0]],
-            horizontal: [[1, 0]],
-            vertical: [[0, 0]],
-        },
-    },
-    menuAttack: {
-        src: './assets/attack_menu.png',
+    attackPanel: {
+        src: './assets/attack_panel.png',
         frameWidth: 1075,
         frameHeight: 243,
         sheet: {

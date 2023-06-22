@@ -7,7 +7,7 @@ import SceneManager from './@core/SceneManager';
 import useWindowSize from './@core/useWindowSize';
 import OfficeScene from './scenes/OfficeScene';
 import OtherScene from './scenes/OtherScene';
-import AttackScene from './scenes/AttackScene';
+import AttackScene, { AttackSceneType } from './scenes/AttackScene';
 import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
@@ -38,15 +38,35 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="vixenMap">
+                        <SceneManager defaultScene="attackScene">
                             <Scene id="office">
                                 <OfficeScene />
                             </Scene>
                             <Scene id="other">
                                 <OtherScene />
                             </Scene>
-                            <Scene id="attack">
-                                <AttackScene />
+                            <Scene id="attackScene">
+                                <AttackScene
+                                    attackerStats={{
+                                        attributes: {
+                                            hp: 100,
+                                            hpTotal: 100,
+                                            attack: 80,
+                                            defense: 20,
+                                        },
+                                        sprite: spriteData.yellow,
+                                    }}
+                                    receiverStats={{
+                                        attributes: {
+                                            hp: 200,
+                                            hpTotal: 200,
+                                            attack: 24,
+                                            defense: 35,
+                                        },
+                                        sprite: spriteData.blue,
+                                    }}
+                                    type={AttackSceneType.MEELE}
+                                />
                             </Scene>
                             <Scene id="vixenMap">
                                 <VixenMapScene />
