@@ -168,21 +168,8 @@ const spriteData: { [index: string]: SpriteProps } = {
         frameWidth: 254,
         frameHeight: 257,
     },
-    menuBorder: {
-        src: './assets/menu_border.png',
-        frameWidth: 100,
-        frameHeight: 104,
-        sheet: {
-            topRightCorner: [[0, 0]],
-            topLeftCorner: [[0, 1]],
-            downLeftCorner: [[2, 1]],
-            downRightCorner: [[0, 0]],
-            horizontal: [[1, 0]],
-            vertical: [[0, 0]],
-        },
-    },
-    menuAttack: {
-        src: './assets/attack_menu.png',
+    attackPanel: {
+        src: './assets/attack_panel.png',
         frameWidth: 1075,
         frameHeight: 243,
         sheet: {

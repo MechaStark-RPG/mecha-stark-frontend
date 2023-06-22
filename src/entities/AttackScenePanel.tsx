@@ -31,13 +31,13 @@ export default function AttackScenePanel({
             <GameObject>
                 <GraphicOriginal
                     {...spriteData.menuBackground}
-                    offset={{ x: position.x, y: position.y - 4 }}
-                    customScale={{ width: 40, height: 4, z: 1 }}
+                    offset={{ x: position.x + 0.03, y: position.y - 4 }}
+                    customScale={{ width: 23.1, height: 3.2, z: 1 }}
                     opacity={1}
                     basic
                 />
                 <GraphicOriginal
-                    {...spriteData.menuAttack}
+                    {...spriteData.attackPanel}
                     offset={{ x: position.x, y: position.y - 4 }}
                     customScale={{ width: 24, height: 4, z: 1 }}
                     opacity={1}
