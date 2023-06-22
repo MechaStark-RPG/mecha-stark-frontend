@@ -87,16 +87,16 @@ export default function CharacterScript({ children }: Props) {
             movementWobble.current = 0;
             movementActive.current = true;
 
-            const removeInstance = instantiate(
-                <GameObject x={transform.x} y={transform.y}>
-                    <Graphic
-                        {...spriteData.footstep}
-                        offset={{ x: 0, y: characterOffsetY }}
-                        onIteration={() => removeInstance()}
-                    />
-                    {/* <Sound {...soundData.footstep} /> */}
-                </GameObject>
-            );
+            // const removeInstance = instantiate(
+            //     // <GameObject x={transform.x} y={transform.y}>
+            //     //     <Graphic
+            //     //         {...spriteData.footstep}
+            //     //         offset={{ x: 0, y: characterOffsetY }}
+            //     //         onIteration={() => removeInstance()}
+            //     //     />
+            //     //     {/* <Sound {...soundData.footstep} /> */}
+            //     // </GameObject>
+            // );
         },
         [transform]
     );
