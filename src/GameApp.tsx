@@ -51,19 +51,19 @@ export default function GameApp() {
                                         attributes: {
                                             hp: 100,
                                             hpTotal: 100,
-                                            attack: 10,
+                                            attack: 80,
                                             defense: 20,
                                         },
                                         sprite: spriteData.yellow,
                                     }}
                                     receiverStats={{
                                         attributes: {
-                                            hp: 160,
+                                            hp: 200,
                                             hpTotal: 200,
                                             attack: 24,
                                             defense: 35,
                                         },
-                                        sprite: spriteData.yellow,
+                                        sprite: spriteData.blue,
                                     }}
                                     type={AttackSceneType.RANGE}
                                 />

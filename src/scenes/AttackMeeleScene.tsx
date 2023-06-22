@@ -9,7 +9,7 @@ import useSceneManager from '../@core/useSceneManager';
 import AttackScenePanel from '../entities/AttackScenePanel';
 import AttackSceneBackground from '../entities/AttackSceneBackground';
 import GraphicOriginal from '../@core/GraphicOriginal';
-import { MechaState, MechaData } from '../entities/MechaData';
+import { MechaState, MechaData, calculateDMG } from '../entities/MechaData';
 
 const FLOOR_LEVEL = 1;
 const HIT_DISTANCE = 1.5;
@@ -47,7 +47,8 @@ const AttackMeeleScene = ({
         },
     });
 
-    const [attackInfoProps, setAttackInfoProps] = useState({
+    const totalDamage = calculateDMG(attacker.attributes, receiver.attributes);
+    const [attackPanelInfo, setAttackPanelInfo] = useState({
         position: attacker.position,
         attackerStats: attacker,
         receiverStats: receiver,
@@ -80,7 +81,7 @@ const AttackMeeleScene = ({
                     position: { ...prevState.position, x: prevState.position.x + 0.15 },
                 }));
 
-                setAttackInfoProps(prevState => ({
+                setAttackPanelInfo(prevState => ({
                     ...prevState,
                     position: attacker.position,
                     hp: { ...prevState.receiverStats, hp: attackerStats.attributes.hp },
@@ -110,6 +111,7 @@ const AttackMeeleScene = ({
                         }));
                         if (receiverOnHitPosition.x + 1 > receiver.position.x) {
                             setHitAnimationInProgress(false);
+
                             hitAnimationCount !== 0
                                 ? setHitAnimationCount(hitAnimationCount - 1)
                                 : hitAnimationCount;
@@ -126,7 +128,22 @@ const AttackMeeleScene = ({
                 }
             }
         }
-        if (hitAnimationCount === 0) {
+        if (hitAnimationCount < 3) {
+            if (
+                attackPanelInfo.receiverStats.attributes.hp >
+                receiver.attributes.hp - totalDamage
+            ) {
+                setAttackPanelInfo(prevState => ({
+                    ...prevState,
+                    receiverStats: {
+                        ...prevState.receiverStats,
+                        attributes: {
+                            ...prevState.receiverStats.attributes,
+                            hp: attackPanelInfo.receiverStats.attributes.hp - 1,
+                        },
+                    },
+                }));
+            }
             setActivateDust(false);
         }
         if (elapsedTime > 5.5) {
@@ -169,9 +186,9 @@ const AttackMeeleScene = ({
             </GameObject>
             <GameObject name="attacker" displayName="Attacker">
                 <AttackScenePanel
-                    position={attackInfoProps.position}
-                    attackerStats={attackInfoProps.attackerStats}
-                    receiverStats={attackInfoProps.receiverStats}
+                    position={attackPanelInfo.position}
+                    attackerStats={attackPanelInfo.attackerStats}
+                    receiverStats={attackPanelInfo.receiverStats}
                 />
                 <CameraAttackScript attackerPosition={attacker.position} />
                 {!hitAnimationInProgress && (

@@ -8,7 +8,7 @@ import useSceneManager from '../@core/useSceneManager';
 import AttackScenePanel from '../entities/AttackScenePanel';
 import GraphicOriginal from '../@core/GraphicOriginal';
 import AttackSceneBackground from '../entities/AttackSceneBackground';
-import { MechaState, MechaData } from '../entities/MechaData';
+import { MechaState, MechaData, calculateDMG } from '../entities/MechaData';
 
 const FLOOR_LEVEL = 1;
 const HIT_DISTANCE = 0.5;
@@ -46,6 +46,14 @@ const AttackRangeScene = ({
         },
     });
 
+    const [attackPanelInfo, setAttackPanelInfo] = useState({
+        position: attacker.position,
+        attackerStats: attacker,
+        receiverStats: receiver,
+    });
+
+    const totalDamage = calculateDMG(attacker.attributes, receiver.attributes);
+
     const [transicionAlpha, setTransitionAlpha] = useState(1);
     const [shotAnimationInProgress, setShotAnimationInProgress] = useState(0);
 
@@ -58,12 +66,6 @@ const AttackRangeScene = ({
     const [shotMakeContact, setShotMakeContact] = useState(false);
     const [shotVisible, setShotVisible] = useState(false);
     const [activateExplotion, setActivateExplotion] = useState(false);
-
-    const [attackPanelInfo, setAttackPanelInfo] = useState({
-        position: attacker.position,
-        attackerStats: attacker,
-        receiverStats: receiver,
-    });
 
     const { setScene } = useSceneManager();
     const clockRef = useRef(new Clock());
@@ -90,13 +92,6 @@ const AttackRangeScene = ({
             } else {
                 setShotMakeContact(true);
             }
-
-            setAttackPanelInfo(prevState => ({
-                ...prevState,
-                position: { x: shotPosition.x, y: FLOOR_LEVEL },
-                hp: { ...prevState.receiverStats, hp: receiver.attributes.hp },
-            }));
-
             if (shotAnimationInProgress === 1) {
                 if (hitClock + 0.2 < elapsedTime) {
                     shotAnimationCount !== 0
@@ -105,7 +100,6 @@ const AttackRangeScene = ({
                 }
             }
         }
-
         if (elapsedTime > 3 && elapsedTime < 4) {
             setReceiver(prevState => ({
                 ...prevState,
@@ -128,12 +122,32 @@ const AttackRangeScene = ({
             }));
             setActivateExplotion(false);
         }
+        if (
+            shotMakeContact &&
+            attackPanelInfo.receiverStats.attributes.hp >
+                receiver.attributes.hp - totalDamage
+        ) {
+            setAttackPanelInfo(prevState => ({
+                ...prevState,
+                receiverStats: {
+                    ...prevState.receiverStats,
+                    attributes: {
+                        ...prevState.receiverStats.attributes,
+                        hp: attackPanelInfo.receiverStats.attributes.hp - 1,
+                    },
+                },
+            }));
+        }
         if (elapsedTime > 5.5) {
             setTransitionAlpha(transicionAlpha + 0.03);
         }
         if (elapsedTime > 6.5) {
             setScene('vixenMap');
         }
+        setAttackPanelInfo(prevState => ({
+            ...prevState,
+            position: { x: shotPosition.x, y: FLOOR_LEVEL },
+        }));
     });
 
     return (

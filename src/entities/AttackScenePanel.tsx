@@ -26,18 +26,6 @@ export default function AttackScenePanel({
     attackerStats,
     receiverStats,
 }: GameObjectProps) {
-    console.log(
-        'receiver: ',
-        receiverStats.sprite.src,
-        ' mecha?',
-        obtainMechaTypeFromSprite(receiverStats.sprite.src)
-    );
-    console.log(
-        'attacker: ',
-        attackerStats.sprite.src,
-        ' mecha?',
-        obtainMechaTypeFromSprite(attackerStats.sprite.src)
-    );
     return (
         <group>
             <GameObject>
