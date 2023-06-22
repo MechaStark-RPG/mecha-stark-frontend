@@ -65,7 +65,7 @@ export default function GameApp() {
                                         },
                                         sprite: spriteData.blue,
                                     }}
-                                    type={AttackSceneType.RANGE}
+                                    type={AttackSceneType.MEELE}
                                 />
                             </Scene>
                             <Scene id="vixenMap">

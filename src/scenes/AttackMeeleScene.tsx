@@ -78,7 +78,7 @@ const AttackMeeleScene = ({
             if (attacker.position.x < receiver.position.x - HIT_DISTANCE) {
                 setAttacker(prevState => ({
                     ...prevState,
-                    position: { ...prevState.position, x: prevState.position.x + 0.15 },
+                    position: { ...prevState.position, x: prevState.position.x + 0.2 },
                 }));
 
                 setAttackPanelInfo(prevState => ({
