@@ -56,12 +56,13 @@ const AttackRangeScene = ({
     const [hitClock] = useState(0.0);
     const [shotAnimationCount, setShotAnimationCount] = useState(3);
     const [shotMakeContact, setShotMakeContact] = useState(false);
+    const [shotVisible, setShotVisible] = useState(false);
     const [activateExplotion, setActivateExplotion] = useState(false);
 
     const [attackPanelInfo, setAttackPanelInfo] = useState({
         position: attacker.position,
-        attackerStats: attacker.attributes,
-        receiverStats: receiver.attributes,
+        attackerStats: attacker,
+        receiverStats: receiver,
     });
 
     const { setScene } = useSceneManager();
@@ -84,6 +85,7 @@ const AttackRangeScene = ({
         }
         if (elapsedTime > 2) {
             if (shotPosition.x < receiver.position.x - HIT_DISTANCE) {
+                setShotVisible(true);
                 setShotPosition({ x: shotPosition.x + 0.3, y: shotPosition.y });
             } else {
                 setShotMakeContact(true);
@@ -200,7 +202,7 @@ const AttackRangeScene = ({
                         <CameraAttackScript
                             attackerPosition={{ x: shotPosition.x, y: FLOOR_LEVEL }}
                         />
-                        {!shotMakeContact && (
+                        {!shotMakeContact && shotVisible && (
                             <GraphicOriginal
                                 {...spriteData.shot}
                                 offset={shotPosition}
@@ -250,20 +252,6 @@ const AttackRangeScene = ({
                     basic
                 />
             </GameObject>
-            {/* <GameObject name="explosion" displayName="Explosion Effect">
-                {hitAnimationInProgress && (
-                    <GraphicOriginal
-                        {...spriteData.explotion}
-                        offset={{
-                            x: attackerPosition + 1.2,
-                            y: FLOOR_LEVEL,
-                        }}
-                        customScale={{ width: 1.3, height: 1.3, z: 10 }}
-                        opacity={1}
-                        basic
-                    />
-                )}
-            </GameObject> */}
         </group>
     );
 };

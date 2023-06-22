@@ -1,6 +1,22 @@
 import { SpriteProps } from './@core/Sprite';
 
 const spriteData: { [index: string]: SpriteProps } = {
+    bluePhoto: {
+        src: './assets/blue_photo.png',
+        frameWidth: 323,
+        frameHeight: 326,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    yellowPhoto: {
+        src: './assets/yellow_photo.png',
+        frameWidth: 110,
+        frameHeight: 107,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
     dustTrail: {
         src: './assets/dust_trail.png',
         frameWidth: 855,

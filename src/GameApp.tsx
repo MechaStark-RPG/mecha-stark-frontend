@@ -49,23 +49,23 @@ export default function GameApp() {
                                 <AttackScene
                                     attackerStats={{
                                         attributes: {
-                                            hp: 0,
-                                            hpTotal: 0,
-                                            attack: 0,
-                                            defense: 0,
-                                        },
-                                        sprite: spriteData.blue,
-                                    }}
-                                    receiverStats={{
-                                        attributes: {
-                                            hp: 0,
-                                            hpTotal: 0,
-                                            attack: 0,
-                                            defense: 0,
+                                            hp: 100,
+                                            hpTotal: 100,
+                                            attack: 10,
+                                            defense: 20,
                                         },
                                         sprite: spriteData.yellow,
                                     }}
-                                    type={AttackSceneType.MEELE}
+                                    receiverStats={{
+                                        attributes: {
+                                            hp: 160,
+                                            hpTotal: 200,
+                                            attack: 24,
+                                            defense: 35,
+                                        },
+                                        sprite: spriteData.yellow,
+                                    }}
+                                    type={AttackSceneType.RANGE}
                                 />
                             </Scene>
                             <Scene id="vixenMap">

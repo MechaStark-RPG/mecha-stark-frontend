@@ -18,7 +18,7 @@ export default function AttackSceneBackground(props: GameObjectProps) {
                 <GraphicOriginal
                     {...spriteData.attackSceneSky}
                     offset={{ x: 3 + skyOffset, y: 6.9 }}
-                    customScale={{ width: 100, height: 10, z: 0 }}
+                    customScale={{ width: 100, height: 10, z: 1 }}
                     opacity={1}
                     basic
                 />

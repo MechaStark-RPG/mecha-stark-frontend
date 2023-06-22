@@ -64,7 +64,7 @@ export default function VixenMapScene() {
                 <GraphicOriginal
                     {...spriteData.vixenMap}
                     offset={{ x: 15.47, y: 7.3 }}
-                    customScale={{ width: 31.37, height: 15.7, z: 0 }}
+                    customScale={{ width: 31.37, height: 15.7, z: 1 }}
                     opacity={1}
                     basic
                 />

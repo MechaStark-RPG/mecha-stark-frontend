@@ -49,8 +49,8 @@ const AttackMeeleScene = ({
 
     const [attackInfoProps, setAttackInfoProps] = useState({
         position: attacker.position,
-        attackerStats: attacker.attributes,
-        receiverStats: receiver.attributes,
+        attackerStats: attacker,
+        receiverStats: receiver,
     });
     const [transicionAlpha, setTransitionAlpha] = useState(1);
 
@@ -96,12 +96,10 @@ const AttackMeeleScene = ({
                     setHitClock(elapsedTime);
                 }
                 if (hitAnimationInProgress) {
-                    if (hitClock + 0.2 < elapsedTime) {
-                        setReceiver(prevState => ({
-                            ...prevState,
-                            state: MechaState.DEFENSE,
-                        }));
-                    }
+                    setReceiver(prevState => ({
+                        ...prevState,
+                        state: MechaState.PERMA_DEF,
+                    }));
                     if (hitClock + 0.5 < elapsedTime) {
                         setReceiver(prevState => ({
                             ...prevState,
@@ -191,10 +189,11 @@ const AttackMeeleScene = ({
                             <GraphicOriginal
                                 {...spriteData.dustTrail}
                                 offset={{
-                                    x: attacker.position.x - 2.3,
+                                    x: attacker.position.x - 2.4,
                                     y: attacker.position.y - 0.9,
                                 }}
                                 customScale={{ width: 2, height: 1, z: 10 }}
+                                opacity={0.7}
                                 flipX={-1}
                                 basic
                             />
@@ -224,7 +223,7 @@ const AttackMeeleScene = ({
                             {...attacker.sprite}
                             state={attacker.state}
                             offset={attacker.position}
-                            customScale={{ width: 3, height: 3, z: 0 }}
+                            customScale={{ width: 3, height: 3, z: 1 }}
                             opacity={1}
                             basic
                         />
