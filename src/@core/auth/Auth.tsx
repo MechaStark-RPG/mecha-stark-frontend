@@ -7,6 +7,7 @@ import { Form, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { restUrl } from '../../env';
 import useAuth from './useAuth';
 import ErrorHandler from '../ErrorHandler';
+import { Contract } from 'starknet';
 
 export interface AuthContextValue {
     username: string;
@@ -29,6 +30,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     const loggedIn = username !== null;
+
+    console.log(new Contract(null, null));
 
     return (
         <AuthContext.Provider value={{ username, login, logout, loggedIn }}>

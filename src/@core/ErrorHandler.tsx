@@ -1,54 +1,57 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { ContentDialog } from 'react-uwp';
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 
 type Error = {
-    title: string;
-    content: string;
+  title: string;
+  content: string;
 };
 
 interface ErrorHandlerProps {
-    redirectUrl: string;
-    error: Error;
-    resetError: () => void;
+  redirectUrl: string;
+  error: Error;
+  resetError: () => void;
 }
 
+const MyContentDialog = ({ error, handleError }) => {
+  return (
+    <Modal show onHide={handleError}>
+      <Modal.Header closeButton>
+        <Modal.Title>{error.title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>{error.content}</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleError}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleError}>
+          Redirect back
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
 export default function ErrorHandler({
-    redirectUrl,
-    error,
-    resetError,
-}: ErrorHandlerProps) {
-    const [redirect, setRedirect] = useState(false);
-    /**
-     * Render Error modal
-     * Received props -> redirectUrl  string       - URL to redirect to, after processing error
-     *                -> error        Object       - Topic and Message for the error
-     *                -> resetError   function     - Reset Error state on parent component
-     */
+                                       redirectUrl,
+                                       error,
+                                       resetError
+                                     }: ErrorHandlerProps) {
+  const [redirect, setRedirect] = useState(false);
 
-    const handleError = () => {
-        setRedirect(true);
-        resetError();
-    };
+  const handleError = () => {
+    setRedirect(true);
+    resetError();
+  };
 
-    return (
-        <>
-            {redirect && <Redirect exact to={`${redirectUrl}`} />}
-            {!redirect && (
-                <div>
-                    <ContentDialog
-                        title={`${error.title}`}
-                        content={`${error.content}`}
-                        primaryButtonAction={() => handleError()}
-                        closeButtonAction={() => handleError()}
-                        primaryButtonText="Redirect back"
-                        secondaryButtonText={null}
-                        onCloseDialog={() => {
-                            handleError();
-                        }}
-                    />
-                </div>
-            )}
-        </>
-    );
+  return (
+    <>
+      {redirect && <Redirect exact to={`${redirectUrl}`} />}
+      {!redirect && (
+        <div>
+          <MyContentDialog error={error} handleError={handleError} />
+        </div>
+      )}
+    </>
+  );
 }
