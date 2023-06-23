@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
-
-export enum GameEvent {
-    MOVE,
-    ATTACK,
-}
-
-export interface MechaAction {
-    mechaId: string;
-    gameEvent: GameEvent;
-}
+import { GameEvent, MechaEventData } from './MechaEvent';
 
 export interface GameEventContextValue {
-    move: (mecha_id: string) => void;
-    attack: (mecha_id: string) => void;
+    move: (mechaId: string) => void;
+    attack: (mechaId: string) => void;
     hasNewEventAvailable: boolean;
-    getLastEvent: () => MechaAction;
+    getLastEvent: () => MechaEventData;
 }
 
 export const GameEventContext = React.createContext<GameEventContextValue>(null);
@@ -24,14 +15,14 @@ export const GameEventProvider = ({ children }) => {
     const [gameEvent, setGameEvent] = useState<GameEvent>(null);
     const [newEventAvailable, setNewEventAvailable] = useState(false);
 
-    const move = mecha_id => {
-        setMechaId(mecha_id);
+    const move = mId => {
+        setMechaId(mId);
         setGameEvent(GameEvent.MOVE);
         setNewEventAvailable(true);
     };
 
-    const attack = mecha_id => {
-        setMechaId(mecha_id);
+    const attack = mId => {
+        setMechaId(mId);
         setGameEvent(GameEvent.ATTACK);
         setNewEventAvailable(true);
     };

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import Collider from '../@core/Collider';
 import GameObject from '../@core/GameObject';
 import Interactable from '../@core/Interactable';
@@ -7,13 +7,11 @@ import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
 import Mecha from '../entities/Mecha';
-import Player2Mecha from '../entities/Player2Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
 import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
-import useGameEvent from '../@core/logic/useGameEvent';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -87,6 +85,7 @@ export default function VixenMapScene({ mechas }: VixenMapProps) {
             {mechas.map(mecha => {
                 return (
                     <Mecha
+                        mechaId={mecha.id}
                         x={mecha.position.x}
                         y={mecha.position.y}
                         isTurn={mecha.isReady}

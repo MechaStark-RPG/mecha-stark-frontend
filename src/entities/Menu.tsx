@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import GameObject, { GameObjectProps, Position } from '../@core/GameObject';
-import { useSound } from '../@core/Sound';
-// import Sprite from '../@core/Sprite';
-// import useGameObject from '../@core/useGameObject';
 import useGameObjectEvent from '../@core/useGameObjectEvent';
-import soundData from '../soundData';
-import spriteData from '../spriteData';
-import Interactable, { InteractableRef, InteractionEvent } from '../@core/Interactable';
+import Interactable, { InteractionEvent } from '../@core/Interactable';
 import usePointer from '../@core/usePointer';
 import usePointerClick from '../@core/usePointerClick';
 import useGameObject from '../@core/useGameObject';
 import MenuOption from './MenuOption';
-import useGameEvent from '../@core/logic/useGameEvent';
+import useGame from '../@core/useGame';
+import { MechaWillMoveEvent } from '../@core/logic/MechaEvent';
 
 interface MenuScriptProps {
     setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,7 +30,7 @@ function MenuScript({
     setMechaId,
 }: MenuScriptProps) {
     const { getRef, transform } = useGameObject();
-    const playSfx = useSound(soundData.eating);
+    // const playSfx = useSound(soundData.eating);
 
     useGameObjectEvent<InteractionEvent>('interaction', mecha => {
         const menuXPosition = mecha.transform.x + 2;
@@ -57,7 +53,7 @@ function MenuScript({
         setOptions(optionsWithType);
         setMechaId(mecha.name);
 
-        playSfx(); // -0.6 + idx * 0.7
+        // playSfx(); // -0.6 + idx * 0.7
     });
 
     const pointer = usePointer();
@@ -67,7 +63,7 @@ function MenuScript({
             const maybeOption = options.filter(
                 o => o.position.x === pointer.x && o.position.y === pointer.y
             );
-            //Clickeo alguna de las opciones
+            // Clickeo alguna de las opciones
             if (maybeOption.length > 0) {
                 setOptionSelected(maybeOption[0].name);
             } else {
@@ -85,21 +81,26 @@ function MenuScript({
 
 // Deshabilitarlo es matarlo
 export default function Menu(props: GameObjectProps) {
-    const name = `menu`; // fallback name required for persisted flag
     const [optionSelected, setOptionSelected] = useState('');
     const [options, setOptions] = useState<Option[]>([]);
     const [displayMenu, setDisplayMenu] = useState(false);
     const [mechaId, setMechaId] = useState('');
-    const { move, attack } = useGameEvent();
+    const { publish } = useGame();
 
     useEffect(() => {
-        if (optionSelected != '' && optionSelected != 'Cancel') {
-            if (optionSelected == 'Attack') {
-                attack(mechaId);
-            } else if (optionSelected == 'Move') {
-                move(mechaId);
+        const triggerMenuOptionSelected = async () => {
+            if (optionSelected !== '' && optionSelected !== 'Cancel') {
+                if (optionSelected === 'Move') {
+                    await publish<MechaWillMoveEvent>('mecha-will-move', { mechaId });
+                    setOptionSelected('');
+                    setMechaId('');
+                    setDisplayMenu(false);
+                    setOptions([]);
+                }
             }
-        }
+        };
+
+        triggerMenuOptionSelected();
     }, [optionSelected]);
 
     const handleOptionSelect = (option: string) => {
@@ -108,7 +109,7 @@ export default function Menu(props: GameObjectProps) {
     // {displayMenu && <Sprite {...spriteData.menu} scale={5} opacity={1} basic />}
 
     return (
-        <GameObject name={name} persisted {...props} layer="ui">
+        <GameObject name="menu" persisted {...props} layer="ui">
             <Interactable />
             <MenuScript
                 setDisplayMenu={setDisplayMenu}

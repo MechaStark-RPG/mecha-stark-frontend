@@ -3,7 +3,7 @@ import { Position } from '../GameObject';
 export type Mecha = {
     idOwner: string;
     position: Position;
-    id: number;
+    id: string;
     hp: number;
     hpTotal: number;
     attack: number;

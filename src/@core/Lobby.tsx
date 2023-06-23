@@ -31,7 +31,7 @@ export default function Lobby({ roomId, password }: LobbyProps) {
 
         const mecha1: Mecha = ({
             idOwner: 'Santieight',
-            id: 87,
+            id: '87',
             position: { x: 10, y: 6 },
             hp: 200,
             hpTotal: 200,
@@ -42,7 +42,7 @@ export default function Lobby({ roomId, password }: LobbyProps) {
 
         const mecha2: Mecha = ({
             idOwner: 'Damistone',
-            id: 73,
+            id: '73',
             position: { x: 16, y: 8 },
             hp: 150,
             hpTotal: 150,
