@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Collider from '../@core/Collider';
 import GameObject from '../@core/GameObject';
 import Interactable from '../@core/Interactable';
@@ -13,6 +13,7 @@ import GraphicOriginal from '../@core/GraphicOriginal';
 import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
+import useGameEvent from '../@core/logic/useGameEvent';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

@@ -15,6 +15,7 @@ import VixenMapScene from './scenes/VixenMap';
 import { Turn, InitState, Mecha } from './@core/logic/GameState';
 import useSocket from './@core/socket/useSocket';
 import useAuth from './@core/auth/useAuth';
+import { GameEventProvider } from './@core/logic/GameEvent';
 
 const styles = {
     root: (width: number, height: number) => css`
@@ -68,21 +69,23 @@ export default function MechaRPGLogic({ initState, isTurn }: GameLogicProps) {
 
     return (
         <>
-            <Global styles={globalStyles} />
-            <div css={styles.root(width, height)}>
-                <Game cameraZoom={80}>
-                    <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="vixenMap">
-                            <Scene id="attack">
-                                <AttackScene />
-                            </Scene>
-                            <Scene id="vixenMap">
-                                <VixenMapScene mechas={mechas} />
-                            </Scene>
-                        </SceneManager>
-                    </AssetLoader>
-                </Game>
-            </div>
+            <GameEventProvider>
+                <Global styles={globalStyles} />
+                <div css={styles.root(width, height)}>
+                    <Game cameraZoom={80}>
+                        <AssetLoader urls={urls} placeholder="Loading assets ...">
+                            <SceneManager defaultScene="vixenMap">
+                                <Scene id="attack">
+                                    <AttackScene />
+                                </Scene>
+                                <Scene id="vixenMap">
+                                    <VixenMapScene mechas={mechas} />
+                                </Scene>
+                            </SceneManager>
+                        </AssetLoader>
+                    </Game>
+                </div>
+            </GameEventProvider>
         </>
     );
 }

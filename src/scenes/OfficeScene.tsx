@@ -12,7 +12,6 @@ import Plant from '../entities/Plant';
 import Mecha from '../entities/Mecha';
 import Workstation from '../entities/Workstation';
 import spriteData from '../spriteData';
-import Menu from '../entities/Menu';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # 

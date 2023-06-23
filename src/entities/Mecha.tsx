@@ -11,11 +11,12 @@ import spriteData from '../spriteData';
 
 interface MechaProps extends GameObjectProps {
     isTurn: boolean;
+    mechaId: string;
 }
 
-export default function Mecha({ isTurn, ...props }: MechaProps) {
+export default function Mecha({ isTurn, mechaId, ...props }: MechaProps) {
     return (
-        <GameObject name="player" displayName="Player" layer="character" {...props}>
+        <GameObject name={mechaId} displayName="Player" layer="character" {...props}>
             <Moveable />
             <Interactable />
             <Collider />
