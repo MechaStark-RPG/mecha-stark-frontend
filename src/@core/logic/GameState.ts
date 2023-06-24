@@ -37,8 +37,8 @@ export type Turn = {
     actions: Action[];
 };
 
-type Action = {
-    idMecha: number;
+export type Action = {
+    idMecha: string;
     firstAction: number;
     movement: Position;
     attack: Position;

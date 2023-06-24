@@ -4,8 +4,9 @@ import { Col, Row, Button, Container } from 'react-bootstrap';
 
 import JoinedPlayers from './JoinedPlayers';
 import useSocket from './socket/useSocket';
-import MechaRPGLogic from '../MechaRPGLogic';
+import MechaRPGLogic from '../components/MechaRPGLogic';
 import { Mecha, Player, InitState } from './logic/GameState';
+import GameContainer from '../components/GameContainer';
 
 interface LobbyProps {
     roomId: string;
@@ -24,54 +25,6 @@ export default function Lobby({ roomId, password }: LobbyProps) {
     const [isTurn, setIsTurn] = useState(false);
     const [playersJoined, setPlayerJoined] = useState<PlayerJoined[]>([]);
     const [gameIsReady, setGameIsReady] = useState(false);
-    const [initState, setInitState] = useState<InitState>(null);
-
-    const getInitState = pJoined => {
-        // TODO: Le esta llegando pJoined
-
-        const mecha1: Mecha = ({
-            idOwner: 'Santieight',
-            id: '87',
-            position: { x: 10, y: 6 },
-            hp: 200,
-            hpTotal: 200,
-            attack: 20,
-            armor: 5,
-            isReady: false,
-        } as unknown) as Mecha;
-
-        const mecha2: Mecha = ({
-            idOwner: 'Damistone',
-            id: '73',
-            position: { x: 16, y: 8 },
-            hp: 150,
-            hpTotal: 150,
-            attack: 10,
-            armor: 5,
-            isReady: false,
-        } as unknown) as Mecha;
-
-        const players: Player[] = [
-            ({
-                id: 1997,
-                username: 'Santieight',
-            } as unknown) as Player,
-            ({
-                id: 1995,
-                username: 'Damistone',
-            } as unknown) as Player,
-        ];
-
-        players[0].mechas = [mecha1];
-        players[1].mechas = [mecha2];
-
-        const state = ({
-            players,
-        } as unknown) as InitState;
-
-        setInitState(state);
-        setGameIsReady(true);
-    };
 
     subscribeTo.personalTurnStart(() => {
         setIsTurn(true);
@@ -83,7 +36,7 @@ export default function Lobby({ roomId, password }: LobbyProps) {
 
     useEffect(() => {
         const handleDraftStart = () => {
-            getInitState(playersJoined);
+            setGameIsReady(true);
         };
         subscribeTo.draftStart(handleDraftStart);
     }, [playersJoined]);
@@ -153,7 +106,10 @@ export default function Lobby({ roomId, password }: LobbyProps) {
                         style={{ height: '100vh' }}
                     >
                         {gameIsReady ? (
-                            <MechaRPGLogic initState={initState} isTurn={isTurn} />
+                            <GameContainer
+                                playersJoined={playersJoined}
+                                isTurn={isTurn}
+                            />
                         ) : (
                             <Button style={{ fontSize: 32, margin: 4 }} disabled>
                                 Game is not started

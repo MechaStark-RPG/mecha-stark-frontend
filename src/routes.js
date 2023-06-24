@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Route, Switch } from 'react-router-dom';
 
-import MechaRPGLogic from './MechaRPGLogic';
+import MechaRPGLogic from './components/MechaRPGLogic';
 import Room from './@core/Room';
 import Lobby from './@core/Lobby';
 import Auth from './@core/auth/Auth';
-import AppRouter from './AppRouter';
+import MainRouter from './MainRouter';
 
 const ROUTES = [
     {
@@ -18,7 +18,7 @@ const ROUTES = [
     {
         path: '/',
         key: 'APP',
-        component: AppRouter,
+        component: MainRouter,
         routes: [
             {
                 path: '/',

@@ -121,18 +121,19 @@ export default function MechaScript() {
         }
     });
 
+    const notifyMovement = async (mechaId, position) => {
+        await publish<MechaDidMoveEvent>('mecha-did-move', {
+            mechaId,
+            position,
+        });
+    };
+
     // walk the path
     useEffect(() => {
         // Ya me movi
         if (!path.length) {
             setCanMove(false);
-            // await publish<MechaDidMoveEvent>('mecha-did-move', {
-            //     mechaId: name,
-            //     position: {
-            //         x: transform.x,
-            //         y: transform.y,
-            //     },
-            // });
+            notifyMovement(name, { x: transform.x, y: transform.y });
             return;
         }
 
