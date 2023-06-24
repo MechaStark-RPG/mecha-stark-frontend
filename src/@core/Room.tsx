@@ -17,7 +17,7 @@ export default function Room() {
     const [error, setError] = useState(null);
 
     const { createSocket, initListeners } = useSocket();
-    const { username } = useAuth();
+    const { walletData } = useAuth();
     const [password, setPassword] = useState(null);
     const [roomId, setRoomId] = useState(null);
     const [available, setAvailable] = useState(false);
@@ -25,7 +25,7 @@ export default function Room() {
     const handleAuth = (data: RoomValues) => {
         setRoomId(data.roomId);
         setPassword(data.password);
-        createSocket(username, roomId, password, action);
+        createSocket(walletData.walletAddress, roomId, password, action);
         initListeners(setAvailable, setError);
     };
 
@@ -35,11 +35,11 @@ export default function Room() {
                 <div className="p-3">
                     <Row>
                         <Col>
-                            {action === 'join' && <JoinRoom handleAuth={handleAuth} />}
+                            {action === 'join' && <JoinRoom walletData={walletData} handleAuth={handleAuth} />}
                         </Col>
                         <Col>
                             {action === 'create' && (
-                                <CreateRoom handleAuth={handleAuth} />
+                                <CreateRoom walletData={walletData} handleAuth={handleAuth} />
                             )}
                         </Col>
                     </Row>
@@ -73,7 +73,6 @@ export default function Room() {
     );
 }
 
-
 const flags: CSSProperties = {
     font: 'Roboto',
     textAlign: 'center',
@@ -81,7 +80,6 @@ const flags: CSSProperties = {
     borderRadius: '4px',
     fontSize: '16px',
     color: 'white',
-    width: '30%',
     padding: '12px 20px 12px 20px',
     backgroundSize: '20px 20px',
     backgroundPosition: '10px 10px',
@@ -93,7 +91,6 @@ const flags: CSSProperties = {
     marginTop: '1%',
     overflow: 'hidden',   
   }
-  
 
 {/* <HyperLink
   onClick={() =>

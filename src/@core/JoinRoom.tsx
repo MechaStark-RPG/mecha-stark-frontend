@@ -4,12 +4,14 @@ import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
 import { RoomValues } from './Room';
 import handleDisconnect from './auth/Auth';
 import CreateRoom from './CreateRoom';
+import { WalletData } from './auth/AuthContext';
 
 interface JoinRoomProps {
+    walletData: WalletData,
     handleAuth: (data: RoomValues) => void;
 }
 
-export default function JoinRoom({ handleAuth }: JoinRoomProps) {
+export default function JoinRoom({ handleAuth, walletData }: JoinRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
     const handleSubmit = event => {
@@ -20,12 +22,11 @@ export default function JoinRoom({ handleAuth }: JoinRoomProps) {
     return (
         <div style={backgroundDiv}>
             <div style={textBox}>
-                <div style={connectWalletText}>
-                    Connected with wallet: wallet-address
-                </div>
-                <button style={flags}
-                    // onClick={() => handleDisconnect()}
-                    >Disconnect Wallet</button>
+            {walletData && walletData.walletConnected &&
+                    <div style={connectWalletText}>
+                        Connected with wallet <div style={greenText}>{walletData.walletAddress}</div>
+                    </div>
+                }
             </div>
             <div style={textBox}>
                 <div style={principalText}>
@@ -56,11 +57,9 @@ export default function JoinRoom({ handleAuth }: JoinRoomProps) {
                          />
                      </InputGroup>
                      <br />
-                     <InputGroup>
-                         <Button style={flags} variant="light" type="submit">
-                             Join room
-                         </Button>
-                     </InputGroup>
+                        <Button style={flags} variant="light" type="submit">
+                            Join room
+                        </Button>
                  </Form>
              </div>
             </div>
@@ -109,6 +108,11 @@ const backgroundDiv: CSSProperties = {
     font: 'Roboto',
   };  
 
+  const greenText: CSSProperties = {
+    color: 'rgba(30, 170, 0, 0.9)',
+    margin: 'auto',
+  };
+
   const flags: CSSProperties = {
     font: 'Roboto',
     textAlign: 'center',
@@ -116,7 +120,6 @@ const backgroundDiv: CSSProperties = {
     borderRadius: '4px',
     fontSize: '16px',
     color: 'white',
-    width: '30%',
     padding: '12px 20px 12px 20px',
     backgroundSize: '20px 20px',
     backgroundPosition: '10px 10px',
@@ -127,8 +130,9 @@ const backgroundDiv: CSSProperties = {
     marginBottom: '1%',
     marginTop: '1%',
     overflow: 'hidden',   
+    width: '30%'
   }
-    
+
   const inputText: CSSProperties = {
     width: '100%',
     borderRadius: '4px',

@@ -74,13 +74,12 @@ export default function Auth({ location }: AuthProps) {
     // eslint-disable-next-line consistent-return
     const innerVerifyToken = async () => {
       const decoded = await verifyToken(token);
-      if (decoded) {
-        login(decoded.username);
+      if (decoded && walletConnected) {
+        login({ walletAddress: decoded.username, walletConnected }); // username == walletAddress
         return setRedirectToReferrer(true);
       }
     };
     if (token) {
-      // Trying to connect with token if exists
       innerVerifyToken();
     }
   }, []);
@@ -96,7 +95,7 @@ export default function Auth({ location }: AuthProps) {
       }
       // Guardo una cookie con el token
       Cookies.set("MSRPG-PROFILE", response.data.token);
-      login(walletAddress);
+      login({walletConnected, walletAddress});
       setRedirectToReferrer(true);
     } catch (error) {
       console.log(error.message);

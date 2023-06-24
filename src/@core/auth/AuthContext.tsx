@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 
+export type WalletData = {
+  walletConnected: boolean,
+  walletAddress: string,
+}
+
 export interface AuthContextValue {
-    username: string;
-    login: (newUsername: string) => void;
+    walletData: WalletData;
+    login: (walletData: WalletData) => void;
     logout: () => void;
     loggedIn: boolean;
   }
@@ -10,21 +15,20 @@ export interface AuthContextValue {
   export const AuthContext = React.createContext<AuthContextValue>(null);
   
   export const AuthProvider = ({ children }) => {
-    const [username, setUsername] = useState<string>(null);
+    const [walletData, setWalletData] = useState<WalletData>(null);
   
-    const login = newUsername => {
-      setUsername(newUsername);
+    const login = walletData => {
+      setWalletData(walletData);
     };
   
     const logout = () => {
-      setUsername("");
       // disconnect( {clearLastWallet: true, clearDefaultWallet: true} );
     };
   
-    const loggedIn = username !== null;
+    const loggedIn = walletData && walletData.walletConnected === true;
   
     return (
-      <AuthContext.Provider value={{ username, login, logout, loggedIn }}>
+      <AuthContext.Provider value={{ walletData, login, logout, loggedIn }}>
         {children}
       </AuthContext.Provider>
     );

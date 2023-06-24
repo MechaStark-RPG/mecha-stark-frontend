@@ -1,4 +1,5 @@
 import React, { useState, CSSProperties } from 'react';
+import { WalletData }  from './auth/AuthContext';
 
 import {
     Form,
@@ -12,10 +13,11 @@ import {
 import { RoomValues } from './Room';
 
 interface CreateMenuRoomProps {
+    walletData: WalletData,
     handleAuth: (data: RoomValues) => void;
 }
 
-export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
+export default function CreateRoom({ handleAuth, walletData }: CreateMenuRoomProps) {
     const [roomId, setRoomId] = useState('');
     const [password, setRoomPassword] = useState('');
 
@@ -28,12 +30,11 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
     return (
         <div style={backgroundDiv}>
             <div style={textBox}>
-                <div style={connectWalletText}>
-                        Connected with wallet: wallet-address
-                </div>
-                <button style={flags}
-                        // onClick={() => handleDisconnect()}
-                >Disconnect Wallet</button>
+                {walletData && walletData.walletConnected &&
+                    <div style={connectWalletText}>
+                        Connected with wallet <div style={greenText}>{walletData.walletAddress}</div>
+                    </div>
+                }
             </div>
             <div style={textBox}>
                 <div style={principalText}>
@@ -59,6 +60,7 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
                             onChange={e => setRoomPassword(e.target.value)}
                         />
                     </Form.Group>
+                    <br />
                     <Button style={flags} variant="light" type="submit">
                         Create room
                     </Button>
@@ -97,6 +99,11 @@ const backgroundDiv: CSSProperties = {
     zIndex: 1,
   };
 
+  const greenText: CSSProperties = {
+    color: 'rgba(30, 170, 0, 0.9)',
+    margin: 'auto',
+  };
+
   const principalText: CSSProperties = {
     fontSize: '50px',
     color: '#ffffff',
@@ -116,7 +123,6 @@ const backgroundDiv: CSSProperties = {
     borderRadius: '4px',
     fontSize: '16px',
     color: 'white',
-    width: '30%',
     padding: '12px 20px 12px 20px',
     backgroundSize: '20px 20px',
     backgroundPosition: '10px 10px',
@@ -127,6 +133,7 @@ const backgroundDiv: CSSProperties = {
     marginBottom: '1%',
     marginTop: '1%',
     overflow: 'hidden',   
+    width: '30%',
   }
   
   const inputText: CSSProperties = {
