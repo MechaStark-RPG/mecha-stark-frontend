@@ -8,3 +8,4 @@ package/
 /.eslintrc*
 /.prettierrc*
 /tsconfig.json
+.env

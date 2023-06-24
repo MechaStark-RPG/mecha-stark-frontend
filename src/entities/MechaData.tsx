@@ -22,6 +22,5 @@ export type MechaAttributes = {
 };
 
 export function calculateDMG(attacker: MechaAttributes, receiver: MechaAttributes) {
-    console.log('dmg: ', Math.max(1, attacker.attack - receiver.defense));
     return Math.max(1, attacker.attack - receiver.defense);
 }

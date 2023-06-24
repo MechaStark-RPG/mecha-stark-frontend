@@ -3,6 +3,8 @@ const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
+const Dotenv = require('dotenv-webpack');
+require('dotenv').config();
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -11,6 +13,10 @@ module.exports = {
     path: __dirname + "/dist"
   },
   resolve: {
+    fallback: {
+        "fs": false,
+        "path": false
+    },
     extensions: [".tsx", ".ts", ".js"]
   },
   module: {
@@ -32,6 +38,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      MECHA_STARK_WALLET_PRIVKEY: JSON.stringify(process.env.MECHA_STARK_WALLET_PRIVKEY),
+    }),
+    new Dotenv(),
     new webpack.HotModuleReplacementPlugin(),
     new ReactRefreshPlugin(),
     new TerserPlugin(),
