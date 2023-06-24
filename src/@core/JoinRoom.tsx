@@ -35,22 +35,24 @@ export default function JoinRoom({ handleAuth }: JoinRoomProps) {
                  <Form onSubmit={handleSubmit}>
                      <InputGroup>
                          <FormControl
-                             placeholder="Enter the Room ID here"
-                             aria-label="roomId"
-                             name="roomId"
-                             aria-describedby="text"
-                             onChange={e => setRoomId(e.target.value)}
+                            style={inputText}
+                            placeholder="Enter the Room ID here"
+                            aria-label="roomId"
+                            name="roomId"
+                            aria-describedby="text"
+                            onChange={e => setRoomId(e.target.value)}
                          />
                      </InputGroup>
                      <br />
                      <p style={connectWalletText}>Leave blank if no password</p>
                      <InputGroup>
                          <FormControl
-                             placeholder="Enter room password"
-                             name="password"
-                             aria-label="password"
-                             aria-describedby="password"
-                             onChange={e => setRoomPassword(e.target.value)}
+                            style={inputText}
+                            placeholder="Enter room password"
+                            name="password"
+                            aria-label="password"
+                            aria-describedby="password"
+                            onChange={e => setRoomPassword(e.target.value)}
                          />
                      </InputGroup>
                      <br />
@@ -66,12 +68,11 @@ export default function JoinRoom({ handleAuth }: JoinRoomProps) {
     );
 }
 
-
 const backgroundDiv: CSSProperties = {
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 0,
+    zIndex: -1,
     width: '100%',
     height: '100%',
     backgroundImage: "url('./assets/map.png')",
@@ -127,4 +128,16 @@ const backgroundDiv: CSSProperties = {
     marginTop: '1%',
     overflow: 'hidden',   
   }
-  
+    
+  const inputText: CSSProperties = {
+    width: '100%',
+    borderRadius: '4px',
+    fontSize: 'large',
+    backgroundColor: 'white',
+    backgroundSize: '20px 20px',
+    backgroundImage: 'url(\'https://cdn-icons-png.flaticon.com/512/4803/4803345.png\')',
+    backgroundPosition: '10px 10px',
+    backgroundRepeat: 'no-repeat',
+    padding: '12px 20px 12px 40px',
+    marginBottom: '4px',
+  }

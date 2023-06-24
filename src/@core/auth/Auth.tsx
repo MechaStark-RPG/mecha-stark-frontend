@@ -205,7 +205,7 @@ const backgroundDiv: CSSProperties = {
   position: 'fixed',
   top: 0,
   left: 0,
-  zIndex: 0,
+  zIndex: -1,
   width: '100%',
   height: '100%',
   backgroundImage: "url('./assets/map.png')",

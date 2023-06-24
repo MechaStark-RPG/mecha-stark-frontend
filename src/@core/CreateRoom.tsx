@@ -26,10 +26,15 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
         handleAuth({ roomId, password, options });
     };
     return (
-        <div style={backgroundDiv}>\
-        <div style={textBox}>
-            CONNECTED AS wallet-name
-        </div>
+        <div style={backgroundDiv}>
+            <div style={textBox}>
+                <div style={connectWalletText}>
+                        Connected with wallet: wallet-address
+                </div>
+                <button style={flags}
+                        // onClick={() => handleDisconnect()}
+                >Disconnect Wallet</button>
+            </div>
             <div style={textBox}>
                 <div style={principalText}>
                     Create New Room
@@ -58,7 +63,6 @@ export default function CreateRoom({ handleAuth }: CreateMenuRoomProps) {
                         Create room
                     </Button>
                 </Form>
-
             </div>
         </div>
     );
@@ -68,7 +72,7 @@ const backgroundDiv: CSSProperties = {
     position: 'fixed',
     top: 0,
     left: 0,
-    zIndex: 0,
+    zIndex: -1,
     width: '100%',
     height: '100%',
     backgroundImage: "url('./assets/map.png')",

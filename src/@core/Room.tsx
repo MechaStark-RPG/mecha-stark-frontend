@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, CSSProperties } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
@@ -46,6 +46,7 @@ export default function Room() {
                     <br />
 
                     <Button
+                        style={flags}
                         variant="light"
                         type="submit"
                         onClick={() =>
@@ -72,10 +73,32 @@ export default function Room() {
     );
 }
 
-// <HyperLink
-//   onClick={() =>
-//     setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
-//   }
-// >
-//     {`${action === 'join' ? 'Create New' : 'Join'} Room`}
-// </HyperLink>
+
+const flags: CSSProperties = {
+    font: 'Roboto',
+    textAlign: 'center',
+    border: '2px solid rgba(255, 255, 255, 0.3)',
+    borderRadius: '4px',
+    fontSize: '16px',
+    color: 'white',
+    width: '30%',
+    padding: '12px 20px 12px 20px',
+    backgroundSize: '20px 20px',
+    backgroundPosition: '10px 10px',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor: 'rgba(21, 161, 222, 0.9)',
+    marginLeft: '1%',
+    marginRight: '1%',
+    marginBottom: '1%',
+    marginTop: '1%',
+    overflow: 'hidden',   
+  }
+  
+
+{/* <HyperLink
+  onClick={() =>
+    setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
+  }
+>
+    {`${action === 'join' ? 'Create New' : 'Join'} Room`}
+</HyperLink> */}
