@@ -1,98 +1,280 @@
 [
   {
-    "data": [
-      {
-        "name": "implementation",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "Upgraded",
-    "type": "event"
-  },
-  {
-    "data": [
-      {
-        "name": "previousAdmin",
-        "type": "felt"
-      },
-      {
-        "name": "newAdmin",
-        "type": "felt"
-      }
-    ],
-    "keys": [],
-    "name": "AdminChanged",
-    "type": "event"
-  },
-  {
     "name": "constructor",
-    "type": "constructor",
-    "inputs": [
-      {
-        "name": "implementation_hash",
-        "type": "felt"
-      },
-      {
-        "name": "selector",
-        "type": "felt"
-      },
-      {
-        "name": "calldata_len",
-        "type": "felt"
-      },
-      {
-        "name": "calldata",
-        "type": "felt*"
-      }
-    ],
-    "outputs": []
-  },
-  {
-    "name": "_default_",
     "type": "function",
     "inputs": [
       {
-        "name": "selector",
-        "type": "felt"
-      },
-      {
-        "name": "calldata_size",
-        "type": "felt"
-      },
-      {
-        "name": "calldata",
-        "type": "felt*"
+        "name": "token",
+        "type": "core::starknet::contract_address::ContractAddress"
       }
     ],
-    "outputs": [
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "create_game",
+    "type": "function",
+    "inputs": [
       {
-        "name": "retdata_size",
-        "type": "felt"
+        "name": "mechas_id",
+        "type": "core::array::Array::<core::felt252>"
       },
       {
-        "name": "retdata",
-        "type": "felt*"
+        "name": "bet",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "claimRewards",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "join_game",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "id_game",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "mechas_id",
+        "type": "core::array::Array::<core::felt252>"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "mecha_stark::components::game_state::GameState",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id_game",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "player_1",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "player_2",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "mechas_state_player_1",
+        "type": "core::array::Span::<mecha_stark::components::game_state::MechaState>"
+      },
+      {
+        "name": "mechas_state_player_2",
+        "type": "core::array::Span::<mecha_stark::components::game_state::MechaState>"
       }
     ]
   },
   {
-    "name": "_l1_default_",
-    "type": "l1_handler",
+    "name": "mecha_stark::components::turn::Turn",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id_game",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "player",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "actions",
+        "type": "core::array::Span::<mecha_stark::components::turn::Action>"
+      }
+    ]
+  },
+  {
+    "name": "validate_game",
+    "type": "function",
     "inputs": [
       {
-        "name": "selector",
-        "type": "felt"
+        "name": "game_state",
+        "type": "mecha_stark::components::game_state::GameState"
       },
       {
-        "name": "calldata_size",
-        "type": "felt"
-      },
-      {
-        "name": "calldata",
-        "type": "felt*"
+        "name": "turns",
+        "type": "core::array::Array::<mecha_stark::components::turn::Turn>"
       }
     ],
-    "outputs": []
+    "outputs": [
+      {
+        "type": "core::bool"
+      }
+    ],
+    "state_mutability": "view"
+  },
+  {
+    "name": "finish_game",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "id_game",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "game_state",
+        "type": "mecha_stark::components::game_state::GameState"
+      },
+      {
+        "name": "turns",
+        "type": "core::array::Array::<mecha_stark::components::turn::Turn>"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "mecha_stark::components::game::Game",
+    "type": "struct",
+    "members": [
+      {
+        "name": "size",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "bet",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "status",
+        "type": "mecha_stark::components::game::StatusGame"
+      },
+      {
+        "name": "winner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "player_1",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "player_2",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "mechas_player_1",
+        "type": "core::array::Span::<core::felt252>"
+      },
+      {
+        "name": "mechas_player_2",
+        "type": "core::array::Span::<core::felt252>"
+      }
+    ]
+  },
+  {
+    "name": "get_game",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "id_game",
+        "type": "core::integer::u128"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "mecha_stark::components::game::Game"
+      }
+    ],
+    "state_mutability": "view"
+  },
+  {
+    "name": "upgrade",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "new_class_hash",
+        "type": "core::starknet::class_hash::ClassHash"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "name": "test_array_felt",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "pos",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "array",
+        "type": "core::array::Array::<core::felt252>"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "core::felt252"
+      }
+    ],
+    "state_mutability": "view"
+  },
+  {
+    "name": "test_array_struct_turn",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "pos_turn",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "pos_action",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "turns",
+        "type": "core::array::Array::<mecha_stark::components::turn::Turn>"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "core::integer::u128"
+      }
+    ],
+    "state_mutability": "view"
+  },
+  {
+    "name": "test_game_state",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "pos",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "game_state",
+        "type": "mecha_stark::components::game_state::GameState"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "core::integer::u128"
+      }
+    ],
+    "state_mutability": "view"
   }
 ]

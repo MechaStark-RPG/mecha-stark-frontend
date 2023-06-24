@@ -40,7 +40,7 @@ export default function GameApp() {
             <div css={styles.root(width, height)}>
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
-                        <SceneManager defaultScene="attackScene">
+                        <SceneManager defaultScene="vixenMap">
                             <Scene id="attackScene">
                                 <AttackScene
                                     attackerStats={{

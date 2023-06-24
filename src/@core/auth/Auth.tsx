@@ -17,7 +17,7 @@ declare var MECHA_STARK_WALLET_PRIVKEY : string | undefined;
 
 const GOERLI_URL = 'https://alpha4.starknet.io'
 const MECHA_STARK_ADDRESS = '0x03a1db2968737c3b2797accd5f3d6c9daf15c563e4a8de0ad061e88a42043739'
-
+// 0x01aaeaf9a95f8b76b42f3e58758b97d96e4843635d2e74672870ddddb8c970bf
 const verifyToken = async token => {
   console.log(`${restUrl}/auth/verify`);
 

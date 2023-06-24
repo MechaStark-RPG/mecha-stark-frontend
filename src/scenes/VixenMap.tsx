@@ -9,6 +9,7 @@ import { mapDataString } from '../@core/utils/mapUtils';
 import Player from '../entities/Player';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
+import MovementGlow from '../components/MovementGlow';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -73,13 +74,17 @@ export default function VixenMapScene() {
                 <ambientLight />
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
             </GameObject>
-            <Player x={3} y={12} />
             <GameObject x={3} y={8} layer="character">
                 <Sprite {...spriteData.enemyMap} />
                 <Collider />
                 <Interactable />
                 <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
             </GameObject>
+            {/* <GameObject>
+                <MovementGlow movements={[{x:3, y: 12}, {x:2, y: 12}, {x:4, y: 12}, {x:3, y: 11}, {x:3, y: 13}]}/>
+            </GameObject> */}
+            <Player x={3} y={12} />
+
         </>
     );
 }
