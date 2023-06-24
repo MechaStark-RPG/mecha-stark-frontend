@@ -12,6 +12,8 @@ import soundData from './soundData';
 import spriteData from './spriteData';
 import globalStyles from './styles/global';
 import VixenMapScene from './scenes/VixenMap';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 
 const styles = {
     root: (width: number, height: number) => css`
@@ -39,12 +41,6 @@ export default function GameApp() {
                 <Game cameraZoom={80}>
                     <AssetLoader urls={urls} placeholder="Loading assets ...">
                         <SceneManager defaultScene="attackScene">
-                            <Scene id="office">
-                                <OfficeScene />
-                            </Scene>
-                            <Scene id="other">
-                                <OtherScene />
-                            </Scene>
                             <Scene id="attackScene">
                                 <AttackScene
                                     attackerStats={{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, CSSProperties } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -9,8 +9,9 @@ import useAuth from "./useAuth";
 import ErrorHandler from "../ErrorHandler";
 import { Contract, Provider, json, ec, Account, number, stark  } from "starknet";
 import { connect, disconnect } from "get-starknet";
-// import * as fs from 'fs';
 import contractJson from './main.json';
+/** @jsx jsx */
+import { jsx, css}  from '@emotion/core';
 
 declare var MECHA_STARK_WALLET_PRIVKEY : string | undefined;
 
@@ -51,6 +52,7 @@ export default function Auth({ location }: AuthProps) {
   
   useEffect(() => {
     if (walletConnected && walletAddress) {
+      console.log('logged with wallet: ', walletAddress)
       handleLogin(walletAddress)
     }
   }, [walletConnected, walletAddress]);
@@ -104,7 +106,7 @@ export default function Auth({ location }: AuthProps) {
 
   const connectWallet = async() => {   
     try{
-        const wallet = await connect({ modalMode: "canAsk", modalTheme: "dark", storeVersion: "chrome" });
+        const wallet = await connect({ modalMode: "alwaysAsk", modalTheme: "dark", storeVersion: "chrome" });
         if (wallet) {
             await wallet.enable();
             setWalletConnected(wallet.isConnected);
@@ -139,8 +141,35 @@ export default function Auth({ location }: AuthProps) {
       }
   }
 
+	const handleDisconnect = async () =>{
+		disconnect( { clearLastWallet: true } );
+		setWalletAddress(undefined);
+    setWalletConnected(false);
+    setWalletProvider(undefined);
+	}
+
   return (
-    <>
+    <div style={backgroundDiv}>
+      <div style={textBox}>
+        <div style={principalText}>
+        2D Turn-Based Strategic Game – Connect your Braavos or ArgentX wallet, mint your mechas and tokens for free, and embark on an exciting gaming adventure!
+        </div>
+        {walletConnected && 
+            <button style={flags}
+                onClick={() => handleDisconnect()}>Disconnect Wallet</button>
+        }
+        {!walletConnected && 
+           <div style={connectWalletText}>
+            <br/>
+            Please connect your testnet wallet to start
+            <br/>
+            <button style={flags}
+					    onClick={() => connectWallet() }>
+						  Connect Wallet<br />
+				      </button>
+            </div>
+        }
+      </div>
       {redirectToReferrer && (
         <Redirect to={location.state || { from: { pathname: "/" } }} />
       )}
@@ -148,8 +177,8 @@ export default function Auth({ location }: AuthProps) {
         <ErrorHandler
           redirectUrl="/"
           error={{
-            title: "SEVERS ARE DOWN FOR MAINTAINENCE!",
-            content: "WE WILL BE BACK SOON, BIGGER AND BETTER"
+            title: "Servers are down for maintainence!",
+            content: "We will be back soon, bigger and better"
           }}
           resetError={() => {
             setIsServerDown(false);
@@ -160,35 +189,74 @@ export default function Auth({ location }: AuthProps) {
         <ErrorHandler
           redirectUrl="/"
           error={{
-            title: "LOGIN FAILED, TRY AGAIN!",
-            content: "CHECK YOUR CREDENTIALS OR TRY ANOTHER NAME"
+            title: "Login failed, try again!",
+            content: "Check your credentials or try another name"
           }}
           resetError={() => {
             setIsLoginFailed(false);
           }}
         />
       )}
-      <div className="row align-items-center justify-content-left">
-        <div className="col-sm-12 col-md-6">
-          <IntroInfo />
-          
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
 
-const IntroInfo = () => {
-  return (
-    <div>
-      <div>Do you want to be a Mecha?</div>
-      <div>
-        Play MechaStark-RPG with your friends <br />
-      </div>
-      <div>
-        Create or join a room to start <br /> custom draft with your friends{" "}
-        <br />
-      </div>
-    </div>
-  );
+const backgroundDiv: CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  zIndex: 0,
+  width: '100%',
+  height: '100%',
+  backgroundImage: "url('./assets/map.png')",
+  backgroundSize: 'cover',
+  backgroundRepeat: 'repeat',
+  opacity: 0.9,
 };
+
+const textBox: CSSProperties = {
+  border: 'solid',
+  borderColor: 'rgba(255, 255, 255, 0.5)',
+  textAlign: 'center',
+  alignSelf: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  padding: '1%',
+  marginBottom: '4rem',
+  borderRadius: '5px',
+  gridTemplateColumns: '1fr',
+  maxWidth: '70%',
+  margin: 'auto',
+  zIndex: 1,
+};
+
+const principalText: CSSProperties = {
+  fontSize: '50px',
+  color: '#ffffff',
+  font: 'Roboto',
+};
+
+const connectWalletText: CSSProperties = {
+  fontSize: '25px',
+  color: '#ffffff',
+  font: 'Roboto',
+};
+
+const flags: CSSProperties = {
+  font: 'Roboto',
+  textAlign: 'center',
+  border: '2px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '4px',
+  fontSize: '16px',
+  color: 'white',
+  padding: '12px 20px 12px 20px',
+  backgroundSize: '20px 20px',
+  backgroundPosition: '10px 10px',
+  backgroundRepeat: 'no-repeat',
+  backgroundColor: 'rgba(21, 161, 222, 0.9)',
+  marginLeft: '1%',
+  marginRight: '1%',
+  marginBottom: '1%',
+  marginTop: '1%',
+  overflow: 'hidden',   
+}
