@@ -21,7 +21,6 @@ export default function CameraAttackScript({
     useEffect(() => {
         camera.zoom = 75;
         camera.updateProjectionMatrix();
-        console.log('useEffect() - CameraAttackScript');
     }, []);
 
     useFrame(() => {

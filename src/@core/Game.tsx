@@ -4,6 +4,8 @@ import { Canvas } from 'react-three-fiber';
 import { GameObjectLayer, GameObjectRef } from './GameObject';
 import { SceneExitEvent } from './Scene';
 import createPubSub, { PubSub } from './utils/createPubSub';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 
 export type GameObjectRegistry<T = GameObjectRef> = Map<symbol | string, T>;
 

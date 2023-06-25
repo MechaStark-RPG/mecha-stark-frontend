@@ -12,8 +12,9 @@ import GraphicOriginal from '../@core/GraphicOriginal';
 import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
+import MovementGlow from '../components/MovementGlow';
 
-export const mapData = mapDataString(`
+const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · #
 # · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · #
@@ -71,7 +72,7 @@ export default function VixenMapScene({ mechas }: VixenMapProps) {
                 <GraphicOriginal
                     {...spriteData.vixenMap}
                     offset={{ x: 15.47, y: 7.3 }}
-                    customScale={{ width: 31.37, height: 15.7, z: 0 }}
+                    customScale={{ width: 31.37, height: 15.7, z: 1 }}
                     opacity={1}
                     basic
                 />

@@ -1,6 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Col, Row, Button, Container } from 'react-bootstrap';
+/** @jsx jsx */
+import { jsx, css}  from '@emotion/core';
+import game from '../styles/global';
 
 import JoinedPlayers from './JoinedPlayers';
 import useSocket from './socket/useSocket';
@@ -99,45 +102,39 @@ export default function Lobby({ roomId, password }: LobbyProps) {
         setPlayerJoined(psJoined);
     };
 
-    //           {!roomId && <Redirect to="/" />}
     return (
-        <>
-            <Container fluid>
-                <Row>
-                    <Col
-                        xs={12}
-                        md={3}
-                        className="d-flex flex-column"
-                        style={{ height: '100vh' }}
-                    >
-                        <JoinedPlayers
-                            playersJoined={playersJoined}
-                            onPlayerJoin={updatePlayers}
-                        />
-                        {!isReady && <PreDraft />}
-                        {isReady && <OnDraft />}
-                    </Col>
-                    <Col
-                        xs={12}
-                        md={9}
-                        className="d-flex flex-column"
-                        style={{ height: '100vh' }}
-                    >
-                        {gameIsReady ? (
-                            <GameContainer
-                                playersJoined={playersJoined}
-                                isTurn={isTurn}
-                                setTurn={setTurn}
-                                sentTurn={sentTurn}
-                            />
-                        ) : (
-                            <Button style={{ fontSize: 32, margin: 4 }} disabled>
-                                Game is not started
-                            </Button>
-                        )}
-                    </Col>
-                </Row>
-            </Container>
-        </>
+        <div>
+            <div>
+                {gameIsReady ? (
+                  <GameContainer
+                    playersJoined={playersJoined}
+                    isTurn={isTurn}
+                    setTurn={setTurn}
+                    sentTurn={sentTurn}
+                  />
+                ) : (
+                  <Button style={{ fontSize: 32, margin: 4 }} disabled>
+                      Game is not started
+                  </Button>
+                )}
+            </div>
+                <div style={turnMenu}>
+                    <JoinedPlayers
+                        playersJoined={playersJoined}
+                        onPlayerJoin={updatePlayers}
+                    />
+                    {!isReady && <PreDraft />}
+                    {isReady && <OnDraft />}
+            </div>
+        </div>
     );
 }
+
+const turnMenu: CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '20%',
+    height: '20%',
+    zIndex: 1,
+};

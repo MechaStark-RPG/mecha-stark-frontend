@@ -22,7 +22,7 @@ export default function Mecha({ isTurn, mechaId, ...props }: MechaProps) {
             <Interactable />
             <Collider />
             <CharacterScript>
-                <Sprite {...spriteData.mechaMap} />
+                <Sprite {...spriteData.yellowMap} />
             </CharacterScript>
             {isTurn ? <MechaScript /> : <MechaScriptFromAction />}
         </GameObject>
