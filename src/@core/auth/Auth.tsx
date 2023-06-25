@@ -126,53 +126,6 @@ export default function Auth({ location }: AuthProps) {
   const connectMechaStarkWallet = async() => {   
     try{
       await callValidateGame();
-
-      // const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
-      // const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
-
-      // const accountAddress = "0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6";
-      // const mechaWalletAccount = new Account(provider, accountAddress, starkKeyPair);
-
-      // const OZaccount = new Account(provider, accountAddress, MECHA_STARK_WALLET_PRIVKEY);
-
-      // const mechaStarkContractPrivate = new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
-      // mechaStarkContractPrivate.connect(mechaWalletAccount);
-
-      // const GG = await mechaStarkContractPrivate.call("test_array_felt", [1, [11, 21]]); 
-      // const totalBet: uint256.Uint256 = uint256.bnToUint256(10);
-      // const mechas_ids = [cairo.uint256(1), cairo.uint256(2), cairo.uint256(3), cairo.uint256(4), cairo.uint256(5)];
-      // const bet = cairo.uint256(10);
-
-      // const transferCallData: Call = mechaStarkContractPrivate.populate("create_game", {
-      //   mechas_id: ['1n', '2n', '3n', '4n', '5n'],
-      //   bet: bet,
-      // });
-
-      // const { transaction_hash: transferTxHash } = await OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
-
-      // // OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
-      // console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`, transferTxHash);
-      // await provider.waitForTransaction(transferTxHash);
-      // console.log('TRANSACTION DONE?');
-      
-      // console.log('myCall', myCall)
-      // let executeHash = await mechaWalletAccount.execute(myCall);
-      // console.log('TX: ', executeHash);
-
-      // const transferCallData = CallData.compile({
-      //     mechas_id: [cairo.uint256(1),cairo.uint256(2),cairo.uint256(3),cairo.uint256(4),cairo.uint256(5)],
-      //     bet: totalBet
-      // });
-      // const executeHash = await OZaccount.execute({
-      //     contractAddress: MECHA_STARK_ADDRESS,
-      //     entrypoint: 'create_game',
-      //     calldata: transferCallData,
-      //   }, undefined, { maxFee: 900_000_000_000_000 });
-        // const executeHash = await mechaStarkContractPrivate.create_game(myCall.calldata);
-      // await provider.waitForTransaction(executeHash.transaction_hash);
-      // console.log('TRANSACTION DONE?');
-      
-      
     } catch(error) {
         console.log("connectMechaStarkWallet: ", error.message);
       }
@@ -181,6 +134,11 @@ export default function Auth({ location }: AuthProps) {
   const getContractAndAccount = async () => {
     const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
     // const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
+    
+    if (MECHA_STARK_WALLET_ACC_ADDRESS === '' || MECHA_STARK_WALLET_PRIVKEY === '') {
+      console.log("Warning: envs are not setted?")
+      return { mechaStarkContract: undefined, privateAccount: undefined, provider: undefined }
+    }
     const privateAccount = new Account(provider, MECHA_STARK_WALLET_ACC_ADDRESS, MECHA_STARK_WALLET_PRIVKEY);
 
     const mechaStarkContract= new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
@@ -191,16 +149,19 @@ export default function Auth({ location }: AuthProps) {
 
   const callValidateGame = async () => {
     const { mechaStarkContract, privateAccount, provider } = await getContractAndAccount();
-   
+    if (mechaStarkContract === undefined || privateAccount === undefined || provider === undefined) {
+      return;
+    }
     const validateCallData = getValidateCallData();
 
-    const res: Call = mechaStarkContract.populate("validate_game", {
+    const res: Call = mechaStarkContract.populate("finish_game", {
+      game_id: validateCallData.game_id,
       game_state: validateCallData.game_state,
       turns: validateCallData.turns,
     });
 
     const { transaction_hash: transferTxHash } = await privateAccount.execute(res, undefined, { maxFee: 900_000_000_000_000 });
-    console.log(`Sending validate Game to Starknet...`, transferTxHash);
+    console.log(`Sending Finish Game to Starknet...`, transferTxHash);
     await provider.waitForTransaction(transferTxHash);
   }
   
@@ -284,7 +245,7 @@ export default function Auth({ location }: AuthProps) {
     }
     console.log(game_state)
 
-    return { game_state: game_state, turns: turns };
+    return { game_id: game_id, game_state: game_state, turns: turns };
   }
 
 	const handleDisconnect = async () =>{
