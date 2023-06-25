@@ -8,12 +8,14 @@ import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
 import Mecha from '../entities/Mecha';
 import spriteData from '../spriteData';
-import GraphicOriginal from '../@core/GraphicOriginal';
 import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
 import MovementGlow from '../components/MovementGlow';
 import useSceneManager from '../@core/useSceneManager';
+import { HashMap, MechaActions } from '../components/MechaRPGLogic';
+import GraphicOriginal from '../@core/GraphicOriginal';
+import { Text } from 'drei';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -65,9 +67,10 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
 interface VixenMapProps {
     mechas: MechaType[];
     renderAttackScene: boolean;
+    mechaActions: (mecha_id: string) => MechaActions;
 }
 
-export default function VixenMapScene({ mechas, renderAttackScene }: VixenMapProps) {
+export default function VixenMapScene({ mechas, renderAttackScene, mechaActions }: VixenMapProps) {
     const { setScene } = useSceneManager();
 
     useEffect(() => {
@@ -95,13 +98,43 @@ export default function VixenMapScene({ mechas, renderAttackScene }: VixenMapPro
 
             {mechas.map(mecha => {
                 return (
-                    <Mecha
-                        mecha={mecha}
-                        mechaId={mecha.id}
-                        x={mecha.position.x}
-                        y={mecha.position.y}
-                        isTurn={mecha.isReady}
-                    />
+                    <>
+                        <Text
+                            anchorX="center"
+                            anchorY="middle"
+                            position={[mecha.position.x, mecha.position.y - 0.3, 0.1]}
+                            fontSize={0.2}
+                            color="white"
+                            applyMatrix4={null}
+                        >{`${mecha.hp} / ${mecha.hpTotal}`}</Text>
+                        <Mecha
+                            mecha={mecha}
+                            mechaId={mecha.id}
+                            x={mecha.position.x}
+                            y={mecha.position.y}
+                            isTurn={mecha.isReady}
+                        />
+                        {mechaActions && !mechaActions(mecha.id).alreadyAttack &&
+                            <group position={[mecha.position.x + 0.45, mecha.position.y + 0.7, 2]}>
+                                <GraphicOriginal
+                                    {...spriteData.attackFlag}
+                                    customScale={ {width: 0.20, height: 0.25, z: 0.5}}
+                                    opacity={1}
+                                    basic
+                                />
+                            </group>
+                        }
+                        {mechaActions && !mechaActions(mecha.id).alreadyMove &&
+                            <group position={[mecha.position.x + 0.45, mecha.position.y + 0.45, 2]}>
+                                <GraphicOriginal
+                                    {...spriteData.moveFlag}
+                                    customScale={ {width: 0.20, height: 0.25, z: 0.5}}
+                                    opacity={1}
+                                    basic
+                                />
+                            </group>
+                        }
+                    </>
                 );
             })}
 

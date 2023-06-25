@@ -37,6 +37,15 @@ interface GameLogicProps {
     incomingTurn: Turn;
 }
 
+export interface HashMap<T> {
+    [key: string]: T;
+}
+
+export type MechaActions = {
+    alreadyMove?: boolean,
+    alreadyAttack?: boolean,
+}
+
 export default function MechaRPGLogic({
     initState,
     isTurn,
@@ -52,10 +61,31 @@ export default function MechaRPGLogic({
     const [actions, setActions] = useState<Action[]>([]);
     // Helper variable to guarantee the order of executions from useEffects
     const [mechasInitialized, setMechasInitialized] = useState(false);
+    const [restrictActionsMap, setRestrictActionsMap] = useState<HashMap<MechaActions>>({});
 
     const [renderAttackScene, setRenderAttackScene] = useState(false);
     const [attackerStats, setAttackerStats] = useState<MechaData>();
     const [receiverStats, setReceiverStats] = useState<MechaData>();
+
+    const updateMechaActions = (mecha_id: string, actions: Partial<MechaActions>) => {
+        setRestrictActionsMap(prevState => ({
+            ...prevState,
+            [mecha_id]: {
+            ...(prevState[mecha_id] || {}),
+            ...actions
+            }
+        }));
+    };
+
+    const getMechaActionsByMechaId = (mecha_id: string): MechaActions => {
+        const mechaActions = restrictActionsMap[mecha_id];
+        if (mechaActions) {
+            return mechaActions;
+        } else {
+            return { alreadyMove: false, alreadyAttack: false };
+        }
+    };
+      
 
     useEffect(() => {
         if (incomingTurn) {
@@ -86,7 +116,6 @@ export default function MechaRPGLogic({
                 }
                 return mecha;
             });
-
             setMechas(enabledMechas);
         }
     }, [isTurn, mechasInitialized]);
@@ -94,6 +123,7 @@ export default function MechaRPGLogic({
     useEffect(() => {
         if (isTurn) {
             setActions([]);
+            setRestrictActionsMap({});
         }
     }, [isTurn]);
 
@@ -135,6 +165,9 @@ export default function MechaRPGLogic({
             const maybeMecha = findMechaById(mechaId);
 
             if (maybeMecha != null) {
+                if (getMechaActionsByMechaId(mechaId).alreadyMove) {
+                    console.log("El mecha ", mechaId, " ya se movio en este turno.");
+                }
                 // Significa que se movio
                 if (differentsPosition(maybeMecha.position, newPosition)) {
                     const newAction: Action = {
@@ -150,6 +183,7 @@ export default function MechaRPGLogic({
                         return m;
                     });
 
+                    updateMechaActions(mechaId, { alreadyMove: true });
                     setMechas(updatedMechas);
                     setActions([...actions, newAction]);
                 }
@@ -163,7 +197,13 @@ export default function MechaRPGLogic({
         mechaTryingMovementData => {
             const { mechaAttacker, position } = mechaTryingMovementData;
             const maybeMecha = findMechaByPosition(position);
+            
+            if (getMechaActionsByMechaId(mechaAttacker.id).alreadyAttack) {
+                console.log("El mecha ", mechaAttacker.id, " ya ataco en este turno.");
+            }
+
             if (maybeMecha) {
+
                 const newHp = maybeMecha.hp - mechaAttacker.attack;
                 const updatedMechas = mechas.map(m => {
                     if (m === maybeMecha) {
@@ -185,6 +225,7 @@ export default function MechaRPGLogic({
                     isAttack: true,
                 } as unknown as Action;
 
+                updateMechaActions(mechaAttacker.id, { alreadyAttack: true });
                 setActions([...actions, newAction]);
             }
         },
@@ -205,6 +246,7 @@ export default function MechaRPGLogic({
                         <VixenMapScene
                             mechas={mechas}
                             renderAttackScene={renderAttackScene}
+                            mechaActions={getMechaActionsByMechaId}
                         />
                     </Scene>
                     <Scene id="attack">

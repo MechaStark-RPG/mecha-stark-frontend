@@ -215,6 +215,31 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
+    attackFlag: {
+        src: './assets/A.png',
+        frameWidth: 21,
+        frameHeight: 25,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    moveFlag: {
+        src: './assets/M.png',
+        frameWidth: 21,
+        frameHeight: 26,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    mechaBg: {
+        src: './assets/mechabg.png',
+        frameWidth: 1014,
+        frameHeight: 721,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    
 };
 
 export default spriteData;

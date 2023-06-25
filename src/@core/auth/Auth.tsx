@@ -244,10 +244,10 @@ const backgroundDiv: CSSProperties = {
   zIndex: -1,
   width: '100%',
   height: '100%',
-  backgroundImage: "url('./assets/map.png')",
+  backgroundImage: "url('./assets/mechabg.png')",
   backgroundSize: 'cover',
   backgroundRepeat: 'repeat',
-  opacity: 0.9,
+  opacity: 1,
 };
 
 const textBox: CSSProperties = {

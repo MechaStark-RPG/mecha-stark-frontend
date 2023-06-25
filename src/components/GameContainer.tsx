@@ -62,7 +62,7 @@ export default function GameContainer({
         } as unknown as Mecha;
 
         const mecha2: Mecha = {
-            idOwner: 'Damistone',
+            idOwner: '0x02f2b9f31f4c072e276f5515d91cc65e177e45cb941d55e1a619aa926645b80a',
             id: '73',
             position: { x: 11, y: 6 },
             hp: 150,
