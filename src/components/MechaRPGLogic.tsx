@@ -21,6 +21,7 @@ import useGame from '../@core/useGame';
 import { WalletData } from '../@core/auth/AuthContext';
 import useSceneManager from '../@core/useSceneManager';
 import { MechaData } from 'src/entities/MechaData';
+import waitForMs from '../@core/utils/waitForMs';
 
 const urls = [
     ...Object.values(spriteData).map(data => data.src),
@@ -42,9 +43,9 @@ export interface HashMap<T> {
 }
 
 export type MechaActions = {
-    alreadyMove?: boolean,
-    alreadyAttack?: boolean,
-}
+    alreadyMove?: boolean;
+    alreadyAttack?: boolean;
+};
 
 export default function MechaRPGLogic({
     initState,
@@ -61,7 +62,9 @@ export default function MechaRPGLogic({
     const [actions, setActions] = useState<Action[]>([]);
     // Helper variable to guarantee the order of executions from useEffects
     const [mechasInitialized, setMechasInitialized] = useState(false);
-    const [restrictActionsMap, setRestrictActionsMap] = useState<HashMap<MechaActions>>({});
+    const [restrictActionsMap, setRestrictActionsMap] = useState<HashMap<MechaActions>>(
+        {}
+    );
 
     const [renderAttackScene, setRenderAttackScene] = useState(false);
     const [attackerStats, setAttackerStats] = useState<MechaData>();
@@ -71,9 +74,9 @@ export default function MechaRPGLogic({
         setRestrictActionsMap(prevState => ({
             ...prevState,
             [mecha_id]: {
-            ...(prevState[mecha_id] || {}),
-            ...actions
-            }
+                ...(prevState[mecha_id] || {}),
+                ...actions,
+            },
         }));
     };
 
@@ -85,15 +88,66 @@ export default function MechaRPGLogic({
             return { alreadyMove: false, alreadyAttack: false };
         }
     };
-      
 
     useEffect(() => {
-        if (incomingTurn) {
-            incomingTurn.actions.forEach(action => {
-                publish<ProcessMechaActionEvent>('process-mecha-action', {
-                    action,
-                } as unknown as ProcessMechaAction);
-            });
+        if (incomingTurn && incomingTurn.idPlayer !== walletData.walletAddress) {
+            const handleIncomingTurn = async () => {
+                let updatedMechas = mechas;
+
+                for (const action of incomingTurn.actions) {
+                    console.log('Action: ', action);
+                    await waitForMs(2000);
+
+                    if (action.isMovement) {
+                        await publish<ProcessMechaActionEvent>('process-mecha-action', {
+                            action,
+                        } as unknown as ProcessMechaAction);
+                        await waitForMs(2000);
+                        updatedMechas = mechas.map(m => {
+                            if (m.id === action.idMecha) {
+                                return { ...m, position: action.movement };
+                            }
+                            return m;
+                        });
+                        setMechas(updatedMechas);
+                    } else if (action.isAttack) {
+                        const maybeMecha = findMechaByPosition(action.attack);
+                        const mechaAttacker = findMechaById(action.idMecha);
+                        console.log(maybeMecha);
+                        console.log(mechaAttacker);
+
+                        const newHp = maybeMecha.hp - mechaAttacker.attack;
+                        updatedMechas = updatedMechas.map(m => {
+                            if (m === maybeMecha) {
+                                return { ...m, hp: newHp };
+                            }
+                            return m;
+                        });
+
+                        setReceiverStats({
+                            attributes: {
+                                attack: maybeMecha.attack,
+                                defense: maybeMecha.armor,
+                                hp: maybeMecha.hp,
+                                hpTotal: maybeMecha.hpTotal,
+                            },
+                            sprite: undefined,
+                        });
+                        setAttackerStats({
+                            attributes: {
+                                attack: mechaAttacker.attack,
+                                defense: mechaAttacker.armor,
+                                hp: mechaAttacker.hp,
+                                hpTotal: mechaAttacker.hpTotal,
+                            },
+                            sprite: undefined,
+                        });
+                        setRenderAttackScene(true);
+                        setMechas(updatedMechas);
+                    }
+                }
+            };
+            handleIncomingTurn();
         }
     }, [incomingTurn]);
 
@@ -166,7 +220,7 @@ export default function MechaRPGLogic({
 
             if (maybeMecha != null) {
                 if (getMechaActionsByMechaId(mechaId).alreadyMove) {
-                    console.log("El mecha ", mechaId, " ya se movio en este turno.");
+                    console.log('El mecha ', mechaId, ' ya se movio en este turno.');
                 }
                 // Significa que se movio
                 if (differentsPosition(maybeMecha.position, newPosition)) {
@@ -197,13 +251,12 @@ export default function MechaRPGLogic({
         mechaTryingMovementData => {
             const { mechaAttacker, position } = mechaTryingMovementData;
             const maybeMecha = findMechaByPosition(position);
-            
+
             if (getMechaActionsByMechaId(mechaAttacker.id).alreadyAttack) {
-                console.log("El mecha ", mechaAttacker.id, " ya ataco en este turno.");
+                console.log('El mecha ', mechaAttacker.id, ' ya ataco en este turno.');
             }
 
             if (maybeMecha) {
-
                 const newHp = maybeMecha.hp - mechaAttacker.attack;
                 const updatedMechas = mechas.map(m => {
                     if (m === maybeMecha) {
@@ -213,9 +266,25 @@ export default function MechaRPGLogic({
                 });
 
                 // TODO: ADD SPRITES TO MECHAS
-                setReceiverStats({attributes: {attack: maybeMecha.attack, defense: maybeMecha.armor, hp: maybeMecha.hp, hpTotal: maybeMecha.hpTotal}, sprite: undefined })
-                setAttackerStats({attributes: {attack: mechaAttacker.attack, defense: mechaAttacker.armor, hp: mechaAttacker.hp, hpTotal: mechaAttacker.hpTotal}, sprite: undefined })
-                
+                setReceiverStats({
+                    attributes: {
+                        attack: maybeMecha.attack,
+                        defense: maybeMecha.armor,
+                        hp: maybeMecha.hp,
+                        hpTotal: maybeMecha.hpTotal,
+                    },
+                    sprite: undefined,
+                });
+                setAttackerStats({
+                    attributes: {
+                        attack: mechaAttacker.attack,
+                        defense: mechaAttacker.armor,
+                        hp: mechaAttacker.hp,
+                        hpTotal: mechaAttacker.hpTotal,
+                    },
+                    sprite: undefined,
+                });
+
                 setMechas(updatedMechas);
                 setRenderAttackScene(true);
 
@@ -250,18 +319,20 @@ export default function MechaRPGLogic({
                         />
                     </Scene>
                     <Scene id="attack">
-                        {attackerStats && receiverStats && <AttackScene
-                            setRenderAttackScene={setRenderAttackScene}
-                            attackerStats={{
-                                attributes: attackerStats.attributes,
-                                sprite: spriteData.yellow,
-                            }}
-                            receiverStats={{
-                                attributes: receiverStats.attributes,
-                                sprite: spriteData.yellow,
-                            }}
-                            type={AttackSceneType.RANGE}
-                        />}
+                        {attackerStats && receiverStats && (
+                            <AttackScene
+                                setRenderAttackScene={setRenderAttackScene}
+                                attackerStats={{
+                                    attributes: attackerStats.attributes,
+                                    sprite: spriteData.yellow,
+                                }}
+                                receiverStats={{
+                                    attributes: receiverStats.attributes,
+                                    sprite: spriteData.yellow,
+                                }}
+                                type={AttackSceneType.RANGE}
+                            />
+                        )}
                     </Scene>
                 </SceneManager>
             </AssetLoader>
