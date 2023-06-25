@@ -3,18 +3,71 @@ import { Position } from '../@core/GameObject';
 import { InteractableRef } from '../@core/Interactable';
 import { MoveableRef } from '../@core/Moveable';
 import useGameObject from '../@core/useGameObject';
-import usePathfinding from '../@core/usePathfinding';
-
+import usePointer from '../@core/usePointer';
 import PlayerPathOverlay from './PlayerPathOverlay';
 import useGameEvent from '../@core/useGameEvent';
 import { ProcessMechaActionEvent } from '../@core/logic/MechaEvent';
 
-export default function MechaScriptFromAction() {
-    const { name, getComponent } = useGameObject();
-    const findPath = usePathfinding();
+function posToString(pos: Position): string {
+    return `${pos.x},${pos.y}`;
+}
+
+function findPath(from: Position, to: Position): Position[] | null {
+    const movements = [
+        { dx: 0, dy: 1 }, // Right
+        { dx: 0, dy: -1 }, // Left
+        { dx: 1, dy: 0 }, // Down
+        { dx: -1, dy: 0 }, // Up
+    ];
+
+    const queue: Position[] = [from];
+    const parents: { [key: string]: Position | null } = { [posToString(from)]: null };
+
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+
+        if (current.x === to.x && current.y === to.y) {
+            break;
+        }
+
+        for (const movement of movements) {
+            const neighbor: Position = {
+                x: current.x + movement.dx,
+                y: current.y + movement.dy,
+            };
+
+            const neighborKey = posToString(neighbor);
+
+            // eslint-disable-next-line no-prototype-builtins
+            if (!parents.hasOwnProperty(neighborKey)) {
+                queue.push(neighbor);
+                parents[neighborKey] = current;
+            }
+        }
+    }
+
+    // eslint-disable-next-line no-prototype-builtins
+    if (!parents.hasOwnProperty(posToString(to))) {
+        // No valid path found
+        return null;
+    }
+
+    // Reconstruct the path from the initial position to the target position
+    const path: Position[] = [];
+    let current: Position | null = to;
+
+    while (current) {
+        path.unshift(current);
+        current = parents[posToString(current)];
+    }
+
+    return path;
+}
+
+export default function MechaScript() {
+    const { name, getComponent, transform } = useGameObject();
     const [path, setPath] = useState<Position[]>([]);
     const [pathOverlayEnabled, setPathOverlayEnabled] = useState(true);
-    const [pointer, setPointer] = useState<Position>();
 
     useGameEvent<ProcessMechaActionEvent>(
         'process-mecha-action',
@@ -24,9 +77,14 @@ export default function MechaScriptFromAction() {
             if (processMechaAction.action.idMecha === name) {
                 const { action } = processMechaAction;
                 if (action.isMovement) {
-                    const nextPath = findPath({ to: action.movement });
+                    const nextPath = findPath(
+                        { x: transform.x, y: transform.y },
+                        action.movement
+                    );
+                    if (path.length > 0) {
+                        nextPath.unshift(transform);
+                    }
                     setPath(nextPath);
-                    setPointer(action.movement);
                     setPathOverlayEnabled(true);
                 }
             }
@@ -34,11 +92,15 @@ export default function MechaScriptFromAction() {
         []
     );
 
+    // mouse controls
+    const pointer = usePointer();
+
     // walk the path
     useEffect(() => {
         if (!path.length) {
             return;
         }
+
         const [nextPosition] = path;
 
         (async () => {
@@ -58,14 +120,10 @@ export default function MechaScriptFromAction() {
     }, [path, getComponent]);
 
     return (
-        <>
-            {pointer && (
-                <PlayerPathOverlay
-                    path={path}
-                    pathVisible={pathOverlayEnabled}
-                    pointer={pointer}
-                />
-            )}
-        </>
+        <PlayerPathOverlay
+            path={path}
+            pathVisible={pathOverlayEnabled}
+            pointer={pointer}
+        />
     );
 }

@@ -13,7 +13,7 @@ import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
 
-const mapData = mapDataString(`
+export const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · #
 # · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · #

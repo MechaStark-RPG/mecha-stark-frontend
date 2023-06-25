@@ -83,6 +83,12 @@ export default function MechaRPGLogic({
         }
     }, [isTurn, mechasInitialized]);
 
+    useEffect(() => {
+        if (isTurn) {
+            setActions([]);
+        }
+    }, [isTurn]);
+
     const findMechaById = useCallback(
         mechaId => {
             const maybeMecha = mechas.filter(mecha => mecha.id === mechaId);
@@ -124,7 +130,6 @@ export default function MechaRPGLogic({
     useEffect(() => {
         if (sentTurn) {
             setTurn(({ idPlayer: username, actions } as unknown) as Turn);
-            // updateActions();
         }
     }, [actions, sentTurn]);
 
