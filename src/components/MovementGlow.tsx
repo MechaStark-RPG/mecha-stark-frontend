@@ -20,7 +20,7 @@ export default function MovementGlow({
         ? movements.map(({ x, y }) => (
                 // eslint-disable-next-line react/jsx-indent
                 // <group position={[x, y, 0]}>
-                <group >
+                <group key={`${x}.${y}`}>
                     <Graphic
                         {...spriteData.ui}
                         state="solid"

@@ -95,7 +95,6 @@ export default function VixenMapScene({ mechas, renderAttackScene, mechaActions 
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
                 <CameraFollowScript />
             </GameObject>
-
             {mechas.map(mecha => {
                 return (
                     <>
@@ -113,6 +112,7 @@ export default function VixenMapScene({ mechas, renderAttackScene, mechaActions 
                             x={mecha.position.x}
                             y={mecha.position.y}
                             isTurn={mecha.isReady}
+                            spriteMap={mecha.color === 'blue' ? spriteData.blueMap : spriteData.yellowMap }
                         />
                         {mechaActions && !mechaActions(mecha.id).alreadyAttack &&
                             <group position={[mecha.position.x + 0.45, mecha.position.y + 0.7, 2]}>

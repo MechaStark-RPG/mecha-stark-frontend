@@ -30,7 +30,6 @@ export default function MenuOption({
                     anchorY="middle"
                     position={[0, 0, 10]}
                     fontSize={0.5}
-                    font={'Roboto'}
                     color={color}
                     applyMatrix4={null}
                 >

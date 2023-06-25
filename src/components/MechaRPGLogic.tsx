@@ -131,7 +131,7 @@ export default function MechaRPGLogic({
                                 hp: maybeMecha.hp,
                                 hpTotal: maybeMecha.hpTotal,
                             },
-                            sprite: undefined,
+                            sprite: maybeMecha.color == 'blue' ? spriteData.blue : spriteData.yellow,
                         });
                         setAttackerStats({
                             attributes: {
@@ -140,7 +140,7 @@ export default function MechaRPGLogic({
                                 hp: mechaAttacker.hp,
                                 hpTotal: mechaAttacker.hpTotal,
                             },
-                            sprite: undefined,
+                            sprite: mechaAttacker.color == 'blue' ? spriteData.blue : spriteData.yellow,
                         });
                         setRenderAttackScene(true);
                         setMechas(updatedMechas);
@@ -273,7 +273,7 @@ export default function MechaRPGLogic({
                         hp: maybeMecha.hp,
                         hpTotal: maybeMecha.hpTotal,
                     },
-                    sprite: undefined,
+                    sprite: maybeMecha.color == 'blue' ? spriteData.blue : spriteData.yellow,
                 });
                 setAttackerStats({
                     attributes: {
@@ -282,7 +282,7 @@ export default function MechaRPGLogic({
                         hp: mechaAttacker.hp,
                         hpTotal: mechaAttacker.hpTotal,
                     },
-                    sprite: undefined,
+                    sprite: mechaAttacker.color == 'blue' ? spriteData.blue : spriteData.yellow,
                 });
 
                 setMechas(updatedMechas);
@@ -324,11 +324,11 @@ export default function MechaRPGLogic({
                                 setRenderAttackScene={setRenderAttackScene}
                                 attackerStats={{
                                     attributes: attackerStats.attributes,
-                                    sprite: spriteData.yellow,
+                                    sprite: attackerStats.sprite,
                                 }}
                                 receiverStats={{
                                     attributes: receiverStats.attributes,
-                                    sprite: spriteData.yellow,
+                                    sprite: receiverStats.sprite,
                                 }}
                                 type={AttackSceneType.RANGE}
                             />

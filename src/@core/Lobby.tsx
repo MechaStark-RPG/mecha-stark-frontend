@@ -168,5 +168,4 @@ const textBox: CSSProperties = {
 const principalText: CSSProperties = {
   fontSize: '24px',
   color: '#ffffff',
-  font: 'Roboto',
 };
