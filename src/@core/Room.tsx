@@ -78,6 +78,7 @@ const flags: CSSProperties = {
     textAlign: 'center',
     border: '2px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '4px',
+    paddingTop: '2%',
     fontSize: '16px',
     color: 'white',
     padding: '12px 20px 12px 20px',
@@ -92,10 +93,3 @@ const flags: CSSProperties = {
     overflow: 'hidden',
   }
 
-{/* <HyperLink
-  onClick={() =>
-    setAction(prevState => (prevState === 'join' ? 'create' : 'join'))
-  }
->
-    {`${action === 'join' ? 'Create New' : 'Join'} Room`}
-</HyperLink> */}

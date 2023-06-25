@@ -15,10 +15,9 @@ import MECHA_STARK_ABI from './abi.json';
 import { jsx, css}  from '@emotion/core';
 
 declare var MECHA_STARK_WALLET_PRIVKEY : string | undefined;
+declare var MECHA_STARK_WALLET_ACC_ADDRESS: string | undefined;
 
-const GOERLI_URL = 'https://alpha4.starknet.io'
-const POKE_CAIRO_ADDRESS = '0x03a1db2968737c3b2797accd5f3d6c9daf15c563e4a8de0ad061e88a42043739'
-const MECHA_STARK_ADDRESS = '0x054fc2e5a547e322bcdb48280a23f74cc7069e77749afddfc981aafa1e485591'
+const MECHA_STARK_ADDRESS = '0x02FF3acf120d57D8eA2ECD4555D5701C77D4132586391C6e068e8317dE703a07'
 
 const verifyToken = async token => {
   console.log(`${restUrl}/auth/verify`);
@@ -126,33 +125,35 @@ export default function Auth({ location }: AuthProps) {
 
   const connectMechaStarkWallet = async() => {   
     try{
-      const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
-      const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
+      await callValidateGame();
 
-      const accountAddress = "0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6";
-      const mechaWalletAccount = new Account(provider, accountAddress, starkKeyPair);
+      // const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
+      // const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
 
-      const OZaccount = new Account(provider, accountAddress, MECHA_STARK_WALLET_PRIVKEY);
+      // const accountAddress = "0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6";
+      // const mechaWalletAccount = new Account(provider, accountAddress, starkKeyPair);
 
-      const mechaStarkContractPrivate = new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
-      mechaStarkContractPrivate.connect(mechaWalletAccount);
+      // const OZaccount = new Account(provider, accountAddress, MECHA_STARK_WALLET_PRIVKEY);
+
+      // const mechaStarkContractPrivate = new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
+      // mechaStarkContractPrivate.connect(mechaWalletAccount);
 
       // const GG = await mechaStarkContractPrivate.call("test_array_felt", [1, [11, 21]]); 
-      const totalBet: uint256.Uint256 = uint256.bnToUint256(10);
-      const mechas_ids = [cairo.uint256(1), cairo.uint256(2), cairo.uint256(3), cairo.uint256(4), cairo.uint256(5)];
-      const bet = cairo.uint256(10);
+      // const totalBet: uint256.Uint256 = uint256.bnToUint256(10);
+      // const mechas_ids = [cairo.uint256(1), cairo.uint256(2), cairo.uint256(3), cairo.uint256(4), cairo.uint256(5)];
+      // const bet = cairo.uint256(10);
 
-      const transferCallData: Call = mechaStarkContractPrivate.populate("create_game", {
-        mechas_id: ['1n', '2n', '3n', '4n', '5n'],
-        bet: bet,
-      });
+      // const transferCallData: Call = mechaStarkContractPrivate.populate("create_game", {
+      //   mechas_id: ['1n', '2n', '3n', '4n', '5n'],
+      //   bet: bet,
+      // });
 
-      const { transaction_hash: transferTxHash } = await OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
+      // const { transaction_hash: transferTxHash } = await OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
 
-      // OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
-      console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`, transferTxHash);
-      await provider.waitForTransaction(transferTxHash);
-      console.log('TRANSACTION DONE?');
+      // // OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
+      // console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`, transferTxHash);
+      // await provider.waitForTransaction(transferTxHash);
+      // console.log('TRANSACTION DONE?');
       
       // console.log('myCall', myCall)
       // let executeHash = await mechaWalletAccount.execute(myCall);
@@ -175,6 +176,115 @@ export default function Auth({ location }: AuthProps) {
     } catch(error) {
         console.log("connectMechaStarkWallet: ", error.message);
       }
+  }
+
+  const getContractAndAccount = async () => {
+    const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
+    // const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
+    const privateAccount = new Account(provider, MECHA_STARK_WALLET_ACC_ADDRESS, MECHA_STARK_WALLET_PRIVKEY);
+
+    const mechaStarkContract= new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
+    mechaStarkContract.connect(privateAccount);
+
+    return { mechaStarkContract, privateAccount, provider }
+  }
+
+  const callValidateGame = async () => {
+    const { mechaStarkContract, privateAccount, provider } = await getContractAndAccount();
+   
+    const validateCallData = getValidateCallData();
+
+    const res: Call = mechaStarkContract.populate("validate_game", {
+      game_state: validateCallData.game_state,
+      turns: validateCallData.turns,
+    });
+
+    const { transaction_hash: transferTxHash } = await privateAccount.execute(res, undefined, { maxFee: 900_000_000_000_000 });
+    console.log(`Sending validate Game to Starknet...`, transferTxHash);
+    await provider.waitForTransaction(transferTxHash);
+  }
+  
+  const getValidateCallData = () => {
+    const position_default = {x: 100, y: 100}
+    const action_1_player_1 = {
+      mecha_id: 1,
+      first_action: 0,
+      movement: position_default,
+      attack: { x: 5, y: 0 },
+    };
+
+    const action_2_player_1 = {
+      mecha_id: 2,
+      first_action: 0,
+      movement: position_default,
+      attack: { x: 5, y: 1 },
+    };
+    
+    const action_3_player_1 = {
+      mecha_id: 3,
+      first_action: 0,
+      movement: position_default,
+      attack: { x: 5, y: 2 },
+    };
+  
+    const action_4_player_1 = {
+      mecha_id: 4,
+      first_action: 0,
+      movement: position_default,
+      attack: { x: 5, y: 3 },
+    };
+
+    const action_5_player_1 = {
+      mecha_id: 5,
+      first_action: 0,
+      movement: position_default,
+      attack: { x: 5, y: 4 },
+    };
+
+    const player_1_actions = [action_1_player_1, action_2_player_1, action_3_player_1, action_4_player_1, action_5_player_1];
+
+    const game_id = 1;
+    const player_1 = '0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6';
+    let turn_player_1 = { game_id: game_id, player: player_1, actions: player_1_actions };
+
+    const mecha_state_1_player_1 = { id: 1, hp: 1, position: {x: 2, y: 0} };
+    const mecha_state_2_player_1 = {id: 2, hp: 100, position: {x: 2, y: 1} };
+    const mecha_state_3_player_1 = {id: 3, hp: 100, position: {x: 2, y: 2} };
+    const mecha_state_4_player_1 = {id: 4, hp: 100, position: {x: 2, y: 3} };
+    const mecha_state_5_player_1 = {id: 5, hp: 100, position: {x: 2, y: 4} };
+
+    let mechas_player_1 = [mecha_state_1_player_1, mecha_state_2_player_1, mecha_state_3_player_1, mecha_state_4_player_1, mecha_state_5_player_1 ];
+
+    const action_1_player_2 = { mecha_id: 6, first_action: 0, movement: position_default, attack: { x: 2, y: 0 } };
+    const action_2_player_2 = { mecha_id: 7, first_action: 0, movement: position_default, attack: { x: 2, y: 1 } };
+    const action_3_player_2 = { mecha_id: 8, first_action: 0, movement: position_default, attack: { x: 2, y: 2 } };
+    const action_4_player_2 = { mecha_id: 9, first_action: 0, movement: position_default, attack: { x: 2, y: 3 } };
+    const action_5_player_2 = { mecha_id: 10, first_action: 0, movement: position_default, attack: { x: 2, y: 4 } };
+
+    const player_2_actions = [action_1_player_2, action_2_player_2, action_3_player_2, action_4_player_2, action_5_player_2];
+    const player_2 = '0x0660cC8805f88E40c4e685ABf35B279DC05C02db063f719074A4Fd2c0bfe725a';
+
+    const mecha_state_1_player_2 = {id: 6, hp: 100, position: {x: 5, y: 0} };
+    const mecha_state_2_player_2 = {id: 7, hp: 100, position: {x: 5, y: 1} };
+    const mecha_state_3_player_2 = {id: 8, hp: 100, position: {x: 5, y: 2} };
+    const mecha_state_4_player_2 = {id: 9, hp: 100, position: {x: 5, y: 3} };
+    const mecha_state_5_player_2 = {id: 10, hp: 100, position: {x: 5, y: 4} };
+
+    let turn_player_2 = { game_id: game_id, player: player_2, actions: player_2_actions };
+    let mechas_player_2 = [mecha_state_1_player_2, mecha_state_2_player_2, mecha_state_3_player_2, mecha_state_4_player_2, mecha_state_5_player_2 ];
+
+    const turns = [turn_player_1, turn_player_2, turn_player_1, turn_player_2, turn_player_1, turn_player_2, turn_player_1, turn_player_2]
+    
+    const game_state = {
+      game_id: game_id, 
+      player_1: player_1, 
+      player_2: player_2, 
+      mechas_state_player_1: mechas_player_1, 
+      mechas_state_player_2: mechas_player_2
+    }
+    console.log(game_state)
+
+    return { game_state: game_state, turns: turns };
   }
 
 	const handleDisconnect = async () =>{

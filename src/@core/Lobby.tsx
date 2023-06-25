@@ -81,6 +81,7 @@ export default function Lobby({ roomId, password }: LobbyProps) {
 
   const OnDraft = () => {
     return (
+      <>
       <div>
         <Button
           style={{ fontSize: 16, margin: 4 }}
@@ -88,12 +89,20 @@ export default function Lobby({ roomId, password }: LobbyProps) {
           onClick={handleEndTurn}
         >
           <div>
-                        <span style={{ fontSize: 24 }}>
-                            END TURN <br />
-                        </span>
+            <span style={{ fontSize: 24 }}>
+                End Turn <br />
+            </span>
           </div>
         </Button>
       </div>
+        {!isTurn && 
+          <div style={textBox}>
+              <div style={principalText}>
+                  Waiting for other players..
+              </div>
+          </div>
+        }
+        </>
     );
   };
 
@@ -136,4 +145,28 @@ const turnMenu: CSSProperties = {
   width: "20%",
   height: "20%",
   zIndex: 1
+};
+
+const textBox: CSSProperties = {
+  position: "absolute",
+  border: 'solid',
+  borderColor: 'rgba(255, 255, 255, 0.5)',
+  textAlign: 'center',
+  alignSelf: 'center',
+  paddingTop: '1%',
+  alignItems: 'center',
+  backgroundColor: 'rgba(1, 0, 27, 1)',
+  padding: '1%',
+  marginBottom: '4rem',
+  borderRadius: '5px',
+  gridTemplateColumns: '1fr',
+  maxWidth: '70%',
+  margin: 'auto',
+  zIndex: 1,
+};
+
+const principalText: CSSProperties = {
+  fontSize: '24px',
+  color: '#ffffff',
+  font: 'Roboto',
 };
