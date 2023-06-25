@@ -18,22 +18,6 @@
       {
         "name": "mechas_id",
         "type": "core::array::Array::<core::felt252>"
-      },
-      {
-        "name": "bet",
-        "type": "core::integer::u256"
-      }
-    ],
-    "outputs": [],
-    "state_mutability": "external"
-  },
-  {
-    "name": "claimRewards",
-    "type": "function",
-    "inputs": [
-      {
-        "name": "user",
-        "type": "core::starknet::contract_address::ContractAddress"
       }
     ],
     "outputs": [],
@@ -44,7 +28,7 @@
     "type": "function",
     "inputs": [
       {
-        "name": "id_game",
+        "name": "game_id",
         "type": "core::integer::u128"
       },
       {
@@ -60,7 +44,7 @@
     "type": "struct",
     "members": [
       {
-        "name": "id_game",
+        "name": "game_id",
         "type": "core::integer::u128"
       },
       {
@@ -86,7 +70,7 @@
     "type": "struct",
     "members": [
       {
-        "name": "id_game",
+        "name": "game_id",
         "type": "core::integer::u128"
       },
       {
@@ -124,7 +108,7 @@
     "type": "function",
     "inputs": [
       {
-        "name": "id_game",
+        "name": "game_id",
         "type": "core::integer::u128"
       },
       {
@@ -143,14 +127,6 @@
     "name": "mecha_stark::components::game::Game",
     "type": "struct",
     "members": [
-      {
-        "name": "size",
-        "type": "core::integer::u128"
-      },
-      {
-        "name": "bet",
-        "type": "core::integer::u128"
-      },
       {
         "name": "status",
         "type": "core::integer::u8"
@@ -182,7 +158,7 @@
     "type": "function",
     "inputs": [
       {
-        "name": "id_game",
+        "name": "game_id",
         "type": "core::integer::u128"
       }
     ],
@@ -206,60 +182,78 @@
     "state_mutability": "external"
   },
   {
-    "name": "test_array_felt",
-    "type": "function",
-    "inputs": [
+    "name": "mecha_stark::components::position::Position",
+    "type": "struct",
+    "members": [
       {
-        "name": "pos",
-        "type": "core::integer::u32"
+        "name": "x",
+        "type": "core::integer::u128"
       },
       {
-        "name": "array",
-        "type": "core::array::Array::<core::felt252>"
-      }
-    ],
-    "outputs": [
-      {
-        "type": "core::felt252"
-      }
-    ],
-    "state_mutability": "view"
-  },
-  {
-    "name": "test_array_struct_turn",
-    "type": "function",
-    "inputs": [
-      {
-        "name": "pos_turn",
-        "type": "core::integer::u32"
-      },
-      {
-        "name": "pos_action",
-        "type": "core::integer::u32"
-      },
-      {
-        "name": "turns",
-        "type": "core::array::Array::<mecha_stark::components::turn::Turn>"
-      }
-    ],
-    "outputs": [
-      {
+        "name": "y",
         "type": "core::integer::u128"
       }
-    ],
-    "state_mutability": "view"
+    ]
   },
   {
-    "name": "test_game_state",
+    "name": "mecha_stark::components::turn::Action",
+    "type": "struct",
+    "members": [
+      {
+        "name": "mecha_id",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "first_action",
+        "type": "mecha_stark::components::turn::TypeAction"
+      },
+      {
+        "name": "movement",
+        "type": "mecha_stark::components::position::Position"
+      },
+      {
+        "name": "attack",
+        "type": "mecha_stark::components::position::Position"
+      }
+    ]
+  },
+  {
+    "name": "mecha_stark::components::game_state::MechaState",
+    "type": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "hp",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "position",
+        "type": "mecha_stark::components::position::Position"
+      }
+    ]
+  },
+  {
+    "name": "nothing",
     "type": "function",
     "inputs": [
       {
-        "name": "pos",
-        "type": "core::integer::u32"
+        "name": "position",
+        "type": "mecha_stark::components::position::Position"
+      },
+      {
+        "name": "action",
+        "type": "mecha_stark::components::turn::Action"
       },
       {
         "name": "game_state",
         "type": "mecha_stark::components::game_state::GameState"
+      },
+      {
+        "name": "mecha_state",
+        "type": "mecha_stark::components::game_state::MechaState"
       }
     ],
     "outputs": [

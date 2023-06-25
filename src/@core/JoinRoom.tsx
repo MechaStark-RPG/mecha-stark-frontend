@@ -21,6 +21,8 @@ export default function JoinRoom({ handleAuth, walletData }: JoinRoomProps) {
 
     return (
         <div style={backgroundDiv}>
+        <br />
+        <br />
             <div style={textBox}>
             {walletData && walletData.walletConnected &&
                     <div style={connectWalletText}>
@@ -88,7 +90,7 @@ const backgroundDiv: CSSProperties = {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
     padding: '1%',
-    marginBottom: '4rem',
+    paddingTop: '1%',
     borderRadius: '5px',
     gridTemplateColumns: '1fr',
     maxWidth: '70%',
