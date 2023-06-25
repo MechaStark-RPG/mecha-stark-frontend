@@ -7,17 +7,19 @@ import { Form, InputGroup, FormControl, Button } from "react-bootstrap";
 import { restUrl } from "../../env";
 import useAuth from "./useAuth";
 import ErrorHandler from "../ErrorHandler";
-import { Contract, Provider, json, ec, Account, number, stark  } from "starknet";
+import { Contract, Provider, json, ec, Account, constants, stark, uint256, CallData, cairo, Call } from "starknet";
 import { connect, disconnect } from "get-starknet";
 import contractJson from './main.json';
+import MECHA_STARK_ABI from './abi.json';
 /** @jsx jsx */
 import { jsx, css}  from '@emotion/core';
 
 declare var MECHA_STARK_WALLET_PRIVKEY : string | undefined;
 
 const GOERLI_URL = 'https://alpha4.starknet.io'
-const MECHA_STARK_ADDRESS = '0x03a1db2968737c3b2797accd5f3d6c9daf15c563e4a8de0ad061e88a42043739'
-// 0x01aaeaf9a95f8b76b42f3e58758b97d96e4843635d2e74672870ddddb8c970bf
+const POKE_CAIRO_ADDRESS = '0x03a1db2968737c3b2797accd5f3d6c9daf15c563e4a8de0ad061e88a42043739'
+const MECHA_STARK_ADDRESS = '0x054fc2e5a547e322bcdb48280a23f74cc7069e77749afddfc981aafa1e485591'
+
 const verifyToken = async token => {
   console.log(`${restUrl}/auth/verify`);
 
@@ -110,9 +112,10 @@ export default function Auth({ location }: AuthProps) {
             await wallet.enable();
             setWalletConnected(wallet.isConnected);
             setWalletAddress(wallet.selectedAddress);
-            setWalletProvider(wallet.provider);
+            setWalletProvider(wallet.account);
+            console.log(wallet.account)
 
-            const mechaStarkContract = new Contract(contractJson.abi, MECHA_STARK_ADDRESS, wallet.provider);
+            const mechaStarkContract = new Contract(contractJson.abi, MECHA_STARK_ADDRESS, wallet.account);
             setMechaStarkContract(mechaStarkContract);
         } else {
         console.log('PLEASE CONNECT A WALLET');
@@ -125,17 +128,58 @@ export default function Auth({ location }: AuthProps) {
 
   const connectMechaStarkWallet = async() => {   
     try{
-      const provider = new Provider({ sequencer: { network: "goerli-alpha" } });
-      const starkKeyPair = ec.getKeyPair(MECHA_STARK_WALLET_PRIVKEY);
+      const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
+      console.log('CRUDA PRV', MECHA_STARK_WALLET_PRIVKEY)
+      const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
+      console.log('starkKeyPair PRV', starkKeyPair)
+
       const accountAddress = "0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6";
       const mechaWalletAccount = new Account(provider, accountAddress, starkKeyPair);
 
-      const mechaStarkContractPrivate = new Contract(contractJson.abi, MECHA_STARK_ADDRESS, provider);
-      mechaStarkContractPrivate.connect(mechaWalletAccount);
+      const OZaccount = new Account(provider, accountAddress, MECHA_STARK_WALLET_PRIVKEY);
+      console.log('✅ Existing OpenZeppelin account connected.\n   at address =', OZaccount.address);
 
-      const result = await mechaStarkContractPrivate.call("name");
-      console.log("name private call: ", result.toString());
-      } catch(error) {
+      // console.log('account ', mechaWalletAccount)
+      const mechaStarkContractPrivate = new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
+      mechaStarkContractPrivate.connect(mechaWalletAccount);
+      // // console.log('isValidPrivateKey')
+
+      // const GG = await mechaStarkContractPrivate.call("test_array_felt", [1, [11, 21]]); 
+      const totalBet: uint256.Uint256 = uint256.bnToUint256(10);
+      const mechas_ids = [cairo.uint256(1), cairo.uint256(2), cairo.uint256(3), cairo.uint256(4), cairo.uint256(5)];
+      const bet = cairo.uint256(10);
+
+      const transferCallData: Call = mechaStarkContractPrivate.populate("create_game", {
+        mechas_id: ['1n', '2n', '3n', '4n', '5n'],
+        bet: bet,
+      });
+
+      const { transaction_hash: transferTxHash } = await OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
+
+      // OZaccount.execute(transferCallData, undefined, { maxFee: 900_000_000_000_000 });
+      console.log(`Waiting for Tx to be Accepted on Starknet - Transfer...`, transferTxHash);
+      await provider.waitForTransaction(transferTxHash);
+      console.log('TRANSACTION DONE?');
+      
+      // console.log('myCall', myCall)
+      // let executeHash = await mechaWalletAccount.execute(myCall);
+      // console.log('TX: ', executeHash);
+
+      // const transferCallData = CallData.compile({
+      //     mechas_id: [cairo.uint256(1),cairo.uint256(2),cairo.uint256(3),cairo.uint256(4),cairo.uint256(5)],
+      //     bet: totalBet
+      // });
+      // const executeHash = await OZaccount.execute({
+      //     contractAddress: MECHA_STARK_ADDRESS,
+      //     entrypoint: 'create_game',
+      //     calldata: transferCallData,
+      //   }, undefined, { maxFee: 900_000_000_000_000 });
+        // const executeHash = await mechaStarkContractPrivate.create_game(myCall.calldata);
+      // await provider.waitForTransaction(executeHash.transaction_hash);
+      // console.log('TRANSACTION DONE?');
+      
+      
+    } catch(error) {
         console.log("connectMechaStarkWallet: ", error.message);
       }
   }

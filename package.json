@@ -51,7 +51,7 @@
     "react-router-dom": "5.2.0",
     "react-three-fiber": "^4.2.8",
     "socket.io-client": "^4.6.2",
-    "starknet": "^4.22.0",
+    "starknet": "^5.13.2",
     "three": "^0.112.1",
     "zustand": "^2.2.3",
     "dotenv-webpack": "^8.0.1"

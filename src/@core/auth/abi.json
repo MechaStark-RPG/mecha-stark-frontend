@@ -22,10 +22,6 @@
       {
         "name": "bet",
         "type": "core::integer::u256"
-      },
-      {
-        "name": "user",
-        "type": "core::starknet::contract_address::ContractAddress"
       }
     ],
     "outputs": [],
@@ -54,10 +50,6 @@
       {
         "name": "mechas_id",
         "type": "core::array::Array::<core::felt252>"
-      },
-      {
-        "name": "user",
-        "type": "core::starknet::contract_address::ContractAddress"
       }
     ],
     "outputs": [],
@@ -161,7 +153,7 @@
       },
       {
         "name": "status",
-        "type": "mecha_stark::components::game::StatusGame"
+        "type": "core::integer::u8"
       },
       {
         "name": "winner",
