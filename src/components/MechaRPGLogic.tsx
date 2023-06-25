@@ -139,8 +139,15 @@ export default function MechaRPGLogic({
                         movement: newPosition,
                         isMovement: true,
                     } as unknown as Action;
-                    //TODO: Review
-                    setMechas([...mechas, { ...maybeMecha, position: newPosition }]);
+
+                    const updatedMechas = mechas.map(m => {
+                        if (m === maybeMecha) {
+                            return { ...m, position: newPosition };
+                        }
+                        return m;
+                    });
+
+                    setMechas(updatedMechas);
                     setActions([...actions, newAction]);
                 }
             }
@@ -156,11 +163,23 @@ export default function MechaRPGLogic({
             const maybeMecha = findMechaByPosition(position);
             if (maybeMecha) {
                 const newHp = maybeMecha.hp - mechaAttacker.attack;
-                //TODO: Review
-                setMechas([...mechas, { ...maybeMecha, hp: newHp }]);
+                const updatedMechas = mechas.map(m => {
+                    if (m === maybeMecha) {
+                        return { ...m, hp: newHp };
+                    }
+                    return m;
+                });
+
+                setMechas(updatedMechas);
                 setRenderAttackScene(true);
-                // Mostrar la animacion
-                // Guardar el action y mandarlo
+
+                const newAction: Action = {
+                    idMecha: mechaAttacker.id,
+                    attack: position,
+                    isAttack: true,
+                } as unknown as Action;
+
+                setActions([...actions, newAction]);
             }
         },
         [mechas]
