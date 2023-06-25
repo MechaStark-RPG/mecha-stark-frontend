@@ -6,9 +6,12 @@ import ScenePortal from '../@core/ScenePortal';
 import Sprite from '../@core/Sprite';
 import TileMap, { TileMapResolver } from '../@core/TileMap';
 import { mapDataString } from '../@core/utils/mapUtils';
-import Player from '../entities/Player';
+import Mecha from '../entities/Mecha';
 import spriteData from '../spriteData';
 import GraphicOriginal from '../@core/GraphicOriginal';
+import CameraFollowScript from '../components/CameraFollowScript';
+import { Mecha as MechaType } from '../@core/logic/GameState';
+import Menu from '../entities/Menu';
 import MovementGlow from '../components/MovementGlow';
 
 const mapData = mapDataString(`
@@ -58,7 +61,11 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
     }
 };
 
-export default function VixenMapScene() {
+interface VixenMapProps {
+    mechas: MechaType[];
+}
+
+export default function VixenMapScene({ mechas }: VixenMapProps) {
     return (
         <>
             <GameObject>
@@ -73,18 +80,28 @@ export default function VixenMapScene() {
             <GameObject name="map">
                 <ambientLight />
                 <TileMap data={mapData} resolver={resolveMapTile} definesMapSize />
+                <CameraFollowScript />
             </GameObject>
+
+            {mechas.map(mecha => {
+                return (
+                    <Mecha
+                        mechaId={mecha.id}
+                        x={mecha.position.x}
+                        y={mecha.position.y}
+                        isTurn={mecha.isReady}
+                    />
+                );
+            })}
+
+            <Menu />
+
             <GameObject x={3} y={8} layer="character">
                 <Sprite {...spriteData.enemyMap} />
                 <Collider />
                 <Interactable />
                 <ScenePortal name="attack" enterDirection={[-1, 0]} target="attack" />
             </GameObject>
-            {/* <GameObject>
-                <MovementGlow movements={[{x:3, y: 12}, {x:2, y: 12}, {x:4, y: 12}, {x:3, y: 11}, {x:3, y: 13}]}/>
-            </GameObject> */}
-            <Player x={3} y={12} />
-
         </>
     );
 }

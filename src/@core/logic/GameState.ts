@@ -1,24 +1,48 @@
 import { Position } from '../GameObject';
 
-type Mecha = {
+export type Mecha = {
+    idOwner: string;
     position: Position;
-    life: number;
-    attackPower: number;
-    deffensePower: number;
+    id: string;
+    hp: number;
+    hpTotal: number;
+    attack: number;
+    armor: number;
+    mov: number;
+    attackShootDistance: number;
+    attackMeeleDistance: number;
+    isReady: boolean;
 };
 
-type Player = {
+export type Player = {
+    id: number;
     address: string;
     username: string;
-    mechas: Mecha[];
+    mechas: Mecha[]; // Only the attributes
 };
 
-type InitState = {
+export type InitState = {
     players: Player[];
 };
 
-type GameState = {
+export type GameState = {
+    id: number;
     initState: InitState;
+    turns: Action[];
 };
 
-type Action = {};
+export type Turn = {
+    id: number;
+    idPlayer: string;
+    turnNum: number;
+    actions: Action[];
+};
+
+export type Action = {
+    idMecha: string;
+    firstAction: number;
+    isAttack: boolean;
+    isMovement: boolean;
+    movement: Position;
+    attack: Position;
+};

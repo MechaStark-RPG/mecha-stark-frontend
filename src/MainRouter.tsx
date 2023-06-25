@@ -3,7 +3,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { RenderRoutes } from './routes';
 
-export default function AppRouter(props) {
+export default function MainRouter(props) {
     const { loggedIn } = useAuth();
 
     return (

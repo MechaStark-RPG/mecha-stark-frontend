@@ -89,7 +89,7 @@ const flags: CSSProperties = {
     marginRight: '1%',
     marginBottom: '1%',
     marginTop: '1%',
-    overflow: 'hidden',   
+    overflow: 'hidden',
   }
 
 {/* <HyperLink

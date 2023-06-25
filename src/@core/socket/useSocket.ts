@@ -59,13 +59,16 @@ export default function useSocket() {
             );
         },
 
-        playerCollections: cb => {
-            socket.connection.on('show-players-teams', data => cb(null, data.teams));
+        showTurns: cb => {
+            socket.connection.on('show-turns', data => {
+                console.log('Show turns in subscribeTo', data);
+                cb(null, data.turn);
+            });
         },
 
         personalTurnStart: cb => {
             socket.connection.on('personal-turn-start', message => {
-                console.log(message);
+                console.log('Personal turn start', message);
                 cb(null, message);
             });
         },
@@ -79,7 +82,7 @@ export default function useSocket() {
 
         personalTurnEnd: cb => {
             socket.connection.on('personal-turn-end', message => {
-                console.log(message);
+                console.log('Personal turn end', message);
                 cb(null, message);
             });
         },
