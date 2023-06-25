@@ -93,6 +93,7 @@ export default function MechaRPGLogic({
         if (incomingTurn) {
             const handleIncomingTurn = async () => {
                 for (const action of incomingTurn.actions) {
+                    console.log('Action: ', action);
                     if (action.isMovement) {
                         await publish<ProcessMechaActionEvent>('process-mecha-action', {
                             action,
@@ -105,6 +106,41 @@ export default function MechaRPGLogic({
                             return m;
                         });
                         setMechas(updatedMechas);
+                    } else if (action.isAttack) {
+                        const maybeMecha = findMechaByPosition(action.attack);
+                        const mechaAttacker = findMechaById(action.idMecha);
+                        console.log(maybeMecha);
+                        console.log(mechaAttacker);
+
+                        const newHp = maybeMecha.hp - mechaAttacker.attack;
+                        const updatedMechas = mechas.map(m => {
+                            if (m === maybeMecha) {
+                                return { ...m, hp: newHp };
+                            }
+                            return m;
+                        });
+
+                        setReceiverStats({
+                            attributes: {
+                                attack: maybeMecha.attack,
+                                defense: maybeMecha.armor,
+                                hp: maybeMecha.hp,
+                                hpTotal: maybeMecha.hpTotal,
+                            },
+                            sprite: undefined,
+                        });
+                        setAttackerStats({
+                            attributes: {
+                                attack: mechaAttacker.attack,
+                                defense: mechaAttacker.armor,
+                                hp: mechaAttacker.hp,
+                                hpTotal: mechaAttacker.hpTotal,
+                            },
+                            sprite: undefined,
+                        });
+
+                        setMechas(updatedMechas);
+                        setRenderAttackScene(true);
                     }
                 }
             };
