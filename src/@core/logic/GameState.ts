@@ -33,13 +33,16 @@ export type GameState = {
 
 export type Turn = {
     id: number;
-    idPlayer: number;
+    idPlayer: string;
+    turnNum: number;
     actions: Action[];
 };
 
 export type Action = {
     idMecha: string;
     firstAction: number;
+    isAttack: boolean;
+    isMovement: boolean;
     movement: Position;
     attack: Position;
 };

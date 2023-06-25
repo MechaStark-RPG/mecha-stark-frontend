@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Col, Row, Button, Container } from 'react-bootstrap';
 
 import JoinedPlayers from './JoinedPlayers';
 import useSocket from './socket/useSocket';
 import MechaRPGLogic from '../components/MechaRPGLogic';
-import { Mecha, Player, InitState } from './logic/GameState';
+import { Mecha, Player, InitState, Turn } from './logic/GameState';
 import GameContainer from '../components/GameContainer';
 
 interface LobbyProps {
@@ -22,9 +22,14 @@ export type PlayerJoined = {
 export default function Lobby({ roomId, password }: LobbyProps) {
     const { emit, subscribeTo } = useSocket();
     const [isReady, setIsReady] = useState(false);
-    const [isTurn, setIsTurn] = useState(false);
     const [playersJoined, setPlayerJoined] = useState<PlayerJoined[]>([]);
+    // Is ready to start the game
     const [gameIsReady, setGameIsReady] = useState(false);
+    // Actual turn
+    const [turn, setTurn] = useState<Turn>();
+    const [sentTurn, setSentTurn] = useState(false);
+    // Actual player has the turn
+    const [isTurn, setIsTurn] = useState(false);
 
     subscribeTo.personalTurnStart(() => {
         setIsTurn(true);
@@ -32,14 +37,24 @@ export default function Lobby({ roomId, password }: LobbyProps) {
 
     subscribeTo.personalTurnEnd(() => {
         setIsTurn(false);
+        setTurn(null);
+        setSentTurn(false);
     });
 
+    // Review this...
     useEffect(() => {
         const handleDraftStart = () => {
             setGameIsReady(true);
         };
         subscribeTo.draftStart(handleDraftStart);
     }, [playersJoined]);
+
+    //
+    useEffect(() => {
+        if (sentTurn && turn) {
+            emit.playerTurnPass(turn);
+        }
+    }, [turn, sentTurn]);
 
     const PreDraft = () => {
         const message = isReady ? 'WAITING FOR OTHERS...' : 'YOU READY?';
@@ -57,15 +72,18 @@ export default function Lobby({ roomId, password }: LobbyProps) {
         );
     };
 
+    const handleEndTurn = event => {
+        event.preventDefault();
+        setSentTurn(true);
+    };
+
     const OnDraft = () => {
         return (
             <div>
                 <Button
                     style={{ fontSize: 16, margin: 4 }}
                     disabled={!isTurn}
-                    onClick={() => {
-                        emit.playerTurnPass('Data del turno...');
-                    }}
+                    onClick={handleEndTurn}
                 >
                     <div>
                         <span style={{ fontSize: 24 }}>
@@ -109,6 +127,8 @@ export default function Lobby({ roomId, password }: LobbyProps) {
                             <GameContainer
                                 playersJoined={playersJoined}
                                 isTurn={isTurn}
+                                setTurn={setTurn}
+                                sentTurn={sentTurn}
                             />
                         ) : (
                             <Button style={{ fontSize: 32, margin: 4 }} disabled>

@@ -25,7 +25,7 @@ export default function Room() {
     const handleAuth = (data: RoomValues) => {
         setRoomId(data.roomId);
         setPassword(data.password);
-        createSocket(username, roomId, password, action);
+        createSocket(username, data.roomId, data.password, action);
         initListeners(setAvailable, setError);
     };
 

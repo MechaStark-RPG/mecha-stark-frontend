@@ -8,8 +8,8 @@ import usePointer from '../@core/usePointer';
 import usePointerClick from '../@core/usePointerClick';
 import PlayerPathOverlay from './PlayerPathOverlay';
 import useGameEvent from '../@core/useGameEvent';
-import { MechaDidMoveEvent, MechaWillMoveEvent } from '../@core/logic/MechaEvent';
 import useGame from '../@core/useGame';
+import { MechaDidMoveEvent, MechaWillMoveEvent } from '../@core/logic/MechaEvent';
 
 export default function MechaScript() {
     const { name, getComponent, transform } = useGameObject();
@@ -89,8 +89,6 @@ export default function MechaScript() {
         // Click derecho
         if (event.button === 0) {
             // Si se cliquea a si mismo
-            console.log(`Pointer, x: ${pointer.x}, y: ${pointer.y}`);
-            console.log(`Transform, x: ${transform.x}, y: ${transform.y}`);
 
             if (pointer.x === transform.x && pointer.y === transform.y) {
                 // Chequear si este async no rompe nada...

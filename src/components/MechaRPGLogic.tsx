@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import AssetLoader from '../@core/AssetLoader';
 import Scene from '../@core/Scene';
 import SceneManager from '../@core/SceneManager';
@@ -10,8 +10,13 @@ import { Turn, InitState, Mecha, Action } from '../@core/logic/GameState';
 import useSocket from '../@core/socket/useSocket';
 import useAuth from '../@core/auth/useAuth';
 import useGameEvent from '../@core/useGameEvent';
-import { MechaDidMoveEvent } from '../@core/logic/MechaEvent';
+import {
+    MechaDidMoveEvent,
+    ProcessMechaAction,
+    ProcessMechaActionEvent,
+} from '../@core/logic/MechaEvent';
 import { Position } from '../@core/GameObject';
+import useGame from '../@core/useGame';
 
 const urls = [
     ...Object.values(spriteData).map(data => data.src),
@@ -23,15 +28,36 @@ interface GameLogicProps {
     initState: InitState;
     isTurn: boolean;
     username: string;
+    setTurn: Dispatch<SetStateAction<Turn>>;
+    sentTurn: boolean;
+    incomingTurn: Turn;
 }
 
-export default function MechaRPGLogic({ initState, isTurn, username }: GameLogicProps) {
-    const [turns, setTurns] = useState<Turn[]>([]);
-    // Logica para saber que ocurre con el mecha actualmente
+export default function MechaRPGLogic({
+    initState,
+    isTurn,
+    username,
+    setTurn,
+    sentTurn,
+    incomingTurn,
+}: GameLogicProps) {
+    const { publish } = useGame();
+    // Actual mechas..
     const [mechas, setMechas] = useState<Mecha[]>();
+    // Save actions for the actual turn
     const [actions, setActions] = useState<Action[]>([]);
-    // Variable helper para inicializar los mechas y que los effects se ejecuten en orden
+    // Helper variable to guarantee the order of executions from useEffects
     const [mechasInitialized, setMechasInitialized] = useState(false);
+
+    useEffect(() => {
+        if (incomingTurn) {
+            incomingTurn.actions.forEach(action => {
+                publish<ProcessMechaActionEvent>('process-mecha-action', ({
+                    action,
+                } as unknown) as ProcessMechaAction);
+            });
+        }
+    }, [incomingTurn]);
 
     // Agarro todos los mechas para mostrarlos en el mapa
     useEffect(() => {
@@ -80,21 +106,27 @@ export default function MechaRPGLogic({ initState, isTurn, username }: GameLogic
             const newPosition = mechaMovementData.position;
             const maybeMecha = findMechaById(mechaId);
 
-            console.log('Se movio el mecha!!.. Guardando el action');
-
             if (maybeMecha != null) {
                 // Significa que se movio
                 if (differentsPosition(maybeMecha.position, newPosition)) {
                     const newAction: Action = ({
                         idMecha: mechaId,
                         movement: newPosition,
+                        isMovement: true,
                     } as unknown) as Action;
                     setActions([...actions, newAction]);
                 }
             }
         },
-        [mechas]
+        [mechas, actions]
     );
+
+    useEffect(() => {
+        if (sentTurn) {
+            setTurn(({ idPlayer: username, actions } as unknown) as Turn);
+            // updateActions();
+        }
+    }, [actions, sentTurn]);
 
     return (
         <>

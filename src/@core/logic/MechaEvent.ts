@@ -1,5 +1,6 @@
 import { PubSubEvent } from '../utils/createPubSub';
 import { Position } from '../GameObject';
+import { Action } from './GameState';
 
 export enum GameEvent {
     MOVE,
@@ -15,5 +16,13 @@ export interface MechaMovementData {
     position: Position;
 }
 
+export interface ProcessMechaAction {
+    action: Action;
+}
+
 export type MechaWillMoveEvent = PubSubEvent<'mecha-will-move', MechaEventData>;
 export type MechaDidMoveEvent = PubSubEvent<'mecha-did-move', MechaMovementData>;
+export type ProcessMechaActionEvent = PubSubEvent<
+    'process-mecha-action',
+    ProcessMechaAction
+>;

@@ -1,10 +1,10 @@
 import { css, Global } from '@emotion/core';
 import globalStyles from '../styles/global';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Game from '../@core/Game';
 import useWindowSize from '../@core/useWindowSize';
 import MechaRPGLogic from './MechaRPGLogic';
-import { InitState, Mecha, Player } from '../@core/logic/GameState';
+import { InitState, Mecha, Player, Turn } from '../@core/logic/GameState';
 import { PlayerJoined } from '../@core/Lobby';
 import useAuth from '../@core/auth/useAuth';
 import useSocket from '../@core/socket/useSocket';
@@ -22,14 +22,26 @@ const styles = {
 export interface GameContainerProps {
     isTurn: boolean;
     playersJoined: PlayerJoined[];
+    setTurn: Dispatch<SetStateAction<Turn>>;
+    sentTurn: boolean;
 }
 
-export default function GameContainer({ isTurn, playersJoined }: GameContainerProps) {
+export default function GameContainer({
+    isTurn,
+    playersJoined,
+    setTurn,
+    sentTurn,
+}: GameContainerProps) {
     const { username } = useAuth();
-    const { subscribeTo } = useSocket();
     const [width, height] = useWindowSize();
+    const { subscribeTo } = useSocket();
+    // Turns for all players...
+    const [incomingTurn, setIncomingTurn] = useState<Turn>();
 
-    console.log(username);
+    subscribeTo.showTurns((err, iTurn) => {
+        console.log('Incoming turn', iTurn);
+        setIncomingTurn((iTurn as unknown) as Turn);
+    });
 
     const initState = () => {
         // TODO: Crear los mechas y el init state a partir de los players joined.
@@ -86,6 +98,9 @@ export default function GameContainer({ isTurn, playersJoined }: GameContainerPr
                         initState={initState()}
                         isTurn={isTurn}
                         username={username}
+                        sentTurn={sentTurn}
+                        setTurn={setTurn}
+                        incomingTurn={incomingTurn}
                     />
                 </Game>
             </div>

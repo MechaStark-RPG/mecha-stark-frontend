@@ -8,6 +8,7 @@ import CameraFollowScript from '../components/CameraFollowScript';
 import CharacterScript from '../components/CharacterScript';
 import MechaScript from '../components/MechaScript';
 import spriteData from '../spriteData';
+import MechaScriptFromAction from '../components/MechaScripFromAction';
 
 interface MechaProps extends GameObjectProps {
     isTurn: boolean;
@@ -23,7 +24,7 @@ export default function Mecha({ isTurn, mechaId, ...props }: MechaProps) {
             <CharacterScript>
                 <Sprite {...spriteData.mechaMap} />
             </CharacterScript>
-            {isTurn && <MechaScript />}
+            {isTurn ? <MechaScript /> : <MechaScriptFromAction />}
         </GameObject>
     );
 }
