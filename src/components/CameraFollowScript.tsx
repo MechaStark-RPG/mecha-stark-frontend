@@ -93,22 +93,26 @@ export default function CameraFollowScript() {
     });
 
     useKeyActions({
-        PageUp: e => {
+        ArrowUp: e => {
             e.preventDefault();
-            const maxLevel = cameraZoomLevels.length - 1;
-            zoomLevel.current = Math.min(maxLevel, zoomLevel.current + 1);
+            camera.position.setY(camera.position.y + 1);
         },
-
-        PageDown: e => {
+        ArrowDown: e => {
             e.preventDefault();
-            zoomLevel.current = Math.max(0, zoomLevel.current - 1);
+            camera.position.setY(camera.position.y - 1);
         },
-        // centrar la camara al pj que me llamo
-        1: e => {
+        ArrowLeft: e => {
             e.preventDefault();
-            const { x, y } = clampPositionToViewport(nodeRef.current.position);
-            camera.position.setX(x);
-            camera.position.setY(y);
+            camera.position.setX(camera.position.x - 1);
+        },
+        ArrowRight: e => {
+            e.preventDefault();
+            camera.position.setX(camera.position.x + 1);
+        },
+        ' ': e => {
+            e.preventDefault();
+            camera.position.setX(15);
+            camera.position.setY(7);
         },
     });
 
