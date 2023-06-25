@@ -17,7 +17,7 @@ import { jsx, css}  from '@emotion/core';
 declare var MECHA_STARK_WALLET_PRIVKEY : string | undefined;
 declare var MECHA_STARK_WALLET_ACC_ADDRESS: string | undefined;
 
-const MECHA_STARK_ADDRESS = '0x02FF3acf120d57D8eA2ECD4555D5701C77D4132586391C6e068e8317dE703a07'
+const MECHA_STARK_ADDRESS = '0x0705302f5a64201b5b94409156dba7065890ac0262f48b16d180be4f07b6e666'
 
 const verifyToken = async token => {
   console.log(`${restUrl}/auth/verify`);
