@@ -90,16 +90,20 @@ export default function MechaRPGLogic({
     };
 
     useEffect(() => {
-        if (incomingTurn) {
+        if (incomingTurn && incomingTurn.idPlayer !== walletData.walletAddress) {
             const handleIncomingTurn = async () => {
+                let updatedMechas = mechas;
+
                 for (const action of incomingTurn.actions) {
                     console.log('Action: ', action);
+                    await waitForMs(2000);
+
                     if (action.isMovement) {
                         await publish<ProcessMechaActionEvent>('process-mecha-action', {
                             action,
                         } as unknown as ProcessMechaAction);
                         await waitForMs(2000);
-                        const updatedMechas = mechas.map(m => {
+                        updatedMechas = mechas.map(m => {
                             if (m.id === action.idMecha) {
                                 return { ...m, position: action.movement };
                             }
@@ -113,7 +117,7 @@ export default function MechaRPGLogic({
                         console.log(mechaAttacker);
 
                         const newHp = maybeMecha.hp - mechaAttacker.attack;
-                        const updatedMechas = mechas.map(m => {
+                        updatedMechas = updatedMechas.map(m => {
                             if (m === maybeMecha) {
                                 return { ...m, hp: newHp };
                             }
@@ -138,9 +142,8 @@ export default function MechaRPGLogic({
                             },
                             sprite: undefined,
                         });
-
-                        setMechas(updatedMechas);
                         setRenderAttackScene(true);
+                        setMechas(updatedMechas);
                     }
                 }
             };

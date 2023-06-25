@@ -43,7 +43,7 @@ export default function GameContainer({
 
     subscribeTo.showTurns((err, iTurn) => {
         console.log('Incoming turn', iTurn);
-        if (iTurn) {
+        if (iTurn && Object.keys(iTurn).length !== 0) {
             setIncomingTurn(iTurn as unknown as Turn);
         }
     });
