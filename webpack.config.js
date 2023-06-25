@@ -40,6 +40,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       MECHA_STARK_WALLET_PRIVKEY: JSON.stringify(process.env.MECHA_STARK_WALLET_PRIVKEY),
+      MECHA_STARK_WALLET_ACC_ADDRESS: JSON.stringify(process.env.MECHA_STARK_WALLET_ACC_ADDRESS),
     }),
     new Dotenv(),
     new webpack.HotModuleReplacementPlugin(),

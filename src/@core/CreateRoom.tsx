@@ -29,6 +29,8 @@ export default function CreateRoom({ handleAuth, walletData }: CreateMenuRoomPro
     };
     return (
         <div style={backgroundDiv}>
+        <br />
+        <br />
             <div style={textBox}>
                 {walletData && walletData.walletConnected &&
                     <div style={connectWalletText}>
@@ -88,6 +90,7 @@ const backgroundDiv: CSSProperties = {
     borderColor: 'rgba(255, 255, 255, 0.5)',
     textAlign: 'center',
     alignSelf: 'center',
+    paddingTop: '1%',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
     padding: '1%',
