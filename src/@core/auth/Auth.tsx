@@ -9,7 +9,6 @@ import useAuth from "./useAuth";
 import ErrorHandler from "../ErrorHandler";
 import { Contract, Provider, json, ec, Account, constants, stark, uint256, CallData, cairo, Call } from "starknet";
 import { connect, disconnect } from "get-starknet";
-import contractJson from './main.json';
 import MECHA_STARK_ABI from './abi.json';
 /** @jsx jsx */
 import { jsx, css}  from '@emotion/core';
@@ -340,17 +339,14 @@ const textBox: CSSProperties = {
 const principalText: CSSProperties = {
   fontSize: '50px',
   color: '#ffffff',
-  font: 'Roboto',
 };
 
 const connectWalletText: CSSProperties = {
   fontSize: '25px',
   color: '#ffffff',
-  font: 'Roboto',
 };
 
 const flags: CSSProperties = {
-  font: 'Roboto',
   textAlign: 'center',
   border: '2px solid rgba(255, 255, 255, 0.3)',
   borderRadius: '4px',

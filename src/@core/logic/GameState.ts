@@ -12,6 +12,7 @@ export type Mecha = {
     attackShootDistance: number;
     attackMeeleDistance: number;
     isReady: boolean;
+    color: string;
 };
 
 export type Player = {

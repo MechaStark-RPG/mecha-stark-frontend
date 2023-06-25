@@ -101,13 +101,11 @@ const backgroundDiv: CSSProperties = {
   const principalText: CSSProperties = {
     fontSize: '50px',
     color: '#ffffff',
-    font: 'Roboto',
   };
   
   const connectWalletText: CSSProperties = {
     fontSize: '20px',
     color: '#ffffff',
-    font: 'Roboto',
   };  
 
   const greenText: CSSProperties = {
@@ -116,7 +114,6 @@ const backgroundDiv: CSSProperties = {
   };
 
   const flags: CSSProperties = {
-    font: 'Roboto',
     textAlign: 'center',
     border: '2px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '4px',

@@ -141,6 +141,14 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
+    blueMap: {
+        src: './assets/blue_map.png',
+        frameWidth: 70,
+        frameHeight: 80,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
     enemyMap: {
         src: './assets/enemy_map.png',
         frameWidth: 68,

@@ -52,36 +52,40 @@ export default function GameContainer({
         if (playersJoined && playersJoined.length > 1) {
             const mecha1: Mecha = {
                 idOwner: playersJoined[0].username,
-                id: '87',
-                position: { x: 10, y: 6 },
-                hp: 200,
-                hpTotal: 200,
-                attack: 20,
-                armor: 5,
+                id: '1',
+                position: { x: 6, y: 6 },
+                hp: 100,
+                hpTotal: 100,
+                attack: 15,
+                armor: 10,
+                mov: 2,
                 isReady: false,
                 attackMeeleDistance: 2,
+                color: 'blue',
             } as unknown as Mecha;
 
             const mecha2: Mecha = {
                 idOwner: playersJoined[1].username,
-                id: '73',
-                position: { x: 11, y: 6 },
-                hp: 150,
-                hpTotal: 150,
-                attack: 10,
-                armor: 5,
+                id: '6',
+                position: { x: 12, y: 6 },
+                hp: 100,
+                hpTotal: 100,
+                attack: 15,
+                armor: 10,
+                mov: 2,
                 isReady: false,
                 attackMeeleDistance: 2,
+                color: 'yellow',
             } as unknown as Mecha;
 
             const players: Player[] = [
                 {
                     id: 1997,
-                    username: 'Santieight',
+                    username: 'dub',
                 } as unknown as Player,
                 {
                     id: 1995,
-                    username: 'Damistone',
+                    username: 'gercos',
                 } as unknown as Player,
             ];
 
@@ -96,20 +100,22 @@ export default function GameContainer({
         } else if (playersJoined && playersJoined.length > 0) {
             const mecha1: Mecha = {
                 idOwner: playersJoined[0].username,
-                id: '87',
-                position: { x: 10, y: 6 },
-                hp: 200,
-                hpTotal: 200,
-                attack: 20,
-                armor: 5,
+                id: '1',
+                position: { x: 6, y: 6 },
+                hp: 100,
+                hpTotal: 100,
+                attack: 15,
+                armor: 10,
+                mov: 2,
                 isReady: false,
                 attackMeeleDistance: 2,
+                color: 'blue',
             } as unknown as Mecha;
 
             const players: Player[] = [
                 {
                     id: 1997,
-                    username: 'Santieight',
+                    username: 'dub',
                 } as unknown as Player,
             ];
 
