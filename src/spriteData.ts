@@ -171,6 +171,14 @@ const spriteData: { [index: string]: SpriteProps } = {
             default: [[0, 0]],
         },
     },
+    menuNormal: {
+        src: './assets/menu_normal.png',
+        frameWidth: 1032,
+        frameHeight: 802,
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
     menuBackground: {
         src: './assets/bluescreen.png',
         frameWidth: 500,

@@ -6,8 +6,10 @@ import usePointer from '../@core/usePointer';
 import usePointerClick from '../@core/usePointerClick';
 import useGameObject from '../@core/useGameObject';
 import MenuOption from './MenuOption';
+import GraphicOriginal from '../@core/GraphicOriginal';
 import useGame from '../@core/useGame';
 import { MechaWillMoveEvent } from '../@core/logic/MechaEvent';
+import spriteData from '../spriteData';
 
 interface MenuScriptProps {
     setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -130,6 +132,20 @@ export default function Menu(props: GameObjectProps) {
                             />
                         </group>
                     ))}
+                    <GraphicOriginal
+                        {...spriteData.menuBackground}
+                            offset={{ x: 0, y: 0 }}
+                            customScale={{ width: 2.5, height: options.length, z: 10 }}
+                            opacity={1}
+                            basic
+                    />
+                    <GraphicOriginal
+                        {...spriteData.menuNormal}
+                            offset={{ x: 0, y: 0 }}
+                            customScale={{ width: 2.8, height: options.length + 1, z: 10 }}
+                            opacity={1}
+                            basic
+                    />
                 </>
             )}
         </GameObject>

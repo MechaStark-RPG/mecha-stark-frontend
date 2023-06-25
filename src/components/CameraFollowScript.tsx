@@ -125,6 +125,9 @@ export default function CameraFollowScript() {
             const offsetX = event.clientX - innerWidth / 2;
             const offsetY = event.clientY - innerHeight / 2;
 
+            camera.position.setX(16);
+            camera.position.setY(7);
+
             // Verifica si el puntero del mouse está en el borde
             const isMouseAtEdgeX =
                 clientX <= xThreshold || clientX >= innerWidth - xThreshold;
