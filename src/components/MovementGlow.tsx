@@ -15,7 +15,6 @@ export default function MovementGlow({
     const { transform } = useGameObject();
 
     let renderedMovements = null;
-    {console.log("MOVEMNETS: ", movements)}
 
     renderedMovements = movements.length
         ? movements.map(({ x, y }) => (

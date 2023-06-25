@@ -54,7 +54,6 @@ export default function Auth({ location }: AuthProps) {
   
   useEffect(() => {
     if (walletConnected && walletAddress) {
-      console.log('logged with wallet: ', walletAddress)
       handleLogin(walletAddress)
     }
   }, [walletConnected, walletAddress]);
@@ -113,7 +112,6 @@ export default function Auth({ location }: AuthProps) {
             setWalletConnected(wallet.isConnected);
             setWalletAddress(wallet.selectedAddress);
             setWalletProvider(wallet.account);
-            console.log(wallet.account)
 
             const mechaStarkContract = new Contract(contractJson.abi, MECHA_STARK_ADDRESS, wallet.account);
             setMechaStarkContract(mechaStarkContract);
@@ -129,20 +127,15 @@ export default function Auth({ location }: AuthProps) {
   const connectMechaStarkWallet = async() => {   
     try{
       const provider = new Provider({ sequencer: { network: constants.NetworkName.SN_GOERLI } });
-      console.log('CRUDA PRV', MECHA_STARK_WALLET_PRIVKEY)
       const starkKeyPair = ec.starkCurve.getStarkKey(MECHA_STARK_WALLET_PRIVKEY);
-      console.log('starkKeyPair PRV', starkKeyPair)
 
       const accountAddress = "0x053f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6";
       const mechaWalletAccount = new Account(provider, accountAddress, starkKeyPair);
 
       const OZaccount = new Account(provider, accountAddress, MECHA_STARK_WALLET_PRIVKEY);
-      console.log('✅ Existing OpenZeppelin account connected.\n   at address =', OZaccount.address);
 
-      // console.log('account ', mechaWalletAccount)
       const mechaStarkContractPrivate = new Contract(MECHA_STARK_ABI, MECHA_STARK_ADDRESS, provider);
       mechaStarkContractPrivate.connect(mechaWalletAccount);
-      // // console.log('isValidPrivateKey')
 
       // const GG = await mechaStarkContractPrivate.call("test_array_felt", [1, [11, 21]]); 
       const totalBet: uint256.Uint256 = uint256.bnToUint256(10);

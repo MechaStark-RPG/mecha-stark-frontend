@@ -50,7 +50,7 @@ export default function GameContainer({
         // TODO: Crear los mechas y el init state a partir de los players joined.
         console.log(playersJoined);
         const mecha1: Mecha = {
-            idOwner: '0x20e2ff1b50ae6c18b7f2e88423dcd76bceaf83b1aba43b0c3dcdf0ae4ae280a',
+            idOwner: '0x53f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6',
             id: '87',
             position: { x: 10, y: 6 },
             hp: 200,

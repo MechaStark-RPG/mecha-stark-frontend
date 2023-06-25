@@ -199,6 +199,18 @@ const spriteData: { [index: string]: SpriteProps } = {
             solid: [[0, 1]],
         },
     },
+    movIcon: {
+        src: './assets/mov_icon.png',
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
+    attackIcon: {
+        src: './assets/attack_icon.png',
+        sheet: {
+            default: [[0, 0]],
+        },
+    },
 };
 
 export default spriteData;

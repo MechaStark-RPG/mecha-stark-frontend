@@ -20,6 +20,7 @@ import { Position } from '../@core/GameObject';
 import useGame from '../@core/useGame';
 import { WalletData } from '../@core/auth/AuthContext';
 import useSceneManager from '../@core/useSceneManager';
+import { MechaData } from 'src/entities/MechaData';
 
 const urls = [
     ...Object.values(spriteData).map(data => data.src),
@@ -53,6 +54,8 @@ export default function MechaRPGLogic({
     const [mechasInitialized, setMechasInitialized] = useState(false);
 
     const [renderAttackScene, setRenderAttackScene] = useState(false);
+    const [attackerStats, setAttackerStats] = useState<MechaData>();
+    const [receiverStats, setReceiverStats] = useState<MechaData>();
 
     useEffect(() => {
         if (incomingTurn) {
@@ -158,7 +161,6 @@ export default function MechaRPGLogic({
     useGameEvent<MechaTryingAttackEvent>(
         'mecha-trying-attack',
         mechaTryingMovementData => {
-            console.log('Trying to attack!!');
             const { mechaAttacker, position } = mechaTryingMovementData;
             const maybeMecha = findMechaByPosition(position);
             if (maybeMecha) {
@@ -170,6 +172,10 @@ export default function MechaRPGLogic({
                     return m;
                 });
 
+                // TODO: ADD SPRITES TO MECHAS
+                setReceiverStats({attributes: {attack: maybeMecha.attack, defense: maybeMecha.armor, hp: maybeMecha.hp, hpTotal: maybeMecha.hpTotal}, sprite: undefined })
+                setAttackerStats({attributes: {attack: mechaAttacker.attack, defense: mechaAttacker.armor, hp: mechaAttacker.hp, hpTotal: mechaAttacker.hpTotal}, sprite: undefined })
+                
                 setMechas(updatedMechas);
                 setRenderAttackScene(true);
 
@@ -182,7 +188,7 @@ export default function MechaRPGLogic({
                 setActions([...actions, newAction]);
             }
         },
-        [mechas]
+        [mechas, receiverStats, attackerStats]
     );
 
     useEffect(() => {
@@ -202,28 +208,18 @@ export default function MechaRPGLogic({
                         />
                     </Scene>
                     <Scene id="attack">
-                        <AttackScene
+                        {attackerStats && receiverStats && <AttackScene
                             setRenderAttackScene={setRenderAttackScene}
                             attackerStats={{
-                                attributes: {
-                                    hp: 100,
-                                    hpTotal: 100,
-                                    attack: 80,
-                                    defense: 20,
-                                },
+                                attributes: attackerStats.attributes,
                                 sprite: spriteData.yellow,
                             }}
                             receiverStats={{
-                                attributes: {
-                                    hp: 200,
-                                    hpTotal: 200,
-                                    attack: 24,
-                                    defense: 35,
-                                },
-                                sprite: spriteData.blue,
+                                attributes: receiverStats.attributes,
+                                sprite: spriteData.yellow,
                             }}
                             type={AttackSceneType.RANGE}
-                        />
+                        />}
                     </Scene>
                 </SceneManager>
             </AssetLoader>

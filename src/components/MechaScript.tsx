@@ -31,9 +31,9 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
   const [pathOverlayEnabled, setPathOverlayEnabled] = useState(true);
   const [canMove, setCanMove] = useState(false);
   const [canAttack, setCanAttack] = useState(false);
-  const [posiblesMeleeAttack, setPosiblesMeleeAttack] = useState<Position[]>();
-  const [possiblesMovements, setPossiblesMovements] = useState<Position[]>([]);
-  const [enableMovementGlow, setEnableMovementGlow] = useState(false);
+  // const [posiblesMeleeAttack, setPosiblesMeleeAttack] = useState<Position[]>();
+  const [possibleActionPositions, setGlowPositions] = useState<Position[]>([]);
+  const [enableGlow, setEnableGlow] = useState(false);
 
   // mouse controls
   const pointer = usePointer();
@@ -77,33 +77,35 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
   useGameEvent<MechaWillMoveEvent>(
     "mecha-will-move",
     event => {
-
       if (event.mechaId === name) {
         setCanMove(true);
         const movements = possibleMovements({ x: transform.x, y: transform.y }, 2);
-        setPossiblesMovements(movements);
-        setEnableMovementGlow(true);
+        setGlowPositions(movements);
+        setEnableGlow(true);
       }
     },
     [transform]
   );
 
   useGameEvent<MechaWillAttackEvent>(
-    "mecha-will-attack", (event) => {
+    "mecha-will-attack",
+    event => {
       if (event.mechaId === name) {
-        // Merge con lo de Dub
-        const movements = possibleMovements({ x: transform.x, y: transform.y }, 2);
-        setPosiblesMeleeAttack(movements);
-        setEnableMovementGlow(true);
         setCanAttack(true);
+        const movements = possibleMovements({ x: transform.x, y: transform.y }, 2);
+        setGlowPositions(movements);
+        setEnableGlow(true);
       }
-    }, [transform]);
+    }, 
+    [transform]
+  );
 
   usePointerClick(async event => {
-    // Click derecho
+    if (event.button === 2) {
+        setGlowPositions([]);
+        setEnableGlow(false);
+    }
     if (event.button === 0) {
-      // Si se cliquea a si mismo
-
       if (pointer.x === transform.x && pointer.y === transform.y) {
         // Chequear si este async no rompe nada...
         // Muestro el menu
@@ -113,7 +115,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
         });
       } else if (
         canMove &&
-        possiblesMovements.filter(pos => {
+        possibleActionPositions.filter(pos => {
           return pos.x === pointer.x && pos.y === pointer.y;
         }).length > 0
       ) {
@@ -129,7 +131,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
           setPath([]);
         }
       } else if (
-        canAttack && posiblesMeleeAttack.filter(pos => {
+        canAttack && possibleActionPositions.filter(pos => {
           return pos.x === pointer.x && pos.y === pointer.y;
         }).length > 0
       ) {
@@ -152,7 +154,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
 
   // walk the path
   useEffect(() => {
-    setEnableMovementGlow(false);
+    setEnableGlow(false);
     // Ya me movi
     if (!path.length) {
       setCanMove(false);
@@ -180,13 +182,13 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
 
   return (
     <>
-      <PlayerPathOverlay
+      {/* <PlayerPathOverlay
         path={path}
         pathVisible={pathOverlayEnabled}
         pointer={pointer}
-      />
-      {enableMovementGlow &&
-        <MovementGlow movements={possiblesMovements} />
+      /> */}
+      {enableGlow &&
+        <MovementGlow movements={possibleActionPositions} />
       }
     </>
   );
