@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/core';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 
 import globalStyles from '../styles/global';
 /** @jsx jsx */
@@ -46,53 +46,81 @@ export default function GameContainer({
         setIncomingTurn(iTurn as unknown as Turn);
     });
 
-    const initState = () => {
-        // TODO: Crear los mechas y el init state a partir de los players joined.
-        console.log(playersJoined);
-        const mecha1: Mecha = {
-            idOwner: '0x53f44e0e4e4ed385e0e1a79f2c10371ca999bd5b04a24600d6f8fc1070647d6',
-            id: '87',
-            position: { x: 10, y: 6 },
-            hp: 200,
-            hpTotal: 200,
-            attack: 20,
-            armor: 5,
-            isReady: false,
-            attackMeeleDistance: 2,
-        } as unknown as Mecha;
+    const initState = useCallback(() => {
+        if (playersJoined && playersJoined.length > 1) {
+            const mecha1: Mecha = {
+                idOwner: playersJoined[0].username,
+                id: '87',
+                position: { x: 10, y: 6 },
+                hp: 200,
+                hpTotal: 200,
+                attack: 20,
+                armor: 5,
+                isReady: false,
+                attackMeeleDistance: 2,
+            } as unknown as Mecha;
 
-        const mecha2: Mecha = {
-            idOwner: '0x02f2b9f31f4c072e276f5515d91cc65e177e45cb941d55e1a619aa926645b80a',
-            id: '73',
-            position: { x: 11, y: 6 },
-            hp: 150,
-            hpTotal: 150,
-            attack: 10,
-            armor: 5,
-            isReady: false,
-            attackMeeleDistance: 2,
-        } as unknown as Mecha;
+            const mecha2: Mecha = {
+                idOwner: playersJoined[1].username,
+                id: '73',
+                position: { x: 11, y: 6 },
+                hp: 150,
+                hpTotal: 150,
+                attack: 10,
+                armor: 5,
+                isReady: false,
+                attackMeeleDistance: 2,
+            } as unknown as Mecha;
 
-        const players: Player[] = [
-            {
-                id: 1997,
-                username: 'Santieight',
-            } as unknown as Player,
-            {
-                id: 1995,
-                username: 'Damistone',
-            } as unknown as Player,
-        ];
+            const players: Player[] = [
+                {
+                    id: 1997,
+                    username: 'Santieight',
+                } as unknown as Player,
+                {
+                    id: 1995,
+                    username: 'Damistone',
+                } as unknown as Player,
+            ];
 
-        players[0].mechas = [mecha1];
-        players[1].mechas = [mecha2];
+            players[0].mechas = [mecha1];
+            players[1].mechas = [mecha2];
 
-        const state = {
-            players,
-        } as unknown as InitState;
+            const state = {
+                players,
+            } as unknown as InitState;
 
-        return state;
-    };
+            return state;
+        } else if (playersJoined && playersJoined.length > 0) {
+            const mecha1: Mecha = {
+                idOwner: playersJoined[0].username,
+                id: '87',
+                position: { x: 10, y: 6 },
+                hp: 200,
+                hpTotal: 200,
+                attack: 20,
+                armor: 5,
+                isReady: false,
+                attackMeeleDistance: 2,
+            } as unknown as Mecha;
+
+            const players: Player[] = [
+                {
+                    id: 1997,
+                    username: 'Santieight',
+                } as unknown as Player,
+            ];
+
+            players[0].mechas = [mecha1];
+
+            const state = {
+                players,
+            } as unknown as InitState;
+
+            return state;
+        }
+        return {} as unknown as InitState;
+    }, [playersJoined]);
 
     return (
         <>

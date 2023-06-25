@@ -62,7 +62,7 @@ export default function useSocket() {
         showTurns: cb => {
             socket.connection.on('show-turns', data => {
                 console.log('Show turns in subscribeTo', data);
-                cb(null, data.turn);
+                cb(null, data.lastTurn);
             });
         },
 
