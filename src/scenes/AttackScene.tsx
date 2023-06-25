@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import GameObject from '../@core/GameObject';
 import AttackMeeleScene from './AttackMeeleScene';
 import AttackRangeScene from './AttackRangeScene';
@@ -13,12 +13,14 @@ interface AttackSceneProps {
     attackerStats: MechaData;
     receiverStats: MechaData;
     type: AttackSceneType;
+    setRenderAttackScene: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function AttackScene({
     attackerStats,
     receiverStats,
     type,
+    setRenderAttackScene,
 }: AttackSceneProps) {
     return (
         <GameObject name="attackScene">
@@ -32,6 +34,7 @@ export default function AttackScene({
                 <AttackRangeScene
                     attackerStats={attackerStats}
                     receiverStats={receiverStats}
+                    setRenderAttackScene={setRenderAttackScene}
                 />
             )}
         </GameObject>
