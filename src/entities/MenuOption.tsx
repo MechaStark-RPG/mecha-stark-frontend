@@ -20,7 +20,7 @@ export default function MenuOption({
     const meshRef = useRef<THREE.Mesh>();
 
     // Cambiar el color cuando está seleccionado
-    const color = isSelected ? 'yellow' : 'black';
+    const color = isSelected ? 'yellow' : 'white';
 
     return (
         <>
@@ -29,7 +29,8 @@ export default function MenuOption({
                     anchorX="center"
                     anchorY="middle"
                     position={[0, 0, 10]}
-                    fontSize={0.3}
+                    fontSize={0.5}
+                    font={'Roboto'}
                     color={color}
                     applyMatrix4={null}
                 >

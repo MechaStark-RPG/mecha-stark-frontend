@@ -15,7 +15,9 @@ import {
   MechaWillAttackEvent,
   MechaWillMoveEvent
 } from "../@core/logic/MechaEvent";
+import MovementGlow from './MovementGlow';
 import { Mecha as MechaType } from "../@core/logic/GameState";
+
 
 interface MechaScriptProps {
   mecha: MechaType;
@@ -31,71 +33,47 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
   const [canAttack, setCanAttack] = useState(false);
   const [posiblesMeleeAttack, setPosiblesMeleeAttack] = useState<Position[]>();
   const [possiblesMovements, setPossiblesMovements] = useState<Position[]>([]);
+    const [enableMovementGlow, setEnableMovementGlow] = useState(false);
 
-  // mouse controls
-  const pointer = usePointer();
+    // mouse controls
+    const pointer = usePointer();
 
-  const getPositions = (x, y) => {
-    const horizontal: Position[] = [];
-    const vertical: Position[] = [];
-    const diagonals: Position[] = [];
+function possibleMovements(position: Position, mov: number): Position[] {
+    const uniquePositions = [];
 
-    // Posiciones horizontales
-    for (let i = x - 5; i <= x + 5; i++) {
-      horizontal.push({ x: i, y });
+    // HORIZONTALES
+    for (let i = mov; i > 0; i--) {
+        uniquePositions.push({x: position.x + i, y: position.y})
+        uniquePositions.push({x: position.x - i, y: position.y})
+        uniquePositions.push({x: position.x, y: position.y + i})
+        uniquePositions.push({x: position.x, y: position.y - i})
     }
 
-    // Posiciones verticales
-    for (let i = y - 5; i <= y + 5; i++) {
-      vertical.push({ x, y: i });
+    // DIAGONALES
+    var movementLeft = mov;
+    while (movementLeft >= 2) {
+        uniquePositions.push({x: position.x + Math.round(movementLeft/2), y: position.y + Math.round(movementLeft/2)})
+        uniquePositions.push({x: position.x - Math.round(movementLeft/2), y: position.y - Math.round(movementLeft/2)})
+        uniquePositions.push({x: position.x + Math.round(movementLeft/2), y: position.y - Math.round(movementLeft/2)})
+        uniquePositions.push({x: position.x - Math.round(movementLeft/2), y: position.y + Math.round(movementLeft/2)})
+        movementLeft = movementLeft - 2;
     }
 
-    // Diagonal superior izquierda a inferior derecha
-    for (let i = -5; i <= 5; i++) {
-      const diagonalX = x + i;
-      const diagonalY = y + i;
-      diagonals.push({ x: diagonalX, y: diagonalY });
-    }
+    return uniquePositions;
+}
 
-    // Diagonal superior derecha a inferior izquierda
-    for (let i = -5; i <= 5; i++) {
-      const diagonalX = x - i;
-      const diagonalY = y + i;
-      diagonals.push({ x: diagonalX, y: diagonalY });
-    }
-
-    // Obtener los valores dentro de las diagonales
-    const diagonalValues: Position[][] = diagonals.map(diagonal => {
-      const values = [];
-      const startX = diagonal.x < diagonal.y ? diagonal.x : diagonal.y;
-      const endX = diagonal.x > diagonal.y ? diagonal.x : diagonal.y;
-
-      for (let i = startX; i <= endX; i++) {
-        const diagonalY = diagonal.y + (i - diagonal.x);
-        values.push({ x: i, y: diagonalY });
-      }
-
-      return values;
-    });
-
-    const allValues = horizontal
-      .concat(vertical)
-      .concat(Array.prototype.concat.apply([], diagonalValues));
-
-    return allValues;
-  };
-
-  useGameEvent<MechaWillMoveEvent>(
-    "mecha-will-move",
-    event => {
-      if (event.mechaId === name.replace("mecha", "")) {
-        setCanMove(true);
-        const movements = getPositions(transform.x, transform.y);
-        setPossiblesMovements(movements);
-      }
-    },
-    []
-  );
+    useGameEvent<MechaWillMoveEvent>(
+        'mecha-will-move',
+        event => {
+            if (event.mechaId === name.replace("mecha", "")) {
+                setCanMove(true);
+                const movements = possibleMovements({x: transform.x, y: transform.y}, 2);
+                setPossiblesMovements(movements);
+                setEnableMovementGlow(true);
+            }
+        },
+        [transform]
+    );
 
   useGameEvent<MechaWillAttackEvent>(
     "mecha-will-attack", (event) => {
@@ -159,38 +137,44 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
     });
   };
 
-  // walk the path
-  useEffect(() => {
-    // Ya me movi
-    if (!path.length) {
-      setCanMove(false);
-      notifyMovement(name, { x: transform.x, y: transform.y });
-      return;
-    }
+    // walk the path
+    useEffect(() => {
+        setEnableMovementGlow(false);
+        // Ya me movi
+        if (!path.length) {
+            setCanMove(false);
+            notifyMovement(name, { x: transform.x, y: transform.y });
+            return;
+        }
 
-    const [nextPosition] = path;
+        const [nextPosition] = path;
 
-    (async () => {
-      const anyAction =
-        // Si move da 0 es puede ser porque queres moverte a algo que tenes al lado
-        (await getComponent<MoveableRef>("Moveable")?.move(nextPosition)) ||
-        (path.length === 1 && // Sino me pude mover y  el path es 1 intento interactuar con lo que este al lado
-          (await getComponent<InteractableRef>("Interactable")?.interact(
-            nextPosition
-          )));
-      // Voy consumiendo el path recursivamente
-      if (anyAction) {
-        // proceed with next step in path
-        setPath(current => current.slice(1));
-      }
-    })();
-  }, [path, getComponent]);
+        (async () => {
+            const anyAction =
+                // Si move da 0 es puede ser porque queres moverte a algo que tenes al lado
+                (await getComponent<MoveableRef>('Moveable')?.move(nextPosition)) ||
+                (path.length === 1 && // Sino me pude mover y  el path es 1 intento interactuar con lo que este al lado
+                    (await getComponent<InteractableRef>('Interactable')?.interact(
+                        nextPosition
+                    )));
+            // Voy consumiendo el path recursivamente
+            if (anyAction) {
+                // proceed with next step in path
+                setPath(current => current.slice(1));
+            }
+        })();
+    }, [path, getComponent]);
 
-  return (
-    <PlayerPathOverlay
-      path={path}
-      pathVisible={pathOverlayEnabled}
-      pointer={pointer}
-    />
-  );
+    return (
+        <>
+            <PlayerPathOverlay
+                path={path}
+                pathVisible={pathOverlayEnabled}
+                pointer={pointer}
+            />
+            { enableMovementGlow &&
+                <MovementGlow movements={possiblesMovements} />
+            }
+        </>
+    );
 }

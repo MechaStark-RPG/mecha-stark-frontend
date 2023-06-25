@@ -12,16 +12,20 @@ export default function MovementGlow({
     movements,
 }: Props) {
     const [movementTile, setMovementTile] = useState([]);
+    const { transform } = useGameObject();
 
     let renderedMovements = null;
+    {console.log("MOVEMNETS: ", movements)}
 
     renderedMovements = movements.length
         ? movements.map(({ x, y }) => (
                 // eslint-disable-next-line react/jsx-indent
-                <group key={`${x}-${y}`} position={[x, y, 0]}>
+                // <group position={[x, y, 0]}>
+                <group >
                     <Graphic
                         {...spriteData.ui}
                         state="solid"
+                        offset={{x: x - transform.x, y: y - transform.y}}
                         color="white"
                         opacity={0.2}
                         basic

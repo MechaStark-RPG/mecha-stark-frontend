@@ -30,20 +30,3 @@ export default function Mecha({ isTurn, mechaId, mecha, ...props }: MechaProps) 
     </GameObject>
   );
 }
-//
-// interface MechaAttackScriptProps {
-//   mecha: MechaType;
-// }
-//
-// export function MechaAttackScript({ mecha }: MechaAttackScriptProps) {
-//   const { transform } = useGameObject();
-//
-//
-//   useGameEvent<MechaTryingAttackEvent>("mecha-trying-attack", (event) => {
-//     const { position } = event;
-//     if (event.position.x === transform.x && event.position.y === transform.y) {
-//       // Fight !!
-//       event.mecha.attack;
-//     }
-//   });
-// }
