@@ -17,6 +17,8 @@ import {
 } from "../@core/logic/MechaEvent";
 import MovementGlow from "./MovementGlow";
 import { Mecha as MechaType } from "../@core/logic/GameState";
+import ActionIconOverlay from "./ActionIconOverlay";
+import {ActionType} from './ActionIconOverlay'
 
 
 interface MechaScriptProps {
@@ -31,7 +33,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
   const [pathOverlayEnabled, setPathOverlayEnabled] = useState(true);
   const [canMove, setCanMove] = useState(false);
   const [canAttack, setCanAttack] = useState(false);
-  // const [posiblesMeleeAttack, setPosiblesMeleeAttack] = useState<Position[]>();
+  const [actionType, setActionType] = useState<ActionType>();
   const [possibleActionPositions, setGlowPositions] = useState<Position[]>([]);
   const [enableGlow, setEnableGlow] = useState(false);
 
@@ -81,6 +83,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
         setCanMove(true);
         const movements = possibleMovements({ x: transform.x, y: transform.y }, 2);
         setGlowPositions(movements);
+        setActionType(ActionType.MOVEMENT);
         setEnableGlow(true);
       }
     },
@@ -94,6 +97,7 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
         setCanAttack(true);
         const movements = possibleMovements({ x: transform.x, y: transform.y }, 2);
         setGlowPositions(movements);
+        setActionType(ActionType.ATTACK);
         setEnableGlow(true);
       }
     }, 
@@ -182,13 +186,14 @@ export default function MechaScript({ mecha }: MechaScriptProps) {
 
   return (
     <>
-      {/* <PlayerPathOverlay
-        path={path}
-        pathVisible={pathOverlayEnabled}
-        pointer={pointer}
-      /> */}
       {enableGlow &&
-        <MovementGlow movements={possibleActionPositions} />
+        <>
+          <MovementGlow movements={possibleActionPositions} />
+            <ActionIconOverlay 
+            pointer={pointer}
+            action={actionType}
+          />
+        </>
       }
     </>
   );

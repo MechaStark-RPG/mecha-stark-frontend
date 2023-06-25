@@ -178,7 +178,7 @@ export default function GameObject({
     if (layer === 'ground-decal') offsetZ = 0.1;
     if (layer === 'obstacle') offsetZ = 0.2;
     if (layer === 'item') offsetZ = 0.3;
-    if (layer === 'character') offsetZ = 10;
+    if (layer === 'character') offsetZ = 5; // ESTO TENIA 10 de offset
     if (layer === 'fx') offsetZ = 4;
     // No se porque elegi 5 pero es para UI
     if (layer === 'ui') offsetZ = 5;

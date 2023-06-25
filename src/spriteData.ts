@@ -201,12 +201,16 @@ const spriteData: { [index: string]: SpriteProps } = {
     },
     movIcon: {
         src: './assets/mov_icon.png',
+        frameWidth: 81,
+        frameHeight: 77,
         sheet: {
             default: [[0, 0]],
         },
     },
     attackIcon: {
         src: './assets/attack_icon.png',
+        frameWidth: 81,
+        frameHeight: 77,
         sheet: {
             default: [[0, 0]],
         },

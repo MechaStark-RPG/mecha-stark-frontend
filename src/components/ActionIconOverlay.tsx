@@ -6,18 +6,20 @@ import useGameObject from '../@core/useGameObject';
 import usePathfinding from '../@core/usePathfinding';
 import spriteData from '../spriteData';
 
+export enum ActionType {
+    ATTACK = 'attack',
+    MOVEMENT = 'movement',
+}
 interface Props {
-    path: Position[];
-    pathVisible: boolean;
     pointer: Position;
-    hasTarget?: boolean;
+    action: ActionType;
 }
 
 const offsetZ = 1.5;
 
 export default function ActionIconOverlay({
     pointer,
-    hasTarget = false,
+    action,
 }: Props) {
     const { transform, nodeRef } = useGameObject();
     const findPath = usePathfinding();
@@ -65,17 +67,15 @@ export default function ActionIconOverlay({
     //           ));
     // }
 
-    const selectColor = hasTarget ? 'red' : undefined;
-
+    // const selectColor = hasTarget ? 'red' : undefined;
+    const spriteIcon = action === ActionType.MOVEMENT ? spriteData.movIcon : spriteData.attackIcon;
     return (
         <>
             {createPortal(
                 <>
                     <group position={[pointer.x, pointer.y, offsetZ]}>
                         <Graphic
-                            {...spriteData.movIcon}
-                            state="select"
-                            color={selectColor}
+                            {...spriteIcon}
                             opacity={1}
                             basic
                         />
