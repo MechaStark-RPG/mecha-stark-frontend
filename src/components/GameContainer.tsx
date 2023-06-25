@@ -81,11 +81,11 @@ export default function GameContainer({
             const players: Player[] = [
                 {
                     id: 1997,
-                    username: 'dub',
+                    username: playersJoined[0].username,
                 } as unknown as Player,
                 {
                     id: 1995,
-                    username: 'gercos',
+                    username: playersJoined[1].username,
                 } as unknown as Player,
             ];
 
