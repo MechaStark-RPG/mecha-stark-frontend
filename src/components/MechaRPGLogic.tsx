@@ -11,7 +11,7 @@ import useSocket from "../@core/socket/useSocket";
 import useAuth from "../@core/auth/useAuth";
 import useGameEvent from "../@core/useGameEvent";
 import {
-  MechaDidMoveEvent,
+  MechaDidMoveEvent, MechaTryingAttackEvent,
   ProcessMechaAction,
   ProcessMechaActionEvent
 } from "../@core/logic/MechaEvent";
@@ -49,6 +49,8 @@ export default function MechaRPGLogic({
   const [actions, setActions] = useState<Action[]>([]);
   // Helper variable to guarantee the order of executions from useEffects
   const [mechasInitialized, setMechasInitialized] = useState(false);
+
+  const [renderAttackScene, setRenderAttackScene] = useState(false);
 
   useEffect(() => {
     if (incomingTurn) {
@@ -101,6 +103,18 @@ export default function MechaRPGLogic({
     [mechas]
   );
 
+  const findMechaByPosition = useCallback(
+    (position: Position) => {
+      const maybeMecha = mechas.filter(mecha => mecha.position.x === position.x && mecha.position.y === position.y);
+      if (maybeMecha.length > 0) {
+        return maybeMecha[0];
+      }
+      return null;
+    },
+    [mechas]
+  );
+
+
   const differentsPosition = (position1: Position, position2: Position) => {
     return position1.x !== position2.x || position1.y !== position2.y;
   };
@@ -121,12 +135,29 @@ export default function MechaRPGLogic({
             movement: newPosition,
             isMovement: true
           } as unknown) as Action;
+          //TODO: Review
+          setMechas([...mechas, { ...maybeMecha, position: newPosition }]);
           setActions([...actions, newAction]);
         }
       }
     },
     [mechas, actions]
   );
+
+  useGameEvent<MechaTryingAttackEvent>(
+    "mecha-trying-attack",
+    mechaTryingMovementData => {
+      const { mechaAttacker, position } = mechaTryingMovementData;
+      const maybeMecha = findMechaByPosition(position);
+      if (maybeMecha) {
+        const newHp = maybeMecha.hp - mechaAttacker.attack;
+        //TODO: Review
+        setMechas([...mechas, { ...maybeMecha, hp: newHp }]);
+        setRenderAttackScene(true);
+        // Mostrar la animacion
+        // Guardar el action y mandarlo
+      }
+    }, [mechas]);
 
   useEffect(() => {
     if (sentTurn) {
@@ -138,33 +169,31 @@ export default function MechaRPGLogic({
     <>
       <AssetLoader urls={urls} placeholder="Loading assets ...">
         <SceneManager defaultScene="vixenMap">
-          <Scene id="attack">
-            <AttackScene
-              attackerStats={{
-                attributes: {
-                  hp: 100,
-                  hpTotal: 100,
-                  attack: 80,
-                  defense: 20
-                },
-                sprite: spriteData.yellow
-              }}
-              receiverStats={{
-                attributes: {
-                  hp: 200,
-                  hpTotal: 200,
-                  attack: 24,
-                  defense: 35
-                },
-                sprite: spriteData.blue
-              }}
-              type={AttackSceneType.RANGE}
-            />
-          </Scene>
           <Scene id="vixenMap">
             <VixenMapScene mechas={mechas} />
           </Scene>
         </SceneManager>
+        {renderAttackScene && <AttackScene
+          attackerStats={{
+            attributes: {
+              hp: 100,
+              hpTotal: 100,
+              attack: 80,
+              defense: 20
+            },
+            sprite: spriteData.yellow
+          }}
+          receiverStats={{
+            attributes: {
+              hp: 200,
+              hpTotal: 200,
+              attack: 24,
+              defense: 35
+            },
+            sprite: spriteData.blue
+          }}
+          type={AttackSceneType.RANGE}
+        />}
       </AssetLoader>
     </>
   );
