@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
 import { Clock } from 'three';
 import { useFrame } from 'react-three-fiber';
 import spriteData from '../spriteData';
@@ -18,9 +18,11 @@ const ATTACKER_INITIAL_POSITION = -12;
 const AttackRangeScene = ({
     attackerStats,
     receiverStats,
+    setRenderAttackScene,
 }: {
     attackerStats: MechaData;
     receiverStats: MechaData;
+    setRenderAttackScene: Dispatch<SetStateAction<boolean>>;
 }) => {
     const [attacker] = useState({
         sprite: attackerStats.sprite,
@@ -143,6 +145,7 @@ const AttackRangeScene = ({
         }
         if (elapsedTime > 6.5) {
             setScene('vixenMap');
+            setRenderAttackScene(false);
         }
         setAttackPanelInfo(prevState => ({
             ...prevState,

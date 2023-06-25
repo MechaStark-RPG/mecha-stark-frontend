@@ -1,38 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import GameObject, { GameObjectProps, Position } from '../@core/GameObject';
-import useGameObjectEvent from '../@core/useGameObjectEvent';
-import Interactable, { InteractionEvent } from '../@core/Interactable';
-import usePointer from '../@core/usePointer';
-import usePointerClick from '../@core/usePointerClick';
-import useGameObject from '../@core/useGameObject';
-import MenuOption from './MenuOption';
+import React, { useEffect, useState } from "react";
+import GameObject, { GameObjectProps, Position } from "../@core/GameObject";
+import useGameObjectEvent from "../@core/useGameObjectEvent";
+import Interactable, { InteractionEvent } from "../@core/Interactable";
+import usePointer from "../@core/usePointer";
+import usePointerClick from "../@core/usePointerClick";
+import useGameObject from "../@core/useGameObject";
+import MenuOption from "./MenuOption";
+import useGame from "../@core/useGame";
 import GraphicOriginal from '../@core/GraphicOriginal';
-import useGame from '../@core/useGame';
-import { MechaWillMoveEvent } from '../@core/logic/MechaEvent';
+import { MechaWillAttackEvent, MechaWillMoveEvent } from "../@core/logic/MechaEvent";
 import spriteData from '../spriteData';
 
 interface MenuScriptProps {
-    setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
-    setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
-    setOptionSelected: React.Dispatch<React.SetStateAction<string>>;
-    setMechaId: React.Dispatch<React.SetStateAction<string>>;
-    options: Option[];
+  setDisplayMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
+  setOptionSelected: React.Dispatch<React.SetStateAction<string>>;
+  setMechaId: React.Dispatch<React.SetStateAction<string>>;
+  options: Option[];
 }
 
 type Option = {
-    name: string;
-    position: Position;
+  name: string;
+  position: Position;
 };
 
 function MenuScript({
-    setDisplayMenu,
-    setOptions,
-    setOptionSelected,
-    options,
-    setMechaId,
-}: MenuScriptProps) {
-    const { getRef, transform } = useGameObject();
-    // const playSfx = useSound(soundData.eating);
+                      setDisplayMenu,
+                      setOptions,
+                      setOptionSelected,
+                      options,
+                      setMechaId
+                    }: MenuScriptProps) {
+  const { getRef, transform } = useGameObject();
+  // const playSfx = useSound(soundData.eating);
 
     useGameObjectEvent<InteractionEvent>('interaction', mecha => {
         const menuXPosition = mecha.transform.x + 2;
@@ -78,37 +78,39 @@ function MenuScript({
         }
     });
 
-    return <></>;
+  return <></>;
 }
 
 // Deshabilitarlo es matarlo
 export default function Menu(props: GameObjectProps) {
-    const [optionSelected, setOptionSelected] = useState('');
-    const [options, setOptions] = useState<Option[]>([]);
-    const [displayMenu, setDisplayMenu] = useState(false);
-    const [mechaId, setMechaId] = useState('');
-    const { publish } = useGame();
+  const [optionSelected, setOptionSelected] = useState("");
+  const [options, setOptions] = useState<Option[]>([]);
+  const [displayMenu, setDisplayMenu] = useState(false);
+  const [mechaId, setMechaId] = useState("");
+  const { publish } = useGame();
 
-    useEffect(() => {
-        const triggerMenuOptionSelected = async () => {
-            if (optionSelected !== '' && optionSelected !== 'Cancel') {
-                if (optionSelected === 'Move') {
-                    await publish<MechaWillMoveEvent>('mecha-will-move', { mechaId });
-                    setOptionSelected('');
-                    setMechaId('');
-                    setDisplayMenu(false);
-                    setOptions([]);
-                }
-            }
-        };
-
-        triggerMenuOptionSelected();
-    }, [optionSelected]);
-
-    const handleOptionSelect = (option: string) => {
-        setOptionSelected(option);
+  useEffect(() => {
+    const triggerMenuOptionSelected = async () => {
+      if (optionSelected !== "" && optionSelected !== "Cancel") {
+        if (optionSelected === "Move") {
+          await publish<MechaWillMoveEvent>("mecha-will-move", { mechaId });
+        } else if (optionSelected === "Attack") {
+          await publish<MechaWillAttackEvent>("mecha-will-attack", { mechaId });
+        }
+        setOptionSelected("");
+        setMechaId("");
+        setDisplayMenu(false);
+        setOptions([]);
+      }
     };
-    // {displayMenu && <Sprite {...spriteData.menu} scale={5} opacity={1} basic />}
+
+    triggerMenuOptionSelected();
+  }, [optionSelected]);
+
+  const handleOptionSelect = (option: string) => {
+    setOptionSelected(option);
+  };
+  // {displayMenu && <Sprite {...spriteData.menu} scale={5} opacity={1} basic />}
 
     return (
         <GameObject name="menu" persisted {...props} layer="ui">

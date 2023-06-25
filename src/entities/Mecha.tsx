@@ -8,13 +8,15 @@ import CharacterScript from '../components/CharacterScript';
 import MechaScript from '../components/MechaScript';
 import spriteData from '../spriteData';
 import MechaScriptFromAction from '../components/MechaScripFromAction';
+import { Mecha as MechaType } from '../@core/logic/GameState';
 
 interface MechaProps extends GameObjectProps {
     isTurn: boolean;
     mechaId: string;
+    mecha: MechaType;
 }
 
-export default function Mecha({ isTurn, mechaId, ...props }: MechaProps) {
+export default function Mecha({ isTurn, mechaId, mecha, ...props }: MechaProps) {
     return (
         <GameObject name={mechaId} displayName="Player" layer="character" {...props}>
             <Moveable />
@@ -23,7 +25,7 @@ export default function Mecha({ isTurn, mechaId, ...props }: MechaProps) {
             <CharacterScript>
                 <Sprite {...spriteData.yellowMap} />
             </CharacterScript>
-            {isTurn ? <MechaScript /> : <MechaScriptFromAction />}
+            {isTurn ? <MechaScript mecha={mecha} /> : <MechaScriptFromAction />}
         </GameObject>
     );
 }

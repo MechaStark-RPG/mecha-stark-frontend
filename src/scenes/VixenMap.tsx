@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Collider from '../@core/Collider';
 import GameObject from '../@core/GameObject';
 import Interactable from '../@core/Interactable';
@@ -13,6 +13,7 @@ import CameraFollowScript from '../components/CameraFollowScript';
 import { Mecha as MechaType } from '../@core/logic/GameState';
 import Menu from '../entities/Menu';
 import MovementGlow from '../components/MovementGlow';
+import useSceneManager from '../@core/useSceneManager';
 
 const mapData = mapDataString(`
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -63,9 +64,18 @@ const resolveMapTile: TileMapResolver = (type, x, y) => {
 
 interface VixenMapProps {
     mechas: MechaType[];
+    renderAttackScene: boolean;
 }
 
-export default function VixenMapScene({ mechas }: VixenMapProps) {
+export default function VixenMapScene({ mechas, renderAttackScene }: VixenMapProps) {
+    const { setScene } = useSceneManager();
+
+    useEffect(() => {
+        if (renderAttackScene) {
+            setScene('attack');
+        }
+    }, [renderAttackScene]);
+
     return (
         <>
             <GameObject>
@@ -86,6 +96,7 @@ export default function VixenMapScene({ mechas }: VixenMapProps) {
             {mechas.map(mecha => {
                 return (
                     <Mecha
+                        mecha={mecha}
                         mechaId={mecha.id}
                         x={mecha.position.x}
                         y={mecha.position.y}
